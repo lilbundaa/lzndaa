@@ -13,6 +13,7 @@
         body.romance-mode{background:#0a0510}
         @keyframes globalFadeIn{0%{opacity:0}100%{opacity:1}}body{animation:globalFadeIn 1s ease-out forwards}
 
+        /* Profile pictures */
         .profile-pic{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid rgba(59,130,246,.3);transition:all .3s ease}
         .profile-pic-manda{border-color:rgba(6,182,212,.3)}
         .entry-card{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 32px;border-radius:24px;cursor:pointer;transition:all .3s ease;position:relative}
@@ -86,25 +87,6 @@
         .sync-dot{width:6px;height:6px;border-radius:50%;display:inline-block;transition:background .3s ease}
         .sync-dot.on{background:#34d399}.sync-dot.off{background:#64748b}
 
-        /* Sticky notes */
-        .sticky-note{padding:20px;min-height:120px;border-radius:4px 4px 4px 4px;position:relative;transition:transform .2s ease;box-shadow:0 2px 12px rgba(0,0,0,.3);word-wrap:break-word;font-size:14px;font-weight:300;line-height:1.5}
-        .sticky-note::after{content:'';position:absolute;top:0;right:0;width:24px;height:24px;background:linear-gradient(135deg,rgba(0,0,0,.08),rgba(0,0,0,.02));border-bottom-left-radius:6px;border-top:1px solid rgba(0,0,0,.08);border-left:1px solid rgba(0,0,0,.08)}
-        .sticky-note:hover{transform:scale(1.03) rotate(0deg)!important;z-index:2}
-
-        .note-pink{background:rgba(244,114,182,.15);border:1px solid rgba(244,114,182,.25)}
-        .note-yellow{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.2)}
-        .note-blue{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.2)}
-        .note-green{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.2)}
-        .note-purple{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2)}
-        .note-orange{background:rgba(251,146,60,.12);border:1px solid rgba(251,146,60,.2)}
-
-        .color-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s}
-        .color-dot:hover{transform:scale(1.15)}
-        .color-dot.active{border-color:white;box-shadow:0 0 10px currentColor}
-
-        .delete-note{position:absolute;top:8px;left:8px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.2);border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
-        .sticky-note:hover .delete-note{opacity:1}
-
         #movie-modal{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px}
         #movie-modal.open{display:flex}
         .modal-content{background:#1e293b;border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:24px}
@@ -120,6 +102,7 @@
 </head>
 <body>
 
+<!-- ═══ ENTRY SCREEN ═══ -->
 <div id="entry-screen">
     <div style="position:fixed;inset:0;pointer-events:none;overflow:hidden">
         <div style="position:absolute;top:20%;left:10%;width:300px;height:300px;background:rgba(59,130,246,.05);border-radius:50%;filter:blur(100px)"></div>
@@ -146,7 +129,7 @@
 <div id="toast-container" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;align-items:center;gap:12px"></div>
 <div id="stars-container"></div>
 
-<div class="fixed inset-0 pointer-events:none z-0 overflow-hidden">
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
     <div class="glow-orb glow-1" style="position:absolute;top:-200px;left:-100px;width:500px;height:500px;border-radius:50%;filter:blur(120px)"></div>
     <div class="glow-orb glow-2" style="position:absolute;top:50%;right:-200px;width:400px;height:400px;border-radius:50%;filter:blur(100px)"></div>
     <div class="glow-orb glow-3" style="position:absolute;bottom:-100px;left:30%;width:350px;height:350px;border-radius:50%;filter:blur(100px)"></div>
@@ -171,7 +154,7 @@
             <span class="text-xs font-light text-slate-400" id="days-counter">—</span>
         </div>
         <div class="reveal" style="transition-delay:900ms">
-            <button onclick="document.getElementById('wall-section').scrollIntoView({behavior:'smooth'})" class="inline-flex flex-col items-center gap-2 text-slate-500 hover:text-sky-400 transition-colors group">
+            <button onclick="document.getElementById('mood-section').scrollIntoView({behavior:'smooth'})" class="inline-flex flex-col items-center gap-2 text-slate-500 hover:text-sky-400 transition-colors group">
                 <span class="text-xs tracking-widest uppercase">Check it out</span>
                 <i data-lucide="chevron-down" class="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300"></i>
             </button>
@@ -206,37 +189,6 @@
     </div>
 </section>
 
-<!-- WALL -->
-<section id="wall-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
-    <div class="max-w-5xl mx-auto">
-        <div class="text-center mb-10">
-            <p class="reveal text-xs font-medium section-label text-rose-400 tracking-widest uppercase mb-4">Our Wall</p>
-            <h2 class="reveal text-3xl sm:text-4xl md:text-5xl font-extralight tracking-tight" style="transition-delay:100ms">Leave a <span class="text-accent">note</span></h2>
-        </div>
-
-        <!-- Add note form -->
-        <div class="reveal mb-10" style="transition-delay:150ms">
-            <div style="display:flex;gap:8px;align-items:stretch;max-width:600px;margin:0 auto">
-                <input type="text" id="note-text" class="form-input" placeholder="Write something..." style="flex:1" onkeydown="if(event.key==='Enter')addNote()">
-                <div style="display:flex;gap:6px;align-items:center">
-                    <div class="color-dot active" data-color="pink" onclick="pickNoteColor('pink')" style="background:rgba(244,114,182,.6);color:#f472b6;currentColor:rgba(244,114,182,.6)"></div>
-                    <div class="color-dot" data-color="yellow" onclick="pickNoteColor('yellow')" style="background:rgba(251,191,36,.4);color:#fbbf24"></div>
-                    <div class="color-dot" data-color="blue" onclick="pickNoteColor('blue')" style="background:rgba(96,165,250,.4);color:#60a5fa"></div>
-                    <div class="color-dot" data-color="green" onclick="pickNoteColor('green')" style="background:rgba(52,211,153,.4);color:#34d399"></div>
-                    <div class="color-dot" data-color="purple" onclick="pickNoteColor('purple')" style="background:rgba(168,85,247,.4);color:#a855f7"></div>
-                    <div class="color-dot" data-color="orange" onclick="pickNoteColor('orange')" style="background:rgba(251,146,60,.4);color:#fb923c"></div>
-                </div>
-                <button onclick="addNote()" style="padding:12px 20px;border-radius:12px;border:1px solid rgba(59,130,246,.3);background:rgba(59,130,246,.1);color:rgb(147,197,253);font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;transition:all .2s;flex-shrink:0" onmouseover="this.style.background='rgba(59,130,246,.2)'" onmouseout="this.style.background='rgba(59,130,246,.1)'">Post 📌</button>
-            </div>
-        </div>
-
-        <!-- Wall grid -->
-        <div id="wall-grid" class="columns-2 sm:columns-3 lg:columns-4 gap-4" style="column-gap:16px">
-            <p id="wall-empty" class="reveal text-xs text-slate-700 text-center py-16" style="transition-delay:200ms">No notes yet... be the first to write something 💕</p>
-        </div>
-    </div>
-</section>
-
 <!-- MOVIES -->
 <section id="movies" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
     <div class="max-w-6xl mx-auto">
@@ -248,6 +200,53 @@
             <button onclick="openMovieModal()" style="padding:10px 24px;border-radius:12px;border:1px solid rgba(59,130,246,.3);background:rgba(59,130,246,.1);color:rgb(147,197,253);font-size:13px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.background='rgba(59,130,246,.2)'" onmouseout="this.style.background='rgba(59,130,246,.1)'">+ Add Movie</button>
         </div>
         <div id="movies-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </div>
+</section>
+
+<!-- MOVIE MODAL -->
+<div id="movie-modal">
+    <div class="modal-content">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <h3 style="font-size:18px;font-weight:500">Add a Movie 🎬</h3>
+            <button onclick="closeMovieModal()" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+            <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Title *</label><input type="text" id="mv-title" class="form-input" placeholder="Movie name"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Year</label><input type="text" id="mv-year" class="form-input" placeholder="2024"></div>
+                <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Genre</label><input type="text" id="mv-genre" class="form-input" placeholder="Horror, Romance..."></div>
+            </div>
+            <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Your note</label><textarea id="mv-note" class="form-input" rows="3" placeholder="What did you think?" style="resize:none"></textarea></div>
+            <div>
+                <label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:8px">Image</label>
+                <div id="img-options" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><p style="font-size:11px;color:rgb(71,85,105)">Type a title to see options</p></div>
+                <div style="display:flex;gap:8px">
+                    <button onclick="toggleImgTab('url')" id="tab-url" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);font-size:11px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif">Paste URL</button>
+                    <button onclick="toggleImgTab('upload')" id="tab-upload" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);font-size:11px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif">Upload</button>
+                </div>
+                <div id="img-url-input" style="display:none;margin-top:10px"><input type="text" id="mv-img-url" class="form-input" placeholder="https://example.com/image.jpg" oninput="selectCustomImage()"></div>
+                <div id="img-upload-input" style="display:none;margin-top:10px">
+                    <label style="display:block;padding:20px;border:2px dashed rgba(255,255,255,.1);border-radius:12px;text-align:center;cursor:pointer;color:rgb(100,116,139);font-size:13px;font-weight:300">📷 Click to upload<input type="file" id="mv-file" accept="image/*" style="display:none" onchange="handleImageUpload(event)"></label>
+                    <div id="upload-preview" style="display:none;margin-top:10px;text-align:center"></div>
+                </div>
+            </div>
+            <button onclick="submitMovie()" style="width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Add Movie 🍿</button>
+        </div>
+    </div>
+</div>
+
+<!-- FUN STUFF -->
+<section class="relative py-24 sm:py-32 px-4">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16"><p class="reveal text-xs font-medium section-label text-emerald-400 tracking-widest uppercase mb-4">Random stuff</p><h2 class="reveal text-3xl sm:text-4xl md:text-5xl font-extralight tracking-tight" style="transition-delay:100ms">Things about <span class="text-accent">us</span></h2></div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center"><div class="text-3xl mb-4">🎮</div><h3 class="text-base font-medium mb-2">Roblox Origins</h3><p class="text-sm font-light text-slate-400 leading-relaxed">We met on Roblox on Aug 21, 2026. Still wild to think about. A random game turned into this.</p></div>
+            <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:80ms"><div class="text-3xl mb-4">🍿</div><h3 class="text-base font-medium mb-2">Movie Buddies</h3><p class="text-sm font-light text-slate-400 leading-relaxed">Somehow watching movies together through a screen became a whole thing. And I'm not mad about it.</p></div>
+            <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:160ms"><div class="text-3xl mb-4">💤</div><h3 class="text-base font-medium mb-2">Late Night Talks</h3><p class="text-sm font-light text-slate-400 leading-relaxed">We've stayed up way too late talking about nothing and everything. My sleep schedule is ruined btw.</p></div>
+            <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center"><div class="text-3xl mb-4">😂</div><h3 class="text-base font-medium mb-2">Inside Jokes</h3><p class="text-sm font-light text-slate-400 leading-relaxed">We have way too many at this point. Nobody else would understand half the things we say.</p></div>
+            <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:80ms"><div class="text-3xl mb-4">📱</div><h3 class="text-base font-medium mb-2">Always Online</h3><p class="text-sm font-light text-slate-400 leading-relaxed">Somehow we're always on at the same time. Either that's a coincidence or something else idk 🤷</p></div>
+            <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:160ms"><div class="text-3xl mb-4">🌍</div><h3 class="text-base font-medium mb-2">Haven't Met Yet</h3><p class="text-sm font-light text-slate-400 leading-relaxed">The craziest part is we haven't even met in person. But honestly? It feels like I know you.</p></div>
+        </div>
     </div>
 </section>
 
@@ -303,62 +302,57 @@
     </div>
 </footer>
 
-<!-- MOVIE MODAL -->
-<div id="movie-modal">
-    <div class="modal-content">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-            <h3 style="font-size:18px;font-weight:500">Add a Movie 🎬</h3>
-            <button onclick="closeMovieModal()" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px">✕</button>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px">
-            <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Title *</label><input type="text" id="mv-title" class="form-input" placeholder="Movie name"></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Year</label><input type="text" id="mv-year" class="form-input" placeholder="2024"></div>
-                <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Genre</label><input type="text" id="mv-genre" class="form-input" placeholder="Horror, Romance..."></div>
-            </div>
-            <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Your note</label><textarea id="mv-note" class="form-input" rows="3" placeholder="What did you think?" style="resize:none"></textarea></div>
-            <div>
-                <label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:8px">Image</label>
-                <div id="img-options" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><p style="font-size:11px;color:rgb(71,85,105)">Type a title to see options</p></div>
-                <div style="display:flex;gap:8px">
-                    <button onclick="toggleImgTab('url')" id="tab-url" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);font-size:11px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif">Paste URL</button>
-                    <button onclick="toggleImgTab('upload')" id="tab-upload" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);font-size:11px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif">Upload</button>
-                </div>
-                <div id="img-url-input" style="display:none;margin-top:10px"><input type="text" id="mv-img-url" class="form-input" placeholder="https://example.com/image.jpg" oninput="selectCustomImage()"></div>
-                <div id="img-upload-input" style="display:none;margin-top:10px">
-                    <label style="display:block;padding:20px;border:2px dashed rgba(255,255,255,.1);border-radius:12px;text-align:center;cursor:pointer;color:rgb(100,116,139);font-size:13px;font-weight:300">📷 Click to upload<input type="file" id="mv-file" accept="image/*" style="display:none" onchange="handleImageUpload(event)"></label>
-                    <div id="upload-preview" style="display:none;margin-top:10px;text-align:center"></div>
-                </div>
-            </div>
-            <button onclick="submitMovie()" style="width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Add Movie 🍿</button>
-        </div>
-    </div>
-</div>
-
 <script>
-var PROFILE_PICS={
-    ronald:"https://z-cdn-media.chatglm.cn/files/687f5675-fcd2-4ccf-b51b-284041c65492.png?auth_key=1887992950-ce2f69396684415e9879333487afb3ae-0-24db2709cb0d119a5572c7a13f62f17f",
-    manda:"https://z-cdn-media.chatglm.cn/files/e27462bf-620d-4704-b79f-95f37971c363.png?auth_key=1887992950-f735b2e9105c4431bda5c993f79339b5-0-4251c328ab20656e498df7fa30a04c76"
+/* ═══ PROFILE PICTURES ═══ */
+var PROFILE_PICS = {
+    ronald: "https://z-cdn-media.chatglm.cn/files/687f5675-fcd2-4ccf-b51b-284041c65492.png?auth_key=1887992950-ce2f69396684415e9879333487afb3ae-0-24db2709cb0d119a5572c7a13f62f17f",
+    manda: "https://z-cdn-media.chatglm.cn/files/e27462bf-620d-4704-b79f-95f37971c363.png?auth_key=1887992950-f735b2e9105c4431bda5c993f79339b5-0-4251c328ab20656e498df7fa30a04c76"
 };
 
-var FIREBASE_URL="https://webs-2cd86-default-rtdb.asia-southeast1.firebasedatabase.app";
+var FIREBASE_URL = "https://webs-2cd86-default-rtdb.asia-southeast1.firebasedatabase.app";
 function isFirebaseReady(){return FIREBASE_URL&&FIREBASE_URL.indexOf('PASTE')===-1&&FIREBASE_URL.indexOf('http')===0}
 function fbWrite(p,d){if(!isFirebaseReady())return;try{fetch(FIREBASE_URL+p+'.json',{method:'PUT',body:JSON.stringify(d)}).catch(function(){})}catch(e){}}
 function fbRead(p,cb){if(!isFirebaseReady()){cb(null);return}try{fetch(FIREBASE_URL+p+'.json').then(function(r){return r.json()}).then(function(d){cb(d)}).catch(function(){cb(null)})}catch(e){cb(null)}}
+
 function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function safeGetS(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
 function safeSetS(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
 
+/* ═══ DEFAULT MOVIES ═══ */
 var defaultMovies=[
     {id:'default_1',title:"Smile",year:"2022",note:"You got so scared during the jump scares. It was honestly hilarious and cute at the same time.",genre:"Horror",emoji:"😱",image:"smile-horror-dark",addedBy:"Ronald",ratings:{ronald:4,manda:null}},
     {id:'default_2',title:"Wuthering Heights",year:"2011",note:"We sat through the whole thing. Not gonna lie, it was long, but watching it with you made it worth it.",genre:"Romance / Drama",emoji:" Heathcliff",image:"wuthering-moors-landscape",addedBy:"Ronald",ratings:{ronald:5,manda:null}}
 ];
 
-var currentUser=null;
-function pickUser(name){currentUser=name;safeSetS('currentUser',name);document.getElementById('user-badge-name').textContent=name;var bp=document.getElementById('badge-pic');bp.src=PROFILE_PICS[name.toLowerCase()];bp.style.display='block';document.getElementById('badge-dot').style.display='none';var s=document.getElementById('entry-screen');s.classList.add('leaving');setTimeout(function(){s.classList.add('gone')},600);showToast('Hey '+name+' 👋');startSync()}
-var savedUser=safeGetS('currentUser');
-if(savedUser){currentUser=savedUser;document.getElementById('user-badge-name').textContent=savedUser;var bp2=document.getElementById('badge-pic');bp2.src=PROFILE_PICS[savedUser.toLowerCase()];bp2.style.display='block';document.getElementById('badge-dot').style.display='none';document.getElementById('entry-screen').classList.add('gone');startSync()}
+/* ═══ USER ═══ */
+var currentUser = null;
+function pickUser(name) {
+    currentUser = name;
+    safeSetS('currentUser', name);
+    document.getElementById('user-badge-name').textContent = name;
+    var bp = document.getElementById('badge-pic');
+    bp.src = PROFILE_PICS[name.toLowerCase()];
+    bp.style.display = 'block';
+    document.getElementById('badge-dot').style.display = 'none';
+    var s = document.getElementById('entry-screen');
+    s.classList.add('leaving');
+    setTimeout(function(){ s.classList.add('gone'); }, 600);
+    showToast('Hey ' + name + ' 👋');
+    startSync();
+}
+var savedUser = safeGetS('currentUser');
+if (savedUser) {
+    currentUser = savedUser;
+    document.getElementById('user-badge-name').textContent = savedUser;
+    var bp2 = document.getElementById('badge-pic');
+    bp2.src = PROFILE_PICS[savedUser.toLowerCase()];
+    bp2.style.display = 'block';
+    document.getElementById('badge-dot').style.display = 'none';
+    document.getElementById('entry-screen').classList.add('gone');
+    startSync();
+}
+
 (function(){var s=new Date('2026-08-21'),n=new Date();document.getElementById('days-counter').textContent=Math.floor((n-s)/86400000)+' days'})();
 
 /* ═══ MOOD ═══ */
@@ -371,92 +365,57 @@ function clearMoodLog(){safeSet('moodLog4','[]');try{localStorage.removeItem('mo
 
 var syncInterval=null;
 function startSync(){if(syncInterval)return;syncNow();syncInterval=setInterval(syncNow,3000)}
-function syncNow(){if(!isFirebaseReady())return;fbRead('',function(data){if(!data)return;document.getElementById('sync-dot').className='sync-dot on';if(data.current){if(data.current.ronald){var rk=JSON.stringify(data.current.ronald);if(safeGet('mood_ronald')!==rk)safeSet('mood_ronald',rk)}if(data.current.manda){var mk=JSON.stringify(data.current.manda);if(safeGet('mood_manda')!==mk)safeSet('mood_manda',mk}}if(data.log){var arr=[];for(var key in data.log)if(data.log.hasOwnProperty(key))arr.push(data.log[key]);arr.sort(function(a,b){return b.timestamp-a.timestamp});if(arr.length>50)arr=arr.slice(0,50);var newLog=JSON.stringify(arr);if(safeGet('moodLog4')!==newLog)safeSet('moodLog4',newLog)}if(data.movies){var newMovies=JSON.stringify(data.movies);if(safeGet('fb_movies')!==newMovies){safeSet('fb_movies',newMovies);renderMovies()}}if(data.wall){var newWall=JSON.stringify(data.wall);if(safeGet('fb_wall')!==newWall){safeSet('fb_wall',newWall);renderWall()}}renderCurrentMoods();renderMoodLog()}if(!isFirebaseReady()){document.getElementById('sync-dot').className='sync-dot off'}
+function syncNow(){if(!isFirebaseReady())return;fbRead('',function(data){if(!data)return;document.getElementById('sync-dot').className='sync-dot on';if(data.current){if(data.current.ronald){var rk=JSON.stringify(data.current.ronald);if(safeGet('mood_ronald')!==rk)safeSet('mood_ronald',rk)}if(data.current.manda){var mk=JSON.stringify(data.current.manda);if(safeGet('mood_manda')!==mk)safeSet('mood_manda',mk)}}if(data.log){var arr=[];for(var key in data.log)if(data.log.hasOwnProperty(key))arr.push(data.log[key]);arr.sort(function(a,b){return b.timestamp-a.timestamp});if(arr.length>50)arr=arr.slice(0,50);var newLog=JSON.stringify(arr);if(safeGet('moodLog4')!==newLog)safeSet('moodLog4',newLog)}if(data.movies){var newMovies=JSON.stringify(data.movies);if(safeGet('fb_movies')!==newMovies){safeSet('fb_movies',newMovies);renderMovies()}}renderCurrentMoods();renderMoodLog()})}
+if(!isFirebaseReady()){document.getElementById('sync-dot').className='sync-dot off'}
 renderCurrentMoods();renderMoodLog();
-
-/* ═══ WALL ═══ */
-var selectedNoteColor='pink';
-var noteColors={pink:'rgba(244,114,182,.15)',yellow:'rgba(251,191,36,.12)',blue:'rgba(96,165,250,.12)',green:'rgba(52,211,153,.12)',purple:'rgba(168,85,247,.12)',orange:'rgba(251,146,60,.12)'};
-var noteColorMap={pink:'note-pink',yellow:'note-yellow',blue:'note-blue',green:'note-green',purple:'note-purple',orange:'note-orange'};
-var noteColorDots={pink:'rgba(244,114,182,.6)',yellow:'rgba(251,191,36,.4)',blue:'rgba(96,165,250,.4)',green:'rgba(52,211,153,.4)',purple:'rgba(168,85,247,.4)',orange:'rgba(251,146,60,.4)'};
-
-function pickNoteColor(color){
-    selectedNoteColor=color;
-    document.querySelectorAll('.color-dot').forEach(function(d){
-        d.classList.remove('active');
-        if(d.dataset.color===color)d.classList.add('active');
-    });
-}
-
-function addNote(){
-    var text=document.getElementById('note-text').value.trim();
-    if(!text){showToast('✏️ Write something first');return}
-    if(!currentUser){showToast('Pick your name first!');return}
-    var note={id:'n_'+Date.now(),text:text,color:selectedNoteColor,user:currentUser,timestamp:Date.now()};
-    fbWrite('/wall/'+note.id,note);
-    var wall=JSON.parse(safeGet('fb_wall')||'{}');
-    wall[note.id]=note;
-    safeSet('fb_wall',JSON.stringify(wall));
-    document.getElementById('note-text').value='';
-    renderWall();
-    showToast('📌 Note posted!');
-}
-
-function deleteNote(noteId){
-    fbWrite('/wall/'+noteId,null);
-    var wall=JSON.parse(safeGet('fb_wall')||'{}');
-    delete wall[noteId];
-    safeSet('fb_wall',JSON.stringify(wall));
-    renderWall();
-    showToast('🗑️ Note deleted');
-}
-
-function renderWall(){
-    var wall=JSON.parse(safeGet('fb_wall')||'{}');
-    var grid=document.getElementById('wall-grid');
-    var empty=document.getElementById('wall-empty');
-    var arr=[];
-    for(var key in wall)if(wall.hasOwnProperty(key))arr.push(wall[key]);
-    arr.sort(function(a,b){return b.timestamp-a.timestamp});
-
-    if(!arr.length){empty.style.display='';grid.innerHTML='<p class="reveal text-xs text-slate-700 text-center py-16" style="transition-delay:200ms">No notes yet... be the first to write something 💕</p>';return}
-
-    grid.innerHTML='';
-    arr.forEach(function(n){
-        var userKey=n.user?n.user.toLowerCase():'unknown';
-        var picUrl=PROFILE_PICS[userKey]||'';
-        var nameColor=n.user==='Ronald'?'#93c5fd':'#67e8f9';
-        var rot=(Math.random()*6-3)+'deg';
-        var noteClass=noteColorMap[n.color]||'note-pink';
-        var delShow=currentUser&&(n.user===currentUser)?'':' style="opacity:0";
-        var delDisplay=n.user===currentUser?'':'display:none';
-        var el=document.createElement('div');
-        el.className='sticky-note '+noteClass+' log-entry';
-        el.style.transform='rotate('+rot+')';
-        el.innerHTML='<button class="delete-note" onclick="deleteNote(\''+n.id+'\')" style="'+delDisplay+'"><span style="font-size:12px;line-height:1">✕</span></button><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="'+picUrl+'" alt="'+n.user+'" style="width:22px;height:22px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(255,255,255,.15)"><span style="font-size:11px;font-weight:500;color:'+nameColor+'">'+n.user+'</span></div><p style="white-space:pre-wrap;font-size:14px;font-weight:300;line-height:1.5">'+escapeHtml(n.text)+'</p><p style="font-size:10px;color:rgb(100,116,139);margin-top:10px;letter-spacing:.02em">'+formatTime(n.timestamp)+'</p>';
-        grid.appendChild(el);
-    });
-    document.querySelectorAll('#wall-grid .reveal').forEach(function(el){observer.observe(el)});
-}
-
-function escapeHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
 
 /* ═══ MOVIE MODAL ═══ */
 var selectedImage=null;var uploadedImage=null;
-function openMovieModal(){document.getElementById('movie-modal').classList.add('open');document.getElementById('mv-title').value='';document.getElementById('mv-year').value='';document.getElementById('mv-genre').value='';document.getElementById('mv-note').value='';document.getElementById('mv-img-url').value='';document.getElementById('img-url-input').style.display='none';document.getElementById('img-upload-input').style.display='none';document.getElementById('upload-preview').style.display='none';document.getElementById('upload-preview').innerHTML='';selectedImage=null;uploadedImage=null;document.getElementById('tab-url').style.background='transparent';document.getElementById('tab-url').style.color='rgb(148,163,184)';document.getElementById('tab-upload').style.background='transparent';document.getElementById('tab-upload').style.color='rgb(148,163,184)';document.getElementById('img-options').innerHTML='<p style="font-size:11px;color:rgb(71,85,105)">Type a title to see options</p>';document.getElementById('mv-title').oninput=function(){generateImageOptions(this.value)}
+function openMovieModal(){document.getElementById('movie-modal').classList.add('open');document.getElementById('mv-title').value='';document.getElementById('mv-year').value='';document.getElementById('mv-genre').value='';document.getElementById('mv-note').value='';document.getElementById('mv-img-url').value='';document.getElementById('img-url-input').style.display='none';document.getElementById('img-upload-input').style.display='none';document.getElementById('upload-preview').style.display='none';document.getElementById('upload-preview').innerHTML='';selectedImage=null;uploadedImage=null;document.getElementById('tab-url').style.background='transparent';document.getElementById('tab-url').style.color='rgb(148,163,184)';document.getElementById('tab-upload').style.background='transparent';document.getElementById('tab-upload').style.color='rgb(148,163,184)';document.getElementById('img-options').innerHTML='<p style="font-size:11px;color:rgb(71,85,105)">Type a title to see options</p>';document.getElementById('mv-title').oninput=function(){generateImageOptions(this.value)}}
 function closeMovieModal(){document.getElementById('movie-modal').classList.remove('open')}
 function toggleImgTab(tab){document.getElementById('img-url-input').style.display=tab==='url'?'block':'none';document.getElementById('img-upload-input').style.display=tab==='upload'?'block':'none';document.getElementById('tab-url').style.background=tab==='url'?'rgba(59,130,246,.15)':'transparent';document.getElementById('tab-url').style.color=tab==='url'?'#93c5fd':'rgb(148,163,184)';document.getElementById('tab-upload').style.background=tab==='upload'?'rgba(59,130,246,.15)':'transparent';document.getElementById('tab-upload').style.color=tab==='upload'?'#93c5fd':'rgb(148,163,184)'}
-function generateImageOptions(title){if(!title||title.length<2){document.getElementById('img-options').innerHTML='<p style="font-size:11px;color:rgb(71,85,105)">Type a title to see options</p>';return}var seed=title.toLowerCase().replace(/[^a-z0-9]+/g,'-');var seeds=[seed,seed+'-poster',seed+'-cinema',seed+'-film'];var html='';seeds.forEach(function(s,i){html+='<div class="img-option'+(i===0?' selected':'')+'" onclick="selectImage(this,\''+s+'\')"><img src="https://picsum.photos/seed/'+s+'/200/140.jpg" alt="option '+(i+1)+'"></div>'});if(selectedImage===null)selectedImage=seeds[0];document.getElementById('img-options').innerHTML=html}
+function generateImageOptions(title){if(!title||title.length<2){document.getElementById('img-options').innerHTML='<p style="font-size:11px;color:rgb(71,85,105)">Type a title above</p>';return}var seed=title.toLowerCase().replace(/[^a-z0-9]+/g,'-');var seeds=[seed,seed+'-poster',seed+'-cinema',seed+'-film'];var html='';seeds.forEach(function(s,i){html+='<div class="img-option'+(i===0?' selected':'')+'" onclick="selectImage(this,\''+s+'\')"><img src="https://picsum.photos/seed/'+s+'/200/140.jpg" alt="option"></div>'});if(selectedImage===null)selectedImage=seeds[0];document.getElementById('img-options').innerHTML=html}
 function selectImage(el,seed){document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')});el.classList.add('selected');selectedImage=seed;uploadedImage=null;document.getElementById('mv-img-url').value='';document.getElementById('upload-preview').style.display='none';document.getElementById('upload-preview').innerHTML=''}
-function selectCustomImage(){var url=document.getElementById('mv-img-url').value;if(url){selectedImage=null;uploadedImage=url;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')}}
-function handleImageUpload(event){var file=event.target.files[0];if(!file)return;if(file.size>5*1024*1024){showToast('⚠️ Max 5MB');return}var reader=new FileReader();reader.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxW=600;var w=img.width,h=img.height;if(w>maxW){h=h*(maxW/w);w=maxW}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);uploadedImage=canvas.toDataURL('image/jpeg',0.7);selectedImage=null;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')});document.getElementById('upload-preview').style.display='block';document.getElementById('upload-preview').innerHTML='<img src="'+uploadedImage+'" style="max-width:200px;max-height:120px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><p style="font-size:10px;color:rgb(52,211,153);margin-top:6px">✓ Ready</p>'};img.src=e.target.result};reader.readAsDataURL(file)}
-function submitMovie(){var title=document.getElementById('mv-title').value.trim();var year=document.getElementById('mv-year').value.trim()||'2024';var genre=document.getElementById('mv-genre').value.trim()||'Movie';var note=document.getElementById('mv-note').value.trim()||'No note yet.';if(!title){showToast('⚠️ Please enter a title');return}if(!selectedImage&&!uploadedImage){showToast('⚠️ Please select an image');return}var image=uploadedImage||selectedImage;var movie={id:'mv_'+Date.now(),title:title,year:year,note:note,genre:genre,emoji:'🎬',image:image,addedBy:currentUser,ratings:{ronald:null,manda:null}};fbWrite('/movies/'+movie.id,movie);var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');fbMovies[movie.id]=movie;safeSet('fb_movies',JSON.stringify(fbMovies));renderMovies();closeMovieModal();showToast('🎬 "'+title+'" added!')}
+function selectCustomImage(){var url=document.getElementById('mv-img-url').value;if(url){selectedImage=null;uploadedImage=url;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')})}}
+function handleImageUpload(event){var file=event.target.files[0];if(!file)return;if(file.size>5*1024*1024){showToast('⚠️ Image too big, max 5MB');return}var reader=new FileReader();reader.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxW=600;var w=img.width,h=img.height;if(w>maxW){h=h*(maxW/w);w=maxW}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);uploadedImage=canvas.toDataURL('image/jpeg',.7);selectedImage=null;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')});document.getElementById('upload-preview').style.display='block';document.getElementById('upload-preview').innerHTML='<img src="'+uploadedImage+'" style="max-width:200px;max-height:120px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><p style="font-size:10px;color:rgb(52,211,153);margin-top:6px">✓ Ready</p>'};img.src=e.target.result};reader.readAsDataURL(file)}
+function submitMovie(){var title=document.getElementById('mv-title').value.trim();var year=document.getElementById('mv-year').value.trim()||'2024';var genre=document.getElementById('mv-genre').value.trim()||'Movie';var note=document.getElementById('mv-note').value.trim()||'No note added yet.';if(!title){showToast('⚠️ Please enter a title');return}if(!selectedImage&&!uploadedImage){showToast('⚠️ Please select an image');return}var image=uploadedImage||selectedImage;var movie={id:'mv_'+Date.now(),title:title,year:year,note:note,genre:genre,emoji:'🎬',image:image,addedBy:currentUser,ratings:{ronald:null,manda:null}};fbWrite('/movies/'+movie.id,movie);var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');fbMovies[movie.id]=movie;safeSet('fb_movies',JSON.stringify(fbMovies));renderMovies();closeMovieModal();showToast('🎬 "'+title+'" added!')}
 
 /* ═══ MOVIE RATING ═══ */
 function rateMovie(movieId,rating){if(!currentUser){showToast('Pick your name first!');return}var userKey=currentUser.toLowerCase();var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');if(!fbMovies[movieId])return;if(!fbMovies[movieId].ratings)fbMovies[movieId].ratings={ronald:null,manda:null};fbMovies[movieId].ratings[userKey]=rating;safeSet('fb_movies',JSON.stringify(fbMovies));fbWrite('/movies/'+movieId+'/ratings',fbMovies[movieId].ratings);renderMovies();showToast('⭐ Rated '+rating+'/5')}
+
+/* ═══ RENDER MOVIES ═══ */
 function getAllMovies(){var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');var arr=[];for(var key in fbMovies)if(fbMovies.hasOwnProperty(key))arr.push(fbMovies[key]);arr=arr.concat(defaultMovies);arr.sort(function(a,b){return(b.timestamp||0)-(a.timestamp||0)});return arr}
-function renderMovieStars(movie){var rk=movie.ratings?movie.ratings.ronald:null;var mk=movie.ratings?movie.ratings.manda:null;var isR=currentUser&&currentUser.toLowerCase()==='ronald';var isM=currentUser&&currentUser.toLowerCase()==='manda';var html='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:10px;color:#93c5fd;width:46px">Ronald</span>';if(rk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=rk?'#fbbf24':'rgb(51,65,85)'}">★</span>'}else if(isR){html+='<span class="rate-stars" onclick="event.stopPropagation()">';for(var i=1;i<=5;i++)html+='<span onclick="rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">Not rated</span>';html+='</div><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:#67e8f9;width:46px">Manda</span>';if(mk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=mk?'#fbbf24':'rgb(51,65,85)'}">★</span>'}else if(isM){html+='<span class="rate-stars" onclick="event.stopPropagation()">';for(var i=1;i<=5;i++)html+='<span onclick="rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">Not rated</span>';html+='</div></div>';return html}
-function renderMovies(){var grid=document.getElementById('movies-grid');grid.innerHTML='';var movies=getAllMovies();movies.forEach(function(m,i){var avgRating=0;var rc=0;if(m.ratings){if(m.ratings.ronald){avgRating+=m.ratings.ronald;rc++}if(m.ratings.manda){avgRating+=m.ratings.manda;rc++}if(rc)avgRating=Math.round(avgRating/rc);var displayStars='';for(var s=0;s<avgRating;s++)displayStars+='★';for(var s2=0;s2<5-avgRating;s2++)displayStars+='☆';var imgSrc=m.image.indexOf('data:')===0?m.image:'https://picsum.photos/seed/'+m.image+'/500/350.jpg';var card=document.createElement('div');card.className='reveal movie-card card-hover rounded-2xl border border-white/5 overflow-hidden group';card.style.background='rgba(255,255,255,.02)';card.style.transitionDelay=(i*100)+'ms';card.innerHTML='<div class="img-hover overflow-hidden" style="height:192px;position:relative"><img src="'+imgSrc+'" alt="'+m.title+'" style="width:100%;height:100%;object-fit:cover"><div class="movie-overlay"></div><div class="movie-number">'+( i+1)+'</div><div style="position:absolute;bottom:12px;left:16px;right:16px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="padding:2px 8px;font-size:10px;font-weight:500;color:#fcd34d;background:rgba(245,158,11,.15);border-radius:9999px">'+m.genre+'</span><span style="font-size:10px;color:rgb(100,116,139)">'+m.year+'</span></div><h3 style="font-size:18px;font-weight:500">'+m.title+'</h3></div></div><div style="padding:16px"><p style="font-size:13px;font-weight:300;color:rgb(148,163,184);line-height:1.6;margin-bottom:8px">"'+m.note+'"</p><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:14px;color:#fbbf24;letter-spacing:.05em">'+(displayStars||'☆☆☆☆☆')+'</span><span style="font-size:10px;color:rgb(100,116,139)">by '+(m.addedBy||'?')+'</span></div>'+renderMovieStars(m)+'</div>';grid.appendChild(card)});document.querySelectorAll('#movies-grid .reveal').forEach(function(el){observer.observe(el)})}
+function renderMovieStars(movie){var rk=movie.ratings?movie.ratings.ronald:null;var mk=movie.ratings?movie.ratings.manda:null;var isR=currentUser&&currentUser.toLowerCase()==='ronald';var isM=currentUser&&currentUser.toLowerCase()==='manda';var html='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)">';html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:10px;color:#93c5fd;width:46px">Ronald</span>';if(rk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=rk?'#fbbf24':'rgb(51,65,85)')+'">★</span>'}else if(isR){html+='<span class="rate-stars" onclick="event.stopPropagation()">';for(var i=1;i<=5;i++)html+='<span onclick="rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">Not rated</span>';html+='</div>';html+='<div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:#67e8f9;width:46px">Manda</span>';if(mk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=mk?'#fbbf24':'rgb(51,65,85)')+'">★</span>'}else if(isM){html+='<span class="rate-stars" onclick="event.stopPropagation()">';for(var i=1;i<=5;i++)html+='<span onclick="rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">Not rated</span>';html+='</div></div>';return html}
+function renderMovies(){var grid=document.getElementById('movies-grid');grid.innerHTML='';var movies=getAllMovies();movies.forEach(function(m,i){var avgRating=0;var rc=0;if(m.ratings){if(m.ratings.ronald){avgRating+=m.ratings.ronald;rc++}if(m.ratings.manda){avgRating+=m.ratings.manda;rc++}if(rc)avgRating=Math.round(avgRating/rc)}var displayStars='';for(var s=0;s<avgRating;s++)displayStars+='★';for(var s2=0;s2<5-avgRating;s2++)displayStars+='☆';var imgSrc=m.image.indexOf('data:')===0?m.image:'https://picsum.photos/seed/'+m.image+'/500/350.jpg';var card=document.createElement('div');card.className='reveal movie-card card-hover rounded-2xl border border-white/5 overflow-hidden group';card.style.background='rgba(255,255,255,.02)';card.style.transitionDelay=(i*100)+'ms';card.innerHTML='<div class="img-hover overflow-hidden" style="height:192px;position:relative"><img src="'+imgSrc+'" alt="'+m.title+'" style="width:100%;height:100%;object-fit:cover"><div class="movie-overlay"></div><div class="movie-number">'+(i+1)+'</div><div style="position:absolute;bottom:12px;left:16px;right:16px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="padding:2px 8px;font-size:10px;font-weight:500;color:#fcd34d;background:rgba(245,158,11,.15);border-radius:9999px">'+m.genre+'</span><span style="font-size:10px;color:rgb(100,116,139)">'+m.year+'</span></div><h3 style="font-size:18px;font-weight:500">'+m.title+'</h3></div></div><div style="padding:16px"><p style="font-size:13px;font-weight:300;color:rgb(148,163,184);line-height:1.6;margin-bottom:8px">"'+m.note+'"</p><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:14px;color:#fbbf24;letter-spacing:.05em">'+(displayStars||'☆☆☆☆☆')+'</span><span style="font-size:10px;color:rgb(100,116,139)">by '+(m.addedBy||'?')+'</span></div>'+renderMovieStars(m)+'</div>';grid.appendChild(card)});document.querySelectorAll('#movies-grid .reveal').forEach(function(el){observer.observe(el)})}
+
+/* ═══ STARS BG ═══ */
+var sc=document.getElementById('stars-container');for(var i=0;i<50;i++){var s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';var sz=(1+Math.random()*2)+'px';s.style.width=sz;s.style.height=sz;s.style.animation='twinkle '+(2+Math.random()*4)+'s ease-in-out '+(Math.random()*4)+'s infinite';sc.appendChild(s)}
+
+/* ═══ TYPEWRITER ═══ */
+var te=document.getElementById('typewriter');var phrases=["made this for us...","nothing weird about it...","just a normal website...","definitely not hiding anything..."];var pI=0,cI=0,del=false,spd=60;function tw(){var p=phrases[pI];if(!del){te.textContent=p.substring(0,cI+1);cI++;if(cI===p.length){del=true;spd=2000}else spd=45+Math.random()*40}else{te.textContent=p.substring(0,cI-1);cI--;spd=25;if(cI===0){del=false;pI=(pI+1)%phrases.length;spd=500}}setTimeout(tw,spd)}tw();
+
+/* ═══ SCROLL REVEAL ═══ */
+var observer=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('reveal-visible');observer.unobserve(en.target)}})},{threshold:0.1,rootMargin:'0px 0px -30px 0px'});document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el)});
+
+/* ═══ HEARTS ═══ */
+var heartEmojis=['💕','💗','💖','💝','🩷','♥️','🌸','✨'];var heartInterval=null;
+function spawnHeart(){var h=document.createElement('div');h.className='floating-heart';h.textContent=heartEmojis[Math.floor(Math.random()*heartEmojis.length)];h.style.left=Math.random()*100+'%';h.style.fontSize=(14+Math.random()*16)+'px';h.style.animationDuration=(8+Math.random()*8)+'s';document.body.appendChild(h);setTimeout(function(){h.remove()},16000)}
+function startHearts(){if(!heartInterval)heartInterval=setInterval(spawnHeart,2500);for(var i=0;i<6;i++)setTimeout(spawnHeart,i*300)}
+var clickHeartsEnabled=false;document.addEventListener('click',function(e){if(!clickHeartsEnabled)return;for(var i=0;i<4;i++){var h=document.createElement('div');h.className='burst-heart';h.textContent=heartEmojis[Math.floor(Math.random()*heartEmojis.length)];h.style.left=e.clientX+'px';h.style.top=e.clientY+'px';var a=(Math.PI*2/4)*i+Math.random()*.5,d=40+Math.random()*50;document.body.appendChild(h);(function(hh,aa,dd){requestAnimationFrame(function(){hh.style.transition='all .7s ease-out';hh.style.transform='translate('+Math.cos(aa)*dd+'px,'+(Math.sin(aa)*dd-30)+'px) scale(.2)';hh.style.opacity='0'});setTimeout(function(){hh.remove()},800)})(h,a,d)}});
+
+/* ═══ REVEAL ═══ */
+var revealed=false;function triggerReveal(){if(revealed)return;revealed=true;document.body.classList.add('romance-mode');document.getElementById('hero-icon').textContent='💗';document.getElementById('hero-icon').classList.add('heartbeat');document.getElementById('hero-name').textContent='Manda';document.getElementById('hero-subtitle').textContent="Okay fine... I couldn't keep pretending. This was never 'just a friendly site.'";document.getElementById('date-highlight').className='text-rose-300';document.getElementById('footer-text').textContent='Made with 💗 and a lot of courage';var btn=document.getElementById('trigger-yes-btn');btn.textContent='I knew it 😏💕';btn.disabled=true;btn.style.opacity='.5';document.getElementById('trigger-no-btn').style.display='none';startHearts();clickHeartsEnabled=true;setTimeout(function(){var l=document.getElementById('letter-section');l.classList.add('revealed','section-reveal-anim');l.scrollIntoView({behavior:'smooth',block:'start'});showToast('💕 ...okay you caught me')},1200);for(var i=0;i<15;i++)setTimeout(spawnHeart,i*150)}
+
+var letterOpen=false;function openLetter(){if(letterOpen)return;letterOpen=true;document.getElementById('letter-closed').style.display='none';var o=document.getElementById('letter-open');o.classList.remove('hidden');o.classList.add('letter-unfold');for(var i=0;i<10;i++)setTimeout(spawnHeart,i*150);showToast('💌 You opened it...');setTimeout(function(){var f=document.getElementById('final-section');f.classList.add('revealed','section-reveal-anim');setTimeout(function(){f.scrollIntoView({behavior:'smooth',block:'center'})},300)},2000)}
+
+function handleYes(){var r=document.getElementById('yes-response');r.classList.remove('hidden');r.style.opacity='0';r.style.transform='translateY(20px)';requestAnimationFrame(function(){r.style.transition='all .8s cubic-bezier(.25,.46,.45,.94)';r.style.opacity='1';r.style.transform='translateY(0)'});document.getElementById('no-btn').style.display='none';for(var i=0;i<25;i++)setTimeout(spawnHeart,i*100);showToast('💖 She said yes!! 🥺💕')}
+var noCount=0;var noMsgs=["Are you sure? 🥺","Really? 😢","Think again... 💔","Please? 🙏","I'll be sad 😞","You can't click this 😏","Give me a chance 🌹","Pretty please? 🥹","Okay wow 😤","I believe in us 💪"];function moveNoButton(){var b=document.getElementById('no-btn');noCount++;var mx=window.innerWidth-b.offsetWidth-40,my=180;b.style.transform='translate('+(Math.random()*mx-mx/2)+'px,'+(Math.random()*my-my/2)+'px)';b.style.transition='transform .25s ease-out';b.textContent=noMsgs[noCount%noMsgs.length]}
+var triggerNoCount=0;var triggerNoMsgs=["Liar 😂","Are you sure?","Pick the other one","You're breaking my heart lol","Fine be like that","Okay rude","I see how it is 😤"];function moveTriggerNo(){var b=document.getElementById('trigger-no-btn');triggerNoCount++;var mx=window.innerWidth-b.offsetWidth-40,my=150;b.style.transform='translate('+(Math.random()*mx-mx/2)+'px,'+(Math.random()*my-my/2)+'px)';b.style.transition='transform .25s ease-out';b.textContent=triggerNoMsgs[triggerNoCount%triggerNoMsgs.length]}
+
+function showToast(msg){var c=document.getElementById('toast-container'),t=document.createElement('div');t.className='toast-in';t.style.cssText='padding:12px 20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);border-radius:12px;backdrop-filter:blur(12px);font-size:14px;font-weight:300;color:white;box-shadow:0 4px 20px rgba(0,0,0,.3);max-width:320px;text-align:center';t.textContent=msg;c.appendChild(t);setTimeout(function(){t.classList.replace('toast-in','toast-out');setTimeout(function(){t.remove()},400)},3500)}
+
+try{lucide.createIcons()}catch(e){}
+renderMovies();
 </script>
 </body>
 </html>
