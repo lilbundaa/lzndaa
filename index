@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Us 🎮</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:#0f172a;color:#fff;overflow-x:hidden;transition:background-color 1.8s cubic-bezier(0.25,0.46,0.45,0.94)}
+        body.romance-mode{background:#0a0510}
+        @keyframes globalFadeIn{0%{opacity:0}100%{opacity:1}}body{animation:globalFadeIn 1s ease-out forwards}
+
+        .profile-pic{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid rgba(59,130,246,.3);transition:all .3s ease}
+        .profile-pic-manda{border-color:rgba(6,182,212,.3)}
+        .entry-card{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 32px;border-radius:24px;cursor:pointer;transition:all .3s ease;position:relative}
+        .entry-card::before{content:'';position:absolute;inset:-1px;border-radius:25px;padding:1px;background:linear-gradient(135deg,rgba(59,130,246,.2),transparent,rgba(59,130,246,.1));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:0;transition:opacity .3s ease}
+        .entry-card-manda::before{background:linear-gradient(135deg,rgba(6,182,212,.2),transparent,rgba(6,182,212,.1))}
+        .entry-card:hover{transform:translateY(-6px) scale(1.03)}
+        .entry-card:hover::before{opacity:1}
+        .entry-card:active{transform:scale(.97)}
+        .entry-card-ronald{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.12)}
+        .entry-card-ronald:hover{background:rgba(59,130,246,.12);box-shadow:0 12px 40px -12px rgba(59,130,246,.2)}
+        .entry-card-manda{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12)}
+        .entry-card-manda:hover{background:rgba(6,182,212,.12);box-shadow:0 12px 40px -12px rgba(6,182,212,.2)}
+
+        .badge-pic{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(59,130,246,.3);transition:border-color 1.5s ease}
+        body.romance-mode .badge-pic{border-color:rgba(244,114,182,.3)}
+
+        #entry-screen{position:fixed;inset:0;z-index:200;background:#0f172a;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .6s ease,transform .6s ease}
+        #entry-screen.leaving{opacity:0;transform:scale(1.05);pointer-events:none}
+        #entry-screen.gone{display:none!important}
+
+        .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.25,.46,.45,.94),transform .8s cubic-bezier(.25,.46,.45,.94)}
+        .reveal-visible{opacity:1;transform:translateY(0)}
+
+        .text-accent{background:linear-gradient(135deg,#93c5fd,#67e8f9,#93c5fd);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s ease-in-out infinite;transition:all 1.5s ease}
+        body.romance-mode .text-accent{background:linear-gradient(135deg,#fda4af,#f9a8d4,#c4b5fd,#fda4af);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s ease-in-out infinite}
+        @keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+        .section-label{transition:color 1.5s ease}body.romance-mode .section-label{color:#f472b6}
+        .glow-orb{transition:background 2s ease,opacity 2s ease}
+        .glow-1{background:rgba(59,130,246,.08)}.glow-2{background:rgba(6,182,212,.06)}.glow-3{background:rgba(99,102,241,.05)}
+        body.romance-mode .glow-1{background:rgba(244,114,182,.08)}body.romance-mode .glow-2{background:rgba(196,181,253,.06)}body.romance-mode .glow-3{background:rgba(253,230,138,.05)}
+
+        .card-hover{transition:transform 500ms cubic-bezier(.25,.46,.45,.94),box-shadow 500ms cubic-bezier(.25,.46,.45,.94),border-color 500ms cubic-bezier(.25,.46,.45,.94)}
+        .card-hover:hover{transform:translateY(-5px);box-shadow:0 12px 40px -12px rgba(59,130,246,.15);border-color:rgba(59,130,246,.15)}
+        body.romance-mode .card-hover:hover{box-shadow:0 12px 40px -12px rgba(244,114,182,.25);border-color:rgba(244,114,182,.2)}
+
+        .img-hover img{transition:transform 700ms cubic-bezier(.25,.46,.45,.94)}.img-hover:hover img{transform:scale(1.05)}
+        @keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.2)}28%{transform:scale(1)}42%{transform:scale(1.12)}56%{transform:scale(1)}}
+        .heartbeat{animation:heartbeat 1.8s ease-in-out infinite;display:inline-block}
+
+        @keyframes floatHeart{0%{transform:translateY(100vh) rotate(0) scale(0);opacity:0}10%{opacity:.7;scale:1}90%{opacity:.3}100%{transform:translateY(-10vh) rotate(360deg) scale(.3);opacity:0}}
+        .floating-heart{position:fixed;bottom:-20px;pointer-events:none;z-index:0;animation:floatHeart linear forwards;font-size:16px}
+
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}.cursor-blink::after{content:'|';animation:blink 1s step-end infinite;color:#67e8f9;margin-left:2px;transition:color 1.5s ease}body.romance-mode .cursor-blink::after{color:#f9a8d4}
+
+        @keyframes slideInUp{0%{transform:translateY(20px) scale(.95);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+        @keyframes slideOutDown{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(20px) scale(.95);opacity:0}}
+        .toast-in{animation:slideInUp .4s ease-out forwards}.toast-out{animation:slideOutDown .4s ease-in forwards}
+
+        @keyframes burstHeart{0%{opacity:1}100%{opacity:0}}.burst-heart{position:fixed;pointer-events:none;z-index:999;font-size:20px}
+        @keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.8}}.star{position:fixed;background:#fff;border-radius:50%;pointer-events:none;z-index:0}
+
+        @keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(244,114,182,.3),0 0 60px rgba(244,114,182,.1)}50%{box-shadow:0 0 40px rgba(244,114,182,.5),0 0 100px rgba(244,114,182,.2)}}.glow-pulse{animation:glowPulse 2s ease-in-out infinite}
+
+        @keyframes unfold{0%{max-height:0;opacity:0;padding:0 24px}100%{max-height:800px;opacity:1;padding:24px}}.letter-unfold{animation:unfold 1.2s cubic-bezier(.25,.46,.45,.94) forwards;overflow:hidden}
+
+        .movie-card{position:relative;overflow:hidden}.movie-card .movie-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,23,42,.95) 0%,rgba(15,23,42,.4) 50%,transparent 100%);transition:background 2s ease}body.romance-mode .movie-card .movie-overlay{background:linear-gradient(to top,rgba(10,5,16,.95) 0%,rgba(10,5,16,.4) 50%,transparent 100%)}
+        .movie-number{position:absolute;top:12px;left:12px;width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#93c5fd;transition:all 1.5s ease}body.romance-mode .movie-number{background:rgba(244,114,182,.2);border-color:rgba(244,114,182,.3);color:#fda4af}
+
+        .mood-btn{transition:all 300ms cubic-bezier(.25,.46,.45,.94)}.mood-btn:hover{transform:translateY(-4px) scale(1.08)}.mood-btn:active{transform:scale(.95)}.mood-btn.selected{transform:scale(1.1);box-shadow:0 0 30px var(--mood-glow)}
+        @keyframes moodPop{0%{transform:scale(.5);opacity:0}50%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}.mood-pop{animation:moodPop .5s cubic-bezier(.25,.46,.45,.94) forwards}
+        @keyframes breathe{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}.mood-breathe{animation:breathe 3s ease-in-out infinite}
+        @keyframes logSlide{0%{transform:translateX(-20px);opacity:0}100%{transform:translateX(0);opacity:1}}.log-entry{animation:logSlide .4s ease-out forwards}
+
+        .hidden-section{display:none}.hidden-section.revealed{display:block}
+        @keyframes revealSection{0%{opacity:0;transform:translateY(40px)}100%{opacity:1;transform:translateY(0)}}.section-reveal-anim{animation:revealSection 1.2s cubic-bezier(.25,.46,.45,.94) forwards}
+
+        .trigger-yes{background:linear-gradient(135deg,#3b82f6,#06b6d4);transition:all .3s ease}.trigger-yes:hover{background:linear-gradient(135deg,#60a5fa,#22d3ee)}
+        .user-badge{transition:all 1.5s ease}body.romance-mode .user-badge{border-color:rgba(244,114,182,.3);background:rgba(244,114,182,.1)}body.romance-mode .user-badge-text{color:#fda4af}
+
+        .sync-dot{width:6px;height:6px;border-radius:50%;display:inline-block;transition:background .3s ease}
+        .sync-dot.on{background:#34d399}.sync-dot.off{background:#64748b}
+
+        /* Sticky notes */
+        .sticky-note{padding:20px;min-height:120px;border-radius:4px 4px 4px 4px;position:relative;transition:transform .2s ease;box-shadow:0 2px 12px rgba(0,0,0,.3);word-wrap:break-word;font-size:14px;font-weight:300;line-height:1.5}
+        .sticky-note::after{content:'';position:absolute;top:0;right:0;width:24px;height:24px;background:linear-gradient(135deg,rgba(0,0,0,.08),rgba(0,0,0,.02));border-bottom-left-radius:6px;border-top:1px solid rgba(0,0,0,.08);border-left:1px solid rgba(0,0,0,.08)}
+        .sticky-note:hover{transform:scale(1.03) rotate(0deg)!important;z-index:2}
+
+        .note-pink{background:rgba(244,114,182,.15);border:1px solid rgba(244,114,182,.25)}
+        .note-yellow{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.2)}
+        .note-blue{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.2)}
+        .note-green{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.2)}
+        .note-purple{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2)}
+        .note-orange{background:rgba(251,146,60,.12);border:1px solid rgba(251,146,60,.2)}
+
+        .color-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s}
+        .color-dot:hover{transform:scale(1.15)}
+        .color-dot.active{border-color:white;box-shadow:0 0 10px currentColor}
+
+        .delete-note{position:absolute;top:8px;left:8px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.2);border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+        .sticky-note:hover .delete-note{opacity:1}
+
+        #movie-modal{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px}
+        #movie-modal.open{display:flex}
+        .modal-content{background:#1e293b;border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:24px}
+        .form-input{width:100%;padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:white;font-size:14px;font-weight:300;font-family:Inter,sans-serif;outline:none;transition:border-color .2s}
+        .form-input:focus{border-color:rgba(59,130,246,.5)}.form-input::placeholder{color:rgb(71,85,105)}
+        .img-option{width:80px;height:56px;border-radius:10px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:all .2s;flex-shrink:0}
+        .img-option:hover{border-color:rgba(59,130,246,.4)}.img-option.selected{border-color:rgb(59,130,246);box-shadow:0 0 15px rgba(59,130,246,.3)}
+        .img-option img{width:100%;height:100%;object-fit:cover}
+        .rate-stars{display:inline-flex;gap:2px;cursor:pointer}.rate-stars span{font-size:14px;color:rgb(71,85,105);transition:color .15s}.rate-stars span.filled{color:#fbbf24}
+
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#0f172a;transition:background 1.5s ease}body.romance-mode ::-webkit-scrollbar-track{background:#0a0510}::-webkit-scrollbar-thumb{background:rgba(59,130,246,.3);border-radius:3px;transition:background 1.5s ease}body.romance-mode ::-webkit-scrollbar-thumb{background:rgba(244,114,182,.3)}
+    </style>
+</head>
+<body>
+
+<div id="entry-screen">
+    <div style="position:fixed;inset:0;pointer-events:none;overflow:hidden">
+        <div style="position:absolute;top:20%;left:10%;width:300px;height:300px;background:rgba(59,130,246,.05);border-radius:50%;filter:blur(100px)"></div>
+        <div style="position:absolute;bottom:20%;right:10%;width:250px;height:250px;background:rgba(6,182,212,.05);border-radius:50%;filter:blur(80px)"></div>
+    </div>
+    <div style="position:relative;z-index:10;text-align:center;padding:0 24px">
+        <div style="font-size:40px;margin-bottom:12px">🎮</div>
+        <p style="font-size:11px;font-weight:500;color:rgba(125,211,252,.7);letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px">Welcome to</p>
+        <h1 style="font-size:24px;font-weight:200;letter-spacing:-.02em;color:rgba(255,255,255,.9);margin-bottom:8px">Our Little Corner</h1>
+        <p style="font-size:14px;font-weight:300;color:rgb(100,116,139);margin-bottom:36px">Who's opening this?</p>
+        <div style="display:flex;flex-direction:row;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center">
+            <div class="entry-card entry-card-ronald" onclick="pickUser('Ronald')">
+                <img src="https://z-cdn-media.chatglm.cn/files/687f5675-fcd2-4ccf-b51b-284041c65492.png?auth_key=1887992950-ce2f69396684415e9879333487afb3ae-0-24db2709cb0d119a5572c7a13f62f17f" alt="Ronald" class="profile-pic">
+                <span style="font-size:16px;font-weight:500;color:rgb(147,197,253);letter-spacing:.03em">Ronald</span>
+            </div>
+            <div class="entry-card entry-card-manda" onclick="pickUser('Manda')">
+                <img src="https://z-cdn-media.chatglm.cn/files/e27462bf-620d-4704-b79f-95f37971c363.png?auth_key=1887992950-f735b2e9105c4431bda5c993f79339b5-0-4251c328ab20656e498df7fa30a04c76" alt="Manda" class="profile-pic profile-pic-manda">
+                <span style="font-size:16px;font-weight:500;color:rgb(103,232,249);letter-spacing:.03em">Manda</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;align-items:center;gap:12px"></div>
+<div id="stars-container"></div>
+
+<div class="fixed inset-0 pointer-events:none z-0 overflow-hidden">
+    <div class="glow-orb glow-1" style="position:absolute;top:-200px;left:-100px;width:500px;height:500px;border-radius:50%;filter:blur(120px)"></div>
+    <div class="glow-orb glow-2" style="position:absolute;top:50%;right:-200px;width:400px;height:400px;border-radius:50%;filter:blur(100px)"></div>
+    <div class="glow-orb glow-3" style="position:absolute;bottom:-100px;left:30%;width:350px;height:350px;border-radius:50%;filter:blur(100px)"></div>
+</div>
+
+<!-- HERO -->
+<section class="relative min-h-screen flex items-center justify-center px-4 pt-16 pb-20">
+    <div class="max-w-3xl mx-auto text-center relative z-10">
+        <div class="reveal mb-6 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 user-badge">
+            <img id="badge-pic" src="" alt="" class="badge-pic" style="display:none">
+            <div id="badge-dot" style="width:6px;height:6px;border-radius:50%;background:#34d399"></div>
+            <span class="text-xs font-medium text-sky-300 user-badge-text" id="user-badge-name">—</span>
+        </div>
+        <div class="reveal mb-6"><span id="hero-icon" style="font-size:48px">🎮</span></div>
+        <p class="reveal text-sm font-light text-sky-300/70 tracking-widest uppercase mb-6 cursor-blink" id="typewriter" style="transition-delay:200ms"></p>
+        <h1 class="reveal text-4xl sm:text-5xl md:text-7xl font-extralight tracking-tight leading-tight mb-6" style="transition-delay:400ms">Hey <span class="text-accent font-light" id="hero-name">There</span></h1>
+        <p class="reveal text-base sm:text-lg font-light text-slate-400 max-w-xl mx-auto leading-relaxed tracking-wide mb-6" id="hero-subtitle" style="transition-delay:600px">Made this random site for us. Movies we watched, mood tracker, just fun stuff. Don't read too much into it 😂</p>
+        <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/3 mb-10" style="transition-delay:700ms">
+            <span style="font-size:12px">🎮</span>
+            <span class="text-xs font-light text-slate-400 tracking-wide">Since <span class="text-sky-300" id="date-highlight">Aug 21, 2026</span></span>
+            <span class="text-xs text-slate-600">•</span>
+            <span class="text-xs font-light text-slate-400" id="days-counter">—</span>
+        </div>
+        <div class="reveal" style="transition-delay:900ms">
+            <button onclick="document.getElementById('wall-section').scrollIntoView({behavior:'smooth'})" class="inline-flex flex-col items-center gap-2 text-slate-500 hover:text-sky-400 transition-colors group">
+                <span class="text-xs tracking-widest uppercase">Check it out</span>
+                <i data-lucide="chevron-down" class="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- MOOD -->
+<section id="mood-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
+    <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-10">
+            <p class="reveal text-xs font-medium section-label text-cyan-400 tracking-widest uppercase mb-4">Daily check-in <span class="sync-dot off" id="sync-dot" title="Sync status"></span></p>
+            <h2 class="reveal text-3xl sm:text-4xl font-extralight tracking-tight" style="transition-delay:100ms">How are you <span class="text-accent">feeling</span>?</h2>
+            <p class="reveal text-xs font-light text-slate-600 mt-3" style="transition-delay:150ms">tap your mood 👇</p>
+        </div>
+        <div id="current-moods-display" class="reveal grid grid-cols-2 gap-4 mb-10" style="transition-delay:200ms">
+            <div id="mood-ronald" class="text-center p-4 rounded-2xl border border-white/5 bg-white/3 hidden"><p class="text-[10px] font-medium text-blue-400 tracking-widest uppercase mb-2">Ronald</p><span id="mood-ronald-emoji" class="text-3xl mood-breathe block mb-1"></span><span id="mood-ronald-label" class="text-xs font-medium text-slate-300"></span><span id="mood-ronald-time" class="block text-[10px] text-slate-600 mt-1"></span></div>
+            <div id="mood-manda" class="text-center p-4 rounded-2xl border border-white/5 bg-white/3 hidden"><p class="text-[10px] font-medium text-cyan-400 tracking-widest uppercase mb-2">Manda</p><span id="mood-manda-emoji" class="text-3xl mood-breathe block mb-1"></span><span id="mood-manda-label" class="text-xs font-medium text-slate-300"></span><span id="mood-manda-time" class="block text-[10px] text-slate-600 mt-1"></span></div>
+        </div>
+        <div class="reveal grid grid-cols-3 sm:grid-cols-6 gap-3 mb-12" style="transition-delay:250ms">
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(52,211,153,.3)" onclick="setMood('amazing','🤩','Amazing','emerald')" data-mood="amazing"><span class="text-2xl">🤩</span><span class="text-[10px] font-medium text-emerald-400 tracking-wide">Amazing</span></button>
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(251,191,36,.3)" onclick="setMood('happy','😊','Happy','amber')" data-mood="happy"><span class="text-2xl">😊</span><span class="text-[10px] font-medium text-amber-400 tracking-wide">Happy</span></button>
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(148,163,184,.3)" onclick="setMood('okay','😐','Okay','slate')" data-mood="okay"><span class="text-2xl">😐</span><span class="text-[10px] font-medium text-slate-400 tracking-wide">Okay</span></button>
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(96,165,250,.3)" onclick="setMood('sad','😢','Sad','blue')" data-mood="sad"><span class="text-2xl">😢</span><span class="text-[10px] font-medium text-blue-400 tracking-wide">Sad</span></button>
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(244,114,182,.3)" onclick="setMood('bad','😔','Bad Mood','rose')" data-mood="bad"><span class="text-2xl">😔</span><span class="text-[10px] font-medium text-rose-400 tracking-wide">Bad Mood</span></button>
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(248,113,113,.3)" onclick="setMood('angry','😤','Angry','red')" data-mood="angry"><span class="text-2xl">😤</span><span class="text-[10px] font-medium text-red-400 tracking-wide">Angry</span></button>
+        </div>
+        <div class="reveal" style="transition-delay:350ms">
+            <div class="flex items-center justify-between mb-4"><h3 class="text-xs font-medium text-slate-500 tracking-widest uppercase">History</h3><button onclick="clearMoodLog()" class="text-[10px] text-slate-600 hover:text-rose-400 transition-colors">Clear</button></div>
+            <div id="mood-log" class="space-y-2 max-h-72 overflow-y-auto pr-1"><p id="mood-log-empty" class="text-xs text-slate-700 text-center py-8">No moods logged yet...</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- WALL -->
+<section id="wall-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-10">
+            <p class="reveal text-xs font-medium section-label text-rose-400 tracking-widest uppercase mb-4">Our Wall</p>
+            <h2 class="reveal text-3xl sm:text-4xl md:text-5xl font-extralight tracking-tight" style="transition-delay:100ms">Leave a <span class="text-accent">note</span></h2>
+        </div>
+
+        <!-- Add note form -->
+        <div class="reveal mb-10" style="transition-delay:150ms">
+            <div style="display:flex;gap:8px;align-items:stretch;max-width:600px;margin:0 auto">
+                <input type="text" id="note-text" class="form-input" placeholder="Write something..." style="flex:1" onkeydown="if(event.key==='Enter')addNote()">
+                <div style="display:flex;gap:6px;align-items:center">
+                    <div class="color-dot active" data-color="pink" onclick="pickNoteColor('pink')" style="background:rgba(244,114,182,.6);color:#f472b6;currentColor:rgba(244,114,182,.6)"></div>
+                    <div class="color-dot" data-color="yellow" onclick="pickNoteColor('yellow')" style="background:rgba(251,191,36,.4);color:#fbbf24"></div>
+                    <div class="color-dot" data-color="blue" onclick="pickNoteColor('blue')" style="background:rgba(96,165,250,.4);color:#60a5fa"></div>
+                    <div class="color-dot" data-color="green" onclick="pickNoteColor('green')" style="background:rgba(52,211,153,.4);color:#34d399"></div>
+                    <div class="color-dot" data-color="purple" onclick="pickNoteColor('purple')" style="background:rgba(168,85,247,.4);color:#a855f7"></div>
+                    <div class="color-dot" data-color="orange" onclick="pickNoteColor('orange')" style="background:rgba(251,146,60,.4);color:#fb923c"></div>
+                </div>
+                <button onclick="addNote()" style="padding:12px 20px;border-radius:12px;border:1px solid rgba(59,130,246,.3);background:rgba(59,130,246,.1);color:rgb(147,197,253);font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;transition:all .2s;flex-shrink:0" onmouseover="this.style.background='rgba(59,130,246,.2)'" onmouseout="this.style.background='rgba(59,130,246,.1)'">Post 📌</button>
+            </div>
+        </div>
+
+        <!-- Wall grid -->
+        <div id="wall-grid" class="columns-2 sm:columns-3 lg:columns-4 gap-4" style="column-gap:16px">
+            <p id="wall-empty" class="reveal text-xs text-slate-700 text-center py-16" style="transition-delay:200ms">No notes yet... be the first to write something 💕</p>
+        </div>
+    </div>
+</section>
+
+<!-- MOVIES -->
+<section id="movies" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+            <p class="reveal text-xs font-medium section-label text-amber-400 tracking-widest uppercase mb-4">Watchlist 🍿</p>
+            <h2 class="reveal text-3xl sm:text-4xl md:text-5xl font-extralight tracking-tight" style="transition-delay:100ms">Movies we've <span class="text-accent">watched</span></h2>
+        </div>
+        <div class="reveal text-center mb-10" style="transition-delay:150ms">
+            <button onclick="openMovieModal()" style="padding:10px 24px;border-radius:12px;border:1px solid rgba(59,130,246,.3);background:rgba(59,130,246,.1);color:rgb(147,197,253);font-size:13px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.background='rgba(59,130,246,.2)'" onmouseout="this.style.background='rgba(59,130,246,.1)'">+ Add Movie</button>
+        </div>
+        <div id="movies-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </div>
+</section>
+
+<!-- TRIGGER -->
+<section id="trigger-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
+    <div class="max-w-2xl mx-auto text-center relative z-10">
+        <div class="reveal"><span style="font-size:40px;display:block;margin-bottom:24px">🤔</span></div>
+        <h2 class="reveal text-2xl sm:text-3xl font-extralight tracking-tight leading-tight mb-4" style="transition-delay:100ms">Okay random question</h2>
+        <p class="reveal text-base font-light text-slate-400 mb-10" style="transition-delay:200ms">Do you actually enjoy watching movies with me or are you just being nice? 😂</p>
+        <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-4" style="transition-delay:300ms">
+            <button id="trigger-yes-btn" onclick="triggerReveal()" class="trigger-yes px-10 py-4 text-white text-sm font-medium rounded-full active:scale-95 transition-all duration-200 shadow-lg">Yeah I actually like it 😅</button>
+            <button id="trigger-no-btn" onmouseover="moveTriggerNo()" onclick="moveTriggerNo()" class="px-10 py-4 border border-white/10 text-sm font-light text-slate-500 rounded-full transition-all duration-200">Hmm...</button>
+        </div>
+    </div>
+</section>
+
+<!-- HIDDEN: LETTER -->
+<section id="letter-section" class="hidden-section relative py-24 sm:py-32 px-4 border-t border-white/5">
+    <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-12"><p class="text-xs font-medium text-violet-400 tracking-widest uppercase mb-4">The real reason I made this</p><h2 class="text-3xl sm:text-4xl font-extralight tracking-tight">Read this 💌</h2></div>
+        <div>
+            <div class="bg-white/3 border border-white/5 rounded-2xl cursor-pointer hover:border-rose-500/20 transition-all duration-500" onclick="openLetter()">
+                <div id="letter-closed" class="p-10 text-center"><div style="font-size:48px;margin-bottom:16px">💌</div><p class="text-sm text-slate-500 font-light">tap to open...</p></div>
+                <div id="letter-open" class="hidden">
+                    <div class="p-6 sm:p-8">
+                        <p class="text-sm font-light text-slate-300 leading-loose tracking-wide italic">Hey,<br><br>Okay so... "don't read too much into it"? That was a lie. I lied.<br><br>I made this because I like you. Like, <span class="text-rose-300 not-italic font-normal">a lot</span>. And I couldn't figure out how to say it normally so I built a whole website like an idiot.<br><br>We met on Roblox. That sounds so stupid but I don't care. You're the person I look forward to talking to every single day. The one who makes a random game night the best part of my week.<br><br>We haven't even met in person yet and I already know I want to. Like, really badly.<br><br>So yeah. This was never "just a friendly site." It was me being too scared to say it out loud.<br><br><span class="text-white not-italic font-normal">— Ronald 💕</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HIDDEN: QUESTION -->
+<section id="final-section" class="hidden-section relative py-32 sm:py-40 px-4">
+    <div class="max-w-2xl mx-auto text-center relative z-10">
+        <div><span class="text-5xl mb-6 block heartbeat">💝</span></div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-extralight tracking-tight leading-tight mb-4">So here it is...</h2>
+        <p class="text-xl sm:text-2xl font-light text-romance mt-8 mb-4">Would you be my girl?</p>
+        <p class="text-xs font-light text-slate-600 mb-12">yes this is actually happening rn</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button onclick="handleYes()" class="glow-pulse px-10 py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-sm font-medium rounded-full hover:from-rose-400 hover:to-pink-400 active:scale-95 transition-all duration-200 shadow-2xl shadow-rose-500/30">Yes 💕</button>
+            <button id="no-btn" onmouseover="moveNoButton()" onclick="moveNoButton()" class="px-10 py-4 border border-white/10 text-sm font-light text-slate-500 rounded-full transition-all duration-200">Let me think...</button>
+        </div>
+        <div id="yes-response" class="hidden mt-12"><div class="text-6xl mb-4">🥺💖</div><p class="text-2xl font-light text-white mb-2">Wait... really??</p><p class="text-sm font-light text-slate-400 mb-3">You just made me the happiest person alive.</p><p class="text-xs font-light text-slate-600">Now we just need to meet in real life 🌍✈️</p></div>
+    </div>
+</section>
+
+<footer class="relative border-t border-white/5 py-10 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+        <p class="text-xs font-light text-slate-600 tracking-wide" id="footer-text">Made for fun 🎮</p>
+        <p class="text-xs font-light text-slate-700 mt-1">— since Aug 21, 2026</p>
+    </div>
+</footer>
+
+<!-- MOVIE MODAL -->
+<div id="movie-modal">
+    <div class="modal-content">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <h3 style="font-size:18px;font-weight:500">Add a Movie 🎬</h3>
+            <button onclick="closeMovieModal()" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+            <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Title *</label><input type="text" id="mv-title" class="form-input" placeholder="Movie name"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Year</label><input type="text" id="mv-year" class="form-input" placeholder="2024"></div>
+                <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Genre</label><input type="text" id="mv-genre" class="form-input" placeholder="Horror, Romance..."></div>
+            </div>
+            <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Your note</label><textarea id="mv-note" class="form-input" rows="3" placeholder="What did you think?" style="resize:none"></textarea></div>
+            <div>
+                <label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:8px">Image</label>
+                <div id="img-options" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><p style="font-size:11px;color:rgb(71,85,105)">Type a title to see options</p></div>
+                <div style="display:flex;gap:8px">
+                    <button onclick="toggleImgTab('url')" id="tab-url" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);font-size:11px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif">Paste URL</button>
+                    <button onclick="toggleImgTab('upload')" id="tab-upload" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);font-size:11px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif">Upload</button>
+                </div>
+                <div id="img-url-input" style="display:none;margin-top:10px"><input type="text" id="mv-img-url" class="form-input" placeholder="https://example.com/image.jpg" oninput="selectCustomImage()"></div>
+                <div id="img-upload-input" style="display:none;margin-top:10px">
+                    <label style="display:block;padding:20px;border:2px dashed rgba(255,255,255,.1);border-radius:12px;text-align:center;cursor:pointer;color:rgb(100,116,139);font-size:13px;font-weight:300">📷 Click to upload<input type="file" id="mv-file" accept="image/*" style="display:none" onchange="handleImageUpload(event)"></label>
+                    <div id="upload-preview" style="display:none;margin-top:10px;text-align:center"></div>
+                </div>
+            </div>
+            <button onclick="submitMovie()" style="width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Add Movie 🍿</button>
+        </div>
+    </div>
+</div>
+
+<script>
+var PROFILE_PICS={
+    ronald:"https://z-cdn-media.chatglm.cn/files/687f5675-fcd2-4ccf-b51b-284041c65492.png?auth_key=1887992950-ce2f69396684415e9879333487afb3ae-0-24db2709cb0d119a5572c7a13f62f17f",
+    manda:"https://z-cdn-media.chatglm.cn/files/e27462bf-620d-4704-b79f-95f37971c363.png?auth_key=1887992950-f735b2e9105c4431bda5c993f79339b5-0-4251c328ab20656e498df7fa30a04c76"
+};
+
+var FIREBASE_URL="https://webs-2cd86-default-rtdb.asia-southeast1.firebasedatabase.app";
+function isFirebaseReady(){return FIREBASE_URL&&FIREBASE_URL.indexOf('PASTE')===-1&&FIREBASE_URL.indexOf('http')===0}
+function fbWrite(p,d){if(!isFirebaseReady())return;try{fetch(FIREBASE_URL+p+'.json',{method:'PUT',body:JSON.stringify(d)}).catch(function(){})}catch(e){}}
+function fbRead(p,cb){if(!isFirebaseReady()){cb(null);return}try{fetch(FIREBASE_URL+p+'.json').then(function(r){return r.json()}).then(function(d){cb(d)}).catch(function(){cb(null)})}catch(e){cb(null)}}
+function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function safeGetS(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
+function safeSetS(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
+
+var defaultMovies=[
+    {id:'default_1',title:"Smile",year:"2022",note:"You got so scared during the jump scares. It was honestly hilarious and cute at the same time.",genre:"Horror",emoji:"😱",image:"smile-horror-dark",addedBy:"Ronald",ratings:{ronald:4,manda:null}},
+    {id:'default_2',title:"Wuthering Heights",year:"2011",note:"We sat through the whole thing. Not gonna lie, it was long, but watching it with you made it worth it.",genre:"Romance / Drama",emoji:" Heathcliff",image:"wuthering-moors-landscape",addedBy:"Ronald",ratings:{ronald:5,manda:null}}
+];
+
+var currentUser=null;
+function pickUser(name){currentUser=name;safeSetS('currentUser',name);document.getElementById('user-badge-name').textContent=name;var bp=document.getElementById('badge-pic');bp.src=PROFILE_PICS[name.toLowerCase()];bp.style.display='block';document.getElementById('badge-dot').style.display='none';var s=document.getElementById('entry-screen');s.classList.add('leaving');setTimeout(function(){s.classList.add('gone')},600);showToast('Hey '+name+' 👋');startSync()}
+var savedUser=safeGetS('currentUser');
+if(savedUser){currentUser=savedUser;document.getElementById('user-badge-name').textContent=savedUser;var bp2=document.getElementById('badge-pic');bp2.src=PROFILE_PICS[savedUser.toLowerCase()];bp2.style.display='block';document.getElementById('badge-dot').style.display='none';document.getElementById('entry-screen').classList.add('gone');startSync()}
+(function(){var s=new Date('2026-08-21'),n=new Date();document.getElementById('days-counter').textContent=Math.floor((n-s)/86400000)+' days'})();
+
+/* ═══ MOOD ═══ */
+var moodColors={emerald:{bg:'rgba(52,211,153,.1)',border:'rgba(52,211,153,.2)',text:'#34d399'},amber:{bg:'rgba(251,191,36,.1)',border:'rgba(251,191,36,.2)',text:'#fbbf24'},slate:{bg:'rgba(148,163,184,.1)',border:'rgba(148,163,184,.2)',text:'#94a3b8'},blue:{bg:'rgba(96,165,250,.1)',border:'rgba(96,165,250,.2)',text:'#60a5fa'},rose:{bg:'rgba(244,114,182,.1)',border:'rgba(244,114,182,.2)',text:'#f472b6'},red:{bg:'rgba(248,113,113,.1)',border:'rgba(248,113,113,.2)',text:'#f87171'}};
+function formatTime(ts){var d=new Date(ts),n=new Date(),diff=Math.floor((n-d)/60000);if(diff<1)return'just now';if(diff<60)return diff+'m ago';var h=Math.floor(diff/60);if(h<24)return h+'h ago';return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}
+function setMood(key,emoji,label,colorKey){if(!currentUser){showToast('Pick your name first!');return}var now=Date.now(),entry={user:currentUser,key:key,emoji:emoji,label:label,colorKey:colorKey,timestamp:now},userKey=currentUser.toLowerCase();safeSet('mood_'+userKey,JSON.stringify(entry));var log=JSON.parse(safeGet('moodLog4')||'[]');log.unshift(entry);if(log.length>100)log.pop();safeSet('moodLog4',JSON.stringify(log));fbWrite('/current/'+userKey,entry);fbWrite('/log/m_'+now,entry);renderCurrentMoods();renderMoodLog();document.querySelectorAll('.mood-btn').forEach(function(b){b.classList.remove('selected');b.style.borderColor='';b.style.background=''});var sel=document.querySelector('[data-mood="'+key+'"]');if(sel){sel.classList.add('selected');var c=moodColors[colorKey];sel.style.borderColor=c.border;sel.style.background=c.bg}var msgs={amazing:'🤩 '+currentUser+' is amazing!',happy:'😊 '+currentUser+' is happy!',okay:'😐 Okay, hope it gets better',sad:'😢 Sad... I\'m here tho',bad:'😔 Bad mood noted. You good?',angry:'😤 Angry. Want me to fight someone?'};showToast(msgs[key]||'Mood updated')}
+function renderCurrentMoods(){var rk=JSON.parse(safeGet('mood_ronald')||'null'),rBox=document.getElementById('mood-ronald');if(rk){rBox.classList.remove('hidden');document.getElementById('mood-ronald-emoji').textContent=rk.emoji;var rl=document.getElementById('mood-ronald-label');rl.textContent=rk.label;rl.style.color=moodColors[rk.colorKey].text;document.getElementById('mood-ronald-time').textContent=formatTime(rk.timestamp)}else{rBox.classList.add('hidden')}var mk=JSON.parse(safeGet('mood_manda')||'null'),mBox=document.getElementById('mood-manda');if(mk){mBox.classList.remove('hidden');document.getElementById('mood-manda-emoji').textContent=mk.emoji;var ml=document.getElementById('mood-manda-label');ml.textContent=mk.label;ml.style.color=moodColors[mk.colorKey].text;document.getElementById('mood-manda-time').textContent=formatTime(mk.timestamp)}else{mBox.classList.add('hidden')}}
+function renderMoodLog(){var log=JSON.parse(safeGet('moodLog4')||'[]'),c=document.getElementById('mood-log'),e=document.getElementById('mood-log-empty');if(!log.length){e.style.display='';return}e.style.display='none';c.innerHTML='';log.forEach(function(m){var cl=moodColors[m.colorKey]||moodColors.slate,nc=m.user==='Ronald'?'#93c5fd':'#67e8f9';var el=document.createElement('div');el.className='log-entry flex items-center gap-3 px-4 py-2.5 rounded-xl border';el.style.borderColor=cl.border;el.style.background=cl.bg;el.innerHTML='<span style="font-size:18px">'+m.emoji+'</span><span style="font-size:10px;font-weight:600;letter-spacing:.05em;color:'+nc+'">'+m.user+'</span><span style="font-size:12px;font-weight:500;color:'+cl.text+'">'+m.label+'</span><span style="font-size:10px;color:rgb(71,85,105);margin-left:auto">'+formatTime(m.timestamp)+'</span>';c.appendChild(el)})}
+function clearMoodLog(){safeSet('moodLog4','[]');try{localStorage.removeItem('mood_ronald')}catch(e){}try{localStorage.removeItem('mood_manda')}catch(e){}document.getElementById('mood-ronald').classList.add('hidden');document.getElementById('mood-manda').classList.add('hidden');document.querySelectorAll('.mood-btn').forEach(function(b){b.classList.remove('selected');b.style.borderColor='';b.style.background=''});renderMoodLog();showToast('Cleared');fbWrite('/current/ronald',null);fbWrite('/current/manda',null);fbWrite('/log',null)}
+
+var syncInterval=null;
+function startSync(){if(syncInterval)return;syncNow();syncInterval=setInterval(syncNow,3000)}
+function syncNow(){if(!isFirebaseReady())return;fbRead('',function(data){if(!data)return;document.getElementById('sync-dot').className='sync-dot on';if(data.current){if(data.current.ronald){var rk=JSON.stringify(data.current.ronald);if(safeGet('mood_ronald')!==rk)safeSet('mood_ronald',rk)}if(data.current.manda){var mk=JSON.stringify(data.current.manda);if(safeGet('mood_manda')!==mk)safeSet('mood_manda',mk}}if(data.log){var arr=[];for(var key in data.log)if(data.log.hasOwnProperty(key))arr.push(data.log[key]);arr.sort(function(a,b){return b.timestamp-a.timestamp});if(arr.length>50)arr=arr.slice(0,50);var newLog=JSON.stringify(arr);if(safeGet('moodLog4')!==newLog)safeSet('moodLog4',newLog)}if(data.movies){var newMovies=JSON.stringify(data.movies);if(safeGet('fb_movies')!==newMovies){safeSet('fb_movies',newMovies);renderMovies()}}if(data.wall){var newWall=JSON.stringify(data.wall);if(safeGet('fb_wall')!==newWall){safeSet('fb_wall',newWall);renderWall()}}renderCurrentMoods();renderMoodLog()}if(!isFirebaseReady()){document.getElementById('sync-dot').className='sync-dot off'}
+renderCurrentMoods();renderMoodLog();
+
+/* ═══ WALL ═══ */
+var selectedNoteColor='pink';
+var noteColors={pink:'rgba(244,114,182,.15)',yellow:'rgba(251,191,36,.12)',blue:'rgba(96,165,250,.12)',green:'rgba(52,211,153,.12)',purple:'rgba(168,85,247,.12)',orange:'rgba(251,146,60,.12)'};
+var noteColorMap={pink:'note-pink',yellow:'note-yellow',blue:'note-blue',green:'note-green',purple:'note-purple',orange:'note-orange'};
+var noteColorDots={pink:'rgba(244,114,182,.6)',yellow:'rgba(251,191,36,.4)',blue:'rgba(96,165,250,.4)',green:'rgba(52,211,153,.4)',purple:'rgba(168,85,247,.4)',orange:'rgba(251,146,60,.4)'};
+
+function pickNoteColor(color){
+    selectedNoteColor=color;
+    document.querySelectorAll('.color-dot').forEach(function(d){
+        d.classList.remove('active');
+        if(d.dataset.color===color)d.classList.add('active');
+    });
+}
+
+function addNote(){
+    var text=document.getElementById('note-text').value.trim();
+    if(!text){showToast('✏️ Write something first');return}
+    if(!currentUser){showToast('Pick your name first!');return}
+    var note={id:'n_'+Date.now(),text:text,color:selectedNoteColor,user:currentUser,timestamp:Date.now()};
+    fbWrite('/wall/'+note.id,note);
+    var wall=JSON.parse(safeGet('fb_wall')||'{}');
+    wall[note.id]=note;
+    safeSet('fb_wall',JSON.stringify(wall));
+    document.getElementById('note-text').value='';
+    renderWall();
+    showToast('📌 Note posted!');
+}
+
+function deleteNote(noteId){
+    fbWrite('/wall/'+noteId,null);
+    var wall=JSON.parse(safeGet('fb_wall')||'{}');
+    delete wall[noteId];
+    safeSet('fb_wall',JSON.stringify(wall));
+    renderWall();
+    showToast('🗑️ Note deleted');
+}
+
+function renderWall(){
+    var wall=JSON.parse(safeGet('fb_wall')||'{}');
+    var grid=document.getElementById('wall-grid');
+    var empty=document.getElementById('wall-empty');
+    var arr=[];
+    for(var key in wall)if(wall.hasOwnProperty(key))arr.push(wall[key]);
+    arr.sort(function(a,b){return b.timestamp-a.timestamp});
+
+    if(!arr.length){empty.style.display='';grid.innerHTML='<p class="reveal text-xs text-slate-700 text-center py-16" style="transition-delay:200ms">No notes yet... be the first to write something 💕</p>';return}
+
+    grid.innerHTML='';
+    arr.forEach(function(n){
+        var userKey=n.user?n.user.toLowerCase():'unknown';
+        var picUrl=PROFILE_PICS[userKey]||'';
+        var nameColor=n.user==='Ronald'?'#93c5fd':'#67e8f9';
+        var rot=(Math.random()*6-3)+'deg';
+        var noteClass=noteColorMap[n.color]||'note-pink';
+        var delShow=currentUser&&(n.user===currentUser)?'':' style="opacity:0";
+        var delDisplay=n.user===currentUser?'':'display:none';
+        var el=document.createElement('div');
+        el.className='sticky-note '+noteClass+' log-entry';
+        el.style.transform='rotate('+rot+')';
+        el.innerHTML='<button class="delete-note" onclick="deleteNote(\''+n.id+'\')" style="'+delDisplay+'"><span style="font-size:12px;line-height:1">✕</span></button><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="'+picUrl+'" alt="'+n.user+'" style="width:22px;height:22px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(255,255,255,.15)"><span style="font-size:11px;font-weight:500;color:'+nameColor+'">'+n.user+'</span></div><p style="white-space:pre-wrap;font-size:14px;font-weight:300;line-height:1.5">'+escapeHtml(n.text)+'</p><p style="font-size:10px;color:rgb(100,116,139);margin-top:10px;letter-spacing:.02em">'+formatTime(n.timestamp)+'</p>';
+        grid.appendChild(el);
+    });
+    document.querySelectorAll('#wall-grid .reveal').forEach(function(el){observer.observe(el)});
+}
+
+function escapeHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
+
+/* ═══ MOVIE MODAL ═══ */
+var selectedImage=null;var uploadedImage=null;
+function openMovieModal(){document.getElementById('movie-modal').classList.add('open');document.getElementById('mv-title').value='';document.getElementById('mv-year').value='';document.getElementById('mv-genre').value='';document.getElementById('mv-note').value='';document.getElementById('mv-img-url').value='';document.getElementById('img-url-input').style.display='none';document.getElementById('img-upload-input').style.display='none';document.getElementById('upload-preview').style.display='none';document.getElementById('upload-preview').innerHTML='';selectedImage=null;uploadedImage=null;document.getElementById('tab-url').style.background='transparent';document.getElementById('tab-url').style.color='rgb(148,163,184)';document.getElementById('tab-upload').style.background='transparent';document.getElementById('tab-upload').style.color='rgb(148,163,184)';document.getElementById('img-options').innerHTML='<p style="font-size:11px;color:rgb(71,85,105)">Type a title to see options</p>';document.getElementById('mv-title').oninput=function(){generateImageOptions(this.value)}
+function closeMovieModal(){document.getElementById('movie-modal').classList.remove('open')}
+function toggleImgTab(tab){document.getElementById('img-url-input').style.display=tab==='url'?'block':'none';document.getElementById('img-upload-input').style.display=tab==='upload'?'block':'none';document.getElementById('tab-url').style.background=tab==='url'?'rgba(59,130,246,.15)':'transparent';document.getElementById('tab-url').style.color=tab==='url'?'#93c5fd':'rgb(148,163,184)';document.getElementById('tab-upload').style.background=tab==='upload'?'rgba(59,130,246,.15)':'transparent';document.getElementById('tab-upload').style.color=tab==='upload'?'#93c5fd':'rgb(148,163,184)'}
+function generateImageOptions(title){if(!title||title.length<2){document.getElementById('img-options').innerHTML='<p style="font-size:11px;color:rgb(71,85,105)">Type a title to see options</p>';return}var seed=title.toLowerCase().replace(/[^a-z0-9]+/g,'-');var seeds=[seed,seed+'-poster',seed+'-cinema',seed+'-film'];var html='';seeds.forEach(function(s,i){html+='<div class="img-option'+(i===0?' selected':'')+'" onclick="selectImage(this,\''+s+'\')"><img src="https://picsum.photos/seed/'+s+'/200/140.jpg" alt="option '+(i+1)+'"></div>'});if(selectedImage===null)selectedImage=seeds[0];document.getElementById('img-options').innerHTML=html}
+function selectImage(el,seed){document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')});el.classList.add('selected');selectedImage=seed;uploadedImage=null;document.getElementById('mv-img-url').value='';document.getElementById('upload-preview').style.display='none';document.getElementById('upload-preview').innerHTML=''}
+function selectCustomImage(){var url=document.getElementById('mv-img-url').value;if(url){selectedImage=null;uploadedImage=url;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')}}
+function handleImageUpload(event){var file=event.target.files[0];if(!file)return;if(file.size>5*1024*1024){showToast('⚠️ Max 5MB');return}var reader=new FileReader();reader.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxW=600;var w=img.width,h=img.height;if(w>maxW){h=h*(maxW/w);w=maxW}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);uploadedImage=canvas.toDataURL('image/jpeg',0.7);selectedImage=null;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')});document.getElementById('upload-preview').style.display='block';document.getElementById('upload-preview').innerHTML='<img src="'+uploadedImage+'" style="max-width:200px;max-height:120px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><p style="font-size:10px;color:rgb(52,211,153);margin-top:6px">✓ Ready</p>'};img.src=e.target.result};reader.readAsDataURL(file)}
+function submitMovie(){var title=document.getElementById('mv-title').value.trim();var year=document.getElementById('mv-year').value.trim()||'2024';var genre=document.getElementById('mv-genre').value.trim()||'Movie';var note=document.getElementById('mv-note').value.trim()||'No note yet.';if(!title){showToast('⚠️ Please enter a title');return}if(!selectedImage&&!uploadedImage){showToast('⚠️ Please select an image');return}var image=uploadedImage||selectedImage;var movie={id:'mv_'+Date.now(),title:title,year:year,note:note,genre:genre,emoji:'🎬',image:image,addedBy:currentUser,ratings:{ronald:null,manda:null}};fbWrite('/movies/'+movie.id,movie);var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');fbMovies[movie.id]=movie;safeSet('fb_movies',JSON.stringify(fbMovies));renderMovies();closeMovieModal();showToast('🎬 "'+title+'" added!')}
+
+/* ═══ MOVIE RATING ═══ */
+function rateMovie(movieId,rating){if(!currentUser){showToast('Pick your name first!');return}var userKey=currentUser.toLowerCase();var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');if(!fbMovies[movieId])return;if(!fbMovies[movieId].ratings)fbMovies[movieId].ratings={ronald:null,manda:null};fbMovies[movieId].ratings[userKey]=rating;safeSet('fb_movies',JSON.stringify(fbMovies));fbWrite('/movies/'+movieId+'/ratings',fbMovies[movieId].ratings);renderMovies();showToast('⭐ Rated '+rating+'/5')}
+function getAllMovies(){var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');var arr=[];for(var key in fbMovies)if(fbMovies.hasOwnProperty(key))arr.push(fbMovies[key]);arr=arr.concat(defaultMovies);arr.sort(function(a,b){return(b.timestamp||0)-(a.timestamp||0)});return arr}
+function renderMovieStars(movie){var rk=movie.ratings?movie.ratings.ronald:null;var mk=movie.ratings?movie.ratings.manda:null;var isR=currentUser&&currentUser.toLowerCase()==='ronald';var isM=currentUser&&currentUser.toLowerCase()==='manda';var html='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:10px;color:#93c5fd;width:46px">Ronald</span>';if(rk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=rk?'#fbbf24':'rgb(51,65,85)'}">★</span>'}else if(isR){html+='<span class="rate-stars" onclick="event.stopPropagation()">';for(var i=1;i<=5;i++)html+='<span onclick="rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">Not rated</span>';html+='</div><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:#67e8f9;width:46px">Manda</span>';if(mk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=mk?'#fbbf24':'rgb(51,65,85)'}">★</span>'}else if(isM){html+='<span class="rate-stars" onclick="event.stopPropagation()">';for(var i=1;i<=5;i++)html+='<span onclick="rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">Not rated</span>';html+='</div></div>';return html}
+function renderMovies(){var grid=document.getElementById('movies-grid');grid.innerHTML='';var movies=getAllMovies();movies.forEach(function(m,i){var avgRating=0;var rc=0;if(m.ratings){if(m.ratings.ronald){avgRating+=m.ratings.ronald;rc++}if(m.ratings.manda){avgRating+=m.ratings.manda;rc++}if(rc)avgRating=Math.round(avgRating/rc);var displayStars='';for(var s=0;s<avgRating;s++)displayStars+='★';for(var s2=0;s2<5-avgRating;s2++)displayStars+='☆';var imgSrc=m.image.indexOf('data:')===0?m.image:'https://picsum.photos/seed/'+m.image+'/500/350.jpg';var card=document.createElement('div');card.className='reveal movie-card card-hover rounded-2xl border border-white/5 overflow-hidden group';card.style.background='rgba(255,255,255,.02)';card.style.transitionDelay=(i*100)+'ms';card.innerHTML='<div class="img-hover overflow-hidden" style="height:192px;position:relative"><img src="'+imgSrc+'" alt="'+m.title+'" style="width:100%;height:100%;object-fit:cover"><div class="movie-overlay"></div><div class="movie-number">'+( i+1)+'</div><div style="position:absolute;bottom:12px;left:16px;right:16px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="padding:2px 8px;font-size:10px;font-weight:500;color:#fcd34d;background:rgba(245,158,11,.15);border-radius:9999px">'+m.genre+'</span><span style="font-size:10px;color:rgb(100,116,139)">'+m.year+'</span></div><h3 style="font-size:18px;font-weight:500">'+m.title+'</h3></div></div><div style="padding:16px"><p style="font-size:13px;font-weight:300;color:rgb(148,163,184);line-height:1.6;margin-bottom:8px">"'+m.note+'"</p><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:14px;color:#fbbf24;letter-spacing:.05em">'+(displayStars||'☆☆☆☆☆')+'</span><span style="font-size:10px;color:rgb(100,116,139)">by '+(m.addedBy||'?')+'</span></div>'+renderMovieStars(m)+'</div>';grid.appendChild(card)});document.querySelectorAll('#movies-grid .reveal').forEach(function(el){observer.observe(el)})}
+</script>
+</body>
+</html>
