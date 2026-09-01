@@ -97,6 +97,17 @@
         .img-option img{width:100%;height:100%;object-fit:cover}
         .rate-stars{display:inline-flex;gap:2px;cursor:pointer}.rate-stars span{font-size:14px;color:rgb(71,85,105);transition:color .15s}.rate-stars span.filled{color:#fbbf24}
 
+        /* Flappy Bird Styles */
+        .flappy-container{position:relative;display:inline-block;border-radius:16px;overflow:hidden;border:2px solid rgba(59,130,246,.2);background:#0c1929}
+        .flappy-container canvas{display:block}
+        .flappy-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:10;transition:opacity .3s ease}
+        .flappy-overlay.hidden{opacity:0;pointer-events:none}
+        .flappy-score{position:absolute;top:12px;left:50%;transform:translateX(-50%);font-size:32px;font-weight:600;color:white;text-shadow:0 2px 8px rgba(0,0,0,.5);z-index:5}
+        .highscore-card{padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);display:flex;align-items:center;gap:12px;transition:all .3s ease}
+        .highscore-card:hover{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.06)}
+        .highscore-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(59,130,246,.3)}
+        .highscore-avatar-manda{border-color:rgba(6,182,212,.3)}
+
         ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#0f172a;transition:background 1.5s ease}body.romance-mode ::-webkit-scrollbar-track{background:#0a0510}::-webkit-scrollbar-thumb{background:rgba(59,130,246,.3);border-radius:3px;transition:background 1.5s ease}body.romance-mode ::-webkit-scrollbar-thumb{background:rgba(244,114,182,.3)}
     </style>
 </head>
@@ -146,7 +157,7 @@
         <div class="reveal mb-6"><span id="hero-icon" style="font-size:48px">🎮</span></div>
         <p class="reveal text-sm font-light text-sky-300/70 tracking-widest uppercase mb-6 cursor-blink" id="typewriter" style="transition-delay:200ms"></p>
         <h1 class="reveal text-4xl sm:text-5xl md:text-7xl font-extralight tracking-tight leading-tight mb-6" style="transition-delay:400ms">Hey <span class="text-accent font-light" id="hero-name">There</span></h1>
-        <p class="reveal text-base sm:text-lg font-light text-slate-400 max-w-xl mx-auto leading-relaxed tracking-wide mb-6" id="hero-subtitle" style="transition-delay:600px">Made this random site for us. Movies we watched, mood tracker, just fun stuff. Don't read too much into it 😂</p>
+        <p class="reveal text-base sm:text-lg font-light text-slate-400 max-w-xl mx-auto leading-relaxed tracking-wide mb-6" id="hero-subtitle" style="transition-delay:600ms">Made this random site for us. Movies we watched, mood tracker, just fun stuff. Don't read too much into it 😂</p>
         <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/3 mb-10" style="transition-delay:700ms">
             <span style="font-size:12px">🎮</span>
             <span class="text-xs font-light text-slate-400 tracking-wide">Since <span class="text-sky-300" id="date-highlight">Aug 21, 2026</span></span>
@@ -189,12 +200,82 @@
     </div>
 </section>
 
+<!-- FLAPPY BIRD -->
+<section id="flappy-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+            <p class="reveal text-xs font-medium section-label text-emerald-400 tracking-widest uppercase mb-4">Mini Game 🐦</p>
+            <h2 class="reveal text-3xl sm:text-4xl font-extralight tracking-tight" style="transition-delay:100ms">Flappy <span class="text-accent">Bird</span></h2>
+            <p class="reveal text-xs font-light text-slate-600 mt-3" style="transition-delay:150ms">Click or press Space to fly</p>
+        </div>
+        
+        <div class="reveal flex flex-col lg:flex-row items-center gap-8" style="transition-delay:200ms">
+            <!-- Game -->
+            <div class="flex-shrink-0">
+                <div class="flappy-container" id="flappy-container">
+                    <div class="flappy-score" id="flappy-score-display">0</div>
+                    <canvas id="flappy-canvas" width="320" height="480"></canvas>
+                    <div class="flappy-overlay" id="flappy-overlay">
+                        <div style="font-size:48px;margin-bottom:12px">🐦</div>
+                        <p style="font-size:18px;font-weight:500;color:white;margin-bottom:4px">Flappy Bird</p>
+                        <p style="font-size:12px;font-weight:300;color:rgba(255,255,255,.6);margin-bottom:24px">Tap or Space to play</p>
+                        <button onclick="startFlappyGame()" style="padding:12px 32px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Play 🎮</button>
+                    </div>
+                    <div class="flappy-overlay hidden" id="flappy-gameover">
+                        <div style="font-size:48px;margin-bottom:12px">💀</div>
+                        <p style="font-size:24px;font-weight:600;color:white;margin-bottom:4px">Game Over</p>
+                        <p style="font-size:32px;font-weight:200;color:#93c5fd;margin-bottom:4px" id="flappy-final-score">0</p>
+                        <p style="font-size:11px;font-weight:300;color:rgba(255,255,255,.5);margin-bottom:24px">points</p>
+                        <button onclick="startFlappyGame()" style="padding:12px 32px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Retry 🔄</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Highscores -->
+            <div class="flex-1 w-full">
+                <h3 class="text-xs font-medium text-slate-500 tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <span>🏆 Highscores</span>
+                    <span class="sync-dot on" id="flappy-sync-dot" title="Live sync"></span>
+                </h3>
+                <div class="space-y-3">
+                    <div class="highscore-card">
+                        <img src="https://z-cdn-media.chatglm.cn/files/687f5675-fcd2-4ccf-b51b-284041c65492.png?auth_key=1887992950-ce2f69396684415e9879333487afb3ae-0-24db2709cb0d119a5572c7a13f62f17f" alt="Ronald" class="highscore-avatar">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-sky-300">Ronald</p>
+                            <p class="text-[10px] text-slate-600" id="ronald-highscore-time">—</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xl font-semibold text-white" id="ronald-highscore">—</p>
+                            <p class="text-[10px] text-slate-600">points</p>
+                        </div>
+                    </div>
+                    <div class="highscore-card">
+                        <img src="https://z-cdn-media.chatglm.cn/files/e27462bf-620d-4704-b79f-95f37971c363.png?auth_key=1887992950-f735b2e9105c4431bda5c993f79339b5-0-4251c328ab20656e498df7fa30a04c76" alt="Manda" class="highscore-avatar highscore-avatar-manda">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-cyan-300">Manda</p>
+                            <p class="text-[10px] text-slate-600" id="manda-highscore-time">—</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xl font-semibold text-white" id="manda-highscore">—</p>
+                            <p class="text-[10px] text-slate-600">points</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 rounded-xl border border-white/5 bg-white/3">
+                    <p class="text-[10px] text-slate-600 text-center">Highscores sync in real-time across devices 🔄</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- MOVIES -->
 <section id="movies" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
     <div class="max-w-6xl mx-auto">
         <div class="text-center mb-12">
-            <p class="reveal text-xs font-medium section-label text-amber-400 tracking-widest uppercase mb-4">Watchlist 🍿</p>
+            <p class="reveal text-xs font-medium section-label text-amber-400 tracking-widest uppercase mb-4">Watchlist 🍿 <span class="sync-dot on" id="movie-sync-dot" title="Live sync"></span></p>
             <h2 class="reveal text-3xl sm:text-4xl md:text-5xl font-extralight tracking-tight" style="transition-delay:100ms">Movies we've <span class="text-accent">watched</span></h2>
+            <p class="reveal text-xs font-light text-slate-600 mt-3" style="transition-delay:120ms">Shared across devices in real-time</p>
         </div>
         <div class="reveal text-center mb-10" style="transition-delay:150ms">
             <button onclick="openMovieModal()" style="padding:10px 24px;border-radius:12px;border:1px solid rgba(59,130,246,.3);background:rgba(59,130,246,.1);color:rgb(147,197,253);font-size:13px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.background='rgba(59,130,246,.2)'" onmouseout="this.style.background='rgba(59,130,246,.1)'">+ Add Movie</button>
@@ -244,7 +325,7 @@
             <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:80ms"><div class="text-3xl mb-4">🍿</div><h3 class="text-base font-medium mb-2">Movie Buddies</h3><p class="text-sm font-light text-slate-400 leading-relaxed">Somehow watching movies together through a screen became a whole thing. And I'm not mad about it.</p></div>
             <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:160ms"><div class="text-3xl mb-4">💤</div><h3 class="text-base font-medium mb-2">Late Night Talks</h3><p class="text-sm font-light text-slate-400 leading-relaxed">We've stayed up way too late talking about nothing and everything. My sleep schedule is ruined btw.</p></div>
             <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center"><div class="text-3xl mb-4">😂</div><h3 class="text-base font-medium mb-2">Inside Jokes</h3><p class="text-sm font-light text-slate-400 leading-relaxed">We have way too many at this point. Nobody else would understand half the things we say.</p></div>
-            <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:80ms"><div class="text-3xl mb-4">📱</div><h3 class="text-base font-medium mb-2">Always Online</h3><p class="text-sm font-light text-slate-400 leading-relaxed">Somehow we're always on at the same time. Either that's a coincidence or something else idk 🤷</p></div>
+            <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:80ms"><div class="text-3xl mb-4">📱</div><h3 class="text-base font-medium mb-2">Always Online</h3><p class="text-sm font-light text-slate-400 leading-relaxed">Somehow we're always on at the same time. Either that's a coincidence or something else idk 🤷</div></div>
             <div class="reveal card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:160ms"><div class="text-3xl mb-4">🌍</div><h3 class="text-base font-medium mb-2">Haven't Met Yet</h3><p class="text-sm font-light text-slate-400 leading-relaxed">The craziest part is we haven't even met in person. But honestly? It feels like I know you.</p></div>
         </div>
     </div>
@@ -321,9 +402,7 @@ function safeGetS(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
 function safeSetS(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
 
 /* ═══ DEFAULT MOVIES ═══ */
-var defaultMovies=[
-
-];
+var defaultMovies=[];
 
 /* ═══ USER ═══ */
 var currentUser = null;
@@ -363,11 +442,268 @@ function renderCurrentMoods(){var rk=JSON.parse(safeGet('mood_ronald')||'null'),
 function renderMoodLog(){var log=JSON.parse(safeGet('moodLog4')||'[]'),c=document.getElementById('mood-log'),e=document.getElementById('mood-log-empty');if(!log.length){e.style.display='';return}e.style.display='none';c.innerHTML='';log.forEach(function(m){var cl=moodColors[m.colorKey]||moodColors.slate,nc=m.user==='Ronald'?'#93c5fd':'#67e8f9';var el=document.createElement('div');el.className='log-entry flex items-center gap-3 px-4 py-2.5 rounded-xl border';el.style.borderColor=cl.border;el.style.background=cl.bg;el.innerHTML='<span style="font-size:18px">'+m.emoji+'</span><span style="font-size:10px;font-weight:600;letter-spacing:.05em;color:'+nc+'">'+m.user+'</span><span style="font-size:12px;font-weight:500;color:'+cl.text+'">'+m.label+'</span><span style="font-size:10px;color:rgb(71,85,105);margin-left:auto">'+formatTime(m.timestamp)+'</span>';c.appendChild(el)})}
 function clearMoodLog(){safeSet('moodLog4','[]');try{localStorage.removeItem('mood_ronald')}catch(e){}try{localStorage.removeItem('mood_manda')}catch(e){}document.getElementById('mood-ronald').classList.add('hidden');document.getElementById('mood-manda').classList.add('hidden');document.querySelectorAll('.mood-btn').forEach(function(b){b.classList.remove('selected');b.style.borderColor='';b.style.background=''});renderMoodLog();showToast('Cleared');fbWrite('/current/ronald',null);fbWrite('/current/manda',null);fbWrite('/log',null)}
 
+/* ═══ FLAPPY BIRD ═══ */
+var flappyCanvas = document.getElementById('flappy-canvas');
+var flappyCtx = flappyCanvas.getContext('2d');
+var flappyGame = {
+    bird: { x: 80, y: 240, vy: 0, radius: 15 },
+    pipes: [],
+    score: 0,
+    running: false,
+    gameOver: false,
+    gravity: 0.45,
+    jumpForce: -7,
+    pipeGap: 130,
+    pipeWidth: 52,
+    pipeSpeed: 2.5,
+    frameCount: 0
+};
+
+function startFlappyGame() {
+    if (!currentUser) {
+        showToast('Pick your name first!');
+        return;
+    }
+    flappyGame.bird = { x: 80, y: 240, vy: 0, radius: 15 };
+    flappyGame.pipes = [];
+    flappyGame.score = 0;
+    flappyGame.running = true;
+    flappyGame.gameOver = false;
+    flappyGame.frameCount = 0;
+    document.getElementById('flappy-overlay').classList.add('hidden');
+    document.getElementById('flappy-gameover').classList.add('hidden');
+    document.getElementById('flappy-score-display').textContent = '0';
+    if (!flappyGame.animLoop) {
+        flappyGame.animLoop = requestAnimationFrame(flappyLoop);
+    }
+}
+
+function flappyJump() {
+    if (flappyGame.running && !flappyGame.gameOver) {
+        flappyGame.bird.vy = flappyGame.jumpForce;
+    }
+}
+
+flappyCanvas.addEventListener('click', flappyJump);
+flappyCanvas.addEventListener('touchstart', function(e) { e.preventDefault(); flappyJump(); });
+document.addEventListener('keydown', function(e) {
+    if (e.code === 'Space' && flappyGame.running && !flappyGame.gameOver) {
+        e.preventDefault();
+        flappyJump();
+    }
+});
+
+function flappyLoop() {
+    if (!flappyGame.running) {
+        flappyGame.animLoop = null;
+        return;
+    }
+    
+    var g = flappyGame;
+    g.frameCount++;
+    
+    // Update bird
+    g.bird.vy += g.gravity;
+    g.bird.y += g.bird.vy;
+    
+    // Add pipes
+    if (g.frameCount % 90 === 0) {
+        var minTop = 60;
+        var maxTop = flappyCanvas.height - g.pipeGap - 60;
+        var topHeight = minTop + Math.random() * (maxTop - minTop);
+        g.pipes.push({
+            x: flappyCanvas.width,
+            topHeight: topHeight,
+            scored: false
+        });
+    }
+    
+    // Update pipes
+    for (var i = g.pipes.length - 1; i >= 0; i--) {
+        g.pipes[i].x -= g.pipeSpeed;
+        
+        // Score
+        if (!g.pipes[i].scored && g.pipes[i].x + g.pipeWidth < g.bird.x) {
+            g.pipes[i].scored = true;
+            g.score++;
+            document.getElementById('flappy-score-display').textContent = g.score;
+        }
+        
+        // Remove off-screen pipes
+        if (g.pipes[i].x + g.pipeWidth < 0) {
+            g.pipes.splice(i, 1);
+        }
+    }
+    
+    // Check collision
+    var bird = g.bird;
+    var hitCeiling = bird.y - bird.radius < 0;
+    var hitFloor = bird.y + bird.radius > flappyCanvas.height;
+    var hitPipe = false;
+    
+    for (var j = 0; j < g.pipes.length; j++) {
+        var pipe = g.pipes[j];
+        if (bird.x + bird.radius > pipe.x && bird.x - bird.radius < pipe.x + g.pipeWidth) {
+            if (bird.y - bird.radius < pipe.topHeight || bird.y + bird.radius > pipe.topHeight + g.pipeGap) {
+                hitPipe = true;
+                break;
+            }
+        }
+    }
+    
+    if (hitCeiling || hitFloor || hitPipe) {
+        flappyGameOver();
+        return;
+    }
+    
+    // Draw
+    flappyDraw();
+    
+    flappyGame.animLoop = requestAnimationFrame(flappyLoop);
+}
+
+function flappyDraw() {
+    var ctx = flappyCtx;
+    var g = flappyGame;
+    
+    // Background
+    var gradient = ctx.createLinearGradient(0, 0, 0, flappyCanvas.height);
+    gradient.addColorStop(0, '#0c1929');
+    gradient.addColorStop(1, '#1a2942');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, flappyCanvas.width, flappyCanvas.height);
+    
+    // Draw pipes
+    for (var i = 0; i < g.pipes.length; i++) {
+        var pipe = g.pipes[i];
+        
+        // Top pipe
+        var pipeGrad = ctx.createLinearGradient(pipe.x, 0, pipe.x + g.pipeWidth, 0);
+        pipeGrad.addColorStop(0, '#3b82f6');
+        pipeGrad.addColorStop(0.5, '#60a5fa');
+        pipeGrad.addColorStop(1, '#3b82f6');
+        ctx.fillStyle = pipeGrad;
+        ctx.fillRect(pipe.x, 0, g.pipeWidth, pipe.topHeight);
+        
+        // Top pipe cap
+        ctx.fillStyle = '#2563eb';
+        ctx.fillRect(pipe.x - 4, pipe.topHeight - 20, g.pipeWidth + 8, 20);
+        ctx.strokeStyle = '#1d4ed8';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(pipe.x - 4, pipe.topHeight - 20, g.pipeWidth + 8, 20);
+        
+        // Bottom pipe
+        var bottomY = pipe.topHeight + g.pipeGap;
+        ctx.fillStyle = pipeGrad;
+        ctx.fillRect(pipe.x, bottomY, g.pipeWidth, flappyCanvas.height - bottomY);
+        
+        // Bottom pipe cap
+        ctx.fillStyle = '#2563eb';
+        ctx.fillRect(pipe.x - 4, bottomY, g.pipeWidth + 8, 20);
+        ctx.strokeStyle = '#1d4ed8';
+        ctx.strokeRect(pipe.x - 4, bottomY, g.pipeWidth + 8, 20);
+    }
+    
+    // Draw bird
+    ctx.save();
+    ctx.translate(g.bird.x, g.bird.y);
+    var angle = Math.min(g.bird.vy * 0.08, 0.5);
+    ctx.rotate(angle);
+    
+    // Bird body
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, g.bird.radius, g.bird.radius * 0.85, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Bird eye
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.arc(6, -4, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.arc(7, -4, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Bird beak
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.moveTo(12, 0);
+    ctx.lineTo(20, 2);
+    ctx.lineTo(12, 5);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Bird wing
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.ellipse(-4, 4, 10, 6, -0.3, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.restore();
+}
+
+function flappyGameOver() {
+    flappyGame.running = false;
+    flappyGame.gameOver = true;
+    document.getElementById('flappy-final-score').textContent = flappyGame.score;
+    document.getElementById('flappy-gameover').classList.remove('hidden');
+    
+    // Update highscore
+    var userKey = currentUser.toLowerCase();
+    var highscores = JSON.parse(safeGet('flappy_highscores') || '{"ronald":null,"manda":null}');
+    if (!highscores[userKey] || flappyGame.score > highscores[userKey].score) {
+        highscores[userKey] = {
+            score: flappyGame.score,
+            timestamp: Date.now(),
+            user: currentUser
+        };
+        safeSet('flappy_highscores', JSON.stringify(highscores));
+        fbWrite('/flappy/highscores', highscores);
+        showToast('🎉 New highscore: ' + flappyGame.score + '!');
+    }
+    
+    renderFlappyHighscores();
+}
+
+function renderFlappyHighscores() {
+    var highscores = JSON.parse(safeGet('flappy_highscores') || '{"ronald":null,"manda":null}');
+    
+    var ronaldScore = document.getElementById('ronald-highscore');
+    var ronaldTime = document.getElementById('ronald-highscore-time');
+    var mandaScore = document.getElementById('manda-highscore');
+    var mandaTime = document.getElementById('manda-highscore-time');
+    
+    if (highscores.ronald) {
+        ronaldScore.textContent = highscores.ronald.score;
+        ronaldTime.textContent = formatTime(highscores.ronald.timestamp);
+    } else {
+        ronaldScore.textContent = '—';
+        ronaldTime.textContent = '—';
+    }
+    
+    if (highscores.manda) {
+        mandaScore.textContent = highscores.manda.score;
+        mandaTime.textContent = formatTime(highscores.manda.timestamp);
+    } else {
+        mandaScore.textContent = '—';
+        mandaTime.textContent = '—';
+    }
+}
+
+// Initial draw for flappy bird
+flappyDraw();
+
+/* ═══ SYNC ═══ */
 var syncInterval=null;
 function startSync(){if(syncInterval)return;syncNow();syncInterval=setInterval(syncNow,3000)}
-function syncNow(){if(!isFirebaseReady())return;fbRead('',function(data){if(!data)return;document.getElementById('sync-dot').className='sync-dot on';if(data.current){if(data.current.ronald){var rk=JSON.stringify(data.current.ronald);if(safeGet('mood_ronald')!==rk)safeSet('mood_ronald',rk)}if(data.current.manda){var mk=JSON.stringify(data.current.manda);if(safeGet('mood_manda')!==mk)safeSet('mood_manda',mk)}}if(data.log){var arr=[];for(var key in data.log)if(data.log.hasOwnProperty(key))arr.push(data.log[key]);arr.sort(function(a,b){return b.timestamp-a.timestamp});if(arr.length>50)arr=arr.slice(0,50);var newLog=JSON.stringify(arr);if(safeGet('moodLog4')!==newLog)safeSet('moodLog4',newLog)}if(data.movies){var newMovies=JSON.stringify(data.movies);if(safeGet('fb_movies')!==newMovies){safeSet('fb_movies',newMovies);renderMovies()}}renderCurrentMoods();renderMoodLog()})}
-if(!isFirebaseReady()){document.getElementById('sync-dot').className='sync-dot off'}
-renderCurrentMoods();renderMoodLog();
+function syncNow(){if(!isFirebaseReady())return;fbRead('',function(data){if(!data)return;document.getElementById('sync-dot').className='sync-dot on';document.getElementById('flappy-sync-dot').className='sync-dot on';document.getElementById('movie-sync-dot').className='sync-dot on';if(data.current){if(data.current.ronald){var rk=JSON.stringify(data.current.ronald);if(safeGet('mood_ronald')!==rk)safeSet('mood_ronald',rk)}if(data.current.manda){var mk=JSON.stringify(data.current.manda);if(safeGet('mood_manda')!==mk)safeSet('mood_manda',mk)}}if(data.log){var arr=[];for(var key in data.log)if(data.log.hasOwnProperty(key))arr.push(data.log[key]);arr.sort(function(a,b){return b.timestamp-a.timestamp});if(arr.length>50)arr=arr.slice(0,50);var newLog=JSON.stringify(arr);if(safeGet('moodLog4')!==newLog)safeSet('moodLog4',newLog)}if(data.movies){var newMovies=JSON.stringify(data.movies);if(safeGet('fb_movies')!==newMovies){safeSet('fb_movies',newMovies);renderMovies()}}if(data.flappy&&data.flappy.highscores){var newHighscores=JSON.stringify(data.flappy.highscores);if(safeGet('flappy_highscores')!==newHighscores){safeSet('flappy_highscores',newHighscores);renderFlappyHighscores()}}renderCurrentMoods();renderMoodLog()})}
+if(!isFirebaseReady()){document.getElementById('sync-dot').className='sync-dot off';document.getElementById('flappy-sync-dot').className='sync-dot off';document.getElementById('movie-sync-dot').className='sync-dot off'}
+renderCurrentMoods();renderMoodLog();renderFlappyHighscores();
 
 /* ═══ MOVIE MODAL ═══ */
 var selectedImage=null;var uploadedImage=null;
@@ -378,7 +714,7 @@ function generateImageOptions(title){if(!title||title.length<2){document.getElem
 function selectImage(el,seed){document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')});el.classList.add('selected');selectedImage=seed;uploadedImage=null;document.getElementById('mv-img-url').value='';document.getElementById('upload-preview').style.display='none';document.getElementById('upload-preview').innerHTML=''}
 function selectCustomImage(){var url=document.getElementById('mv-img-url').value;if(url){selectedImage=null;uploadedImage=url;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')})}}
 function handleImageUpload(event){var file=event.target.files[0];if(!file)return;if(file.size>5*1024*1024){showToast('⚠️ Image too big, max 5MB');return}var reader=new FileReader();reader.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxW=600;var w=img.width,h=img.height;if(w>maxW){h=h*(maxW/w);w=maxW}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);uploadedImage=canvas.toDataURL('image/jpeg',.7);selectedImage=null;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')});document.getElementById('upload-preview').style.display='block';document.getElementById('upload-preview').innerHTML='<img src="'+uploadedImage+'" style="max-width:200px;max-height:120px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><p style="font-size:10px;color:rgb(52,211,153);margin-top:6px">✓ Ready</p>'};img.src=e.target.result};reader.readAsDataURL(file)}
-function submitMovie(){var title=document.getElementById('mv-title').value.trim();var year=document.getElementById('mv-year').value.trim()||'2024';var genre=document.getElementById('mv-genre').value.trim()||'Movie';var note=document.getElementById('mv-note').value.trim()||'No note added yet.';if(!title){showToast('⚠️ Please enter a title');return}if(!selectedImage&&!uploadedImage){showToast('⚠️ Please select an image');return}var image=uploadedImage||selectedImage;var movie={id:'mv_'+Date.now(),title:title,year:year,note:note,genre:genre,emoji:'🎬',image:image,addedBy:currentUser,ratings:{ronald:null,manda:null}};fbWrite('/movies/'+movie.id,movie);var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');fbMovies[movie.id]=movie;safeSet('fb_movies',JSON.stringify(fbMovies));renderMovies();closeMovieModal();showToast('🎬 "'+title+'" added!')}
+function submitMovie(){var title=document.getElementById('mv-title').value.trim();var year=document.getElementById('mv-year').value.trim()||'2024';var genre=document.getElementById('mv-genre').value.trim()||'Movie';var note=document.getElementById('mv-note').value.trim()||'No note added yet.';if(!title){showToast('⚠️ Please enter a title');return}if(!selectedImage&&!uploadedImage){showToast('⚠️ Please select an image');return}var image=uploadedImage||selectedImage;var movie={id:'mv_'+Date.now(),title:title,year:year,note:note,genre:genre,emoji:'🎬',image:image,addedBy:currentUser,timestamp:Date.now(),ratings:{ronald:null,manda:null}};fbWrite('/movies/'+movie.id,movie);var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');fbMovies[movie.id]=movie;safeSet('fb_movies',JSON.stringify(fbMovies));renderMovies();closeMovieModal();showToast('🎬 "'+title+'" added!')}
 
 /* ═══ MOVIE RATING ═══ */
 function rateMovie(movieId,rating){if(!currentUser){showToast('Pick your name first!');return}var userKey=currentUser.toLowerCase();var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');if(!fbMovies[movieId])return;if(!fbMovies[movieId].ratings)fbMovies[movieId].ratings={ronald:null,manda:null};fbMovies[movieId].ratings[userKey]=rating;safeSet('fb_movies',JSON.stringify(fbMovies));fbWrite('/movies/'+movieId+'/ratings',fbMovies[movieId].ratings);renderMovies();showToast('⭐ Rated '+rating+'/5')}
@@ -386,35 +722,20 @@ function rateMovie(movieId,rating){if(!currentUser){showToast('Pick your name fi
 /* ═══ RENDER MOVIES ═══ */
 function getAllMovies(){var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');var arr=[];for(var key in fbMovies)if(fbMovies.hasOwnProperty(key))arr.push(fbMovies[key]);arr=arr.concat(defaultMovies);arr.sort(function(a,b){return(b.timestamp||0)-(a.timestamp||0)});return arr}
 function renderMovieStars(movie){var rk=movie.ratings?movie.ratings.ronald:null;var mk=movie.ratings?movie.ratings.manda:null;var isR=currentUser&&currentUser.toLowerCase()==='ronald';var isM=currentUser&&currentUser.toLowerCase()==='manda';var html='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)">';html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:10px;color:#93c5fd;width:46px">Ronald</span>';if(rk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=rk?'#fbbf24':'rgb(51,65,85)')+'">★</span>'}else if(isR){html+='<span class="rate-stars" onclick="event.stopPropagation()">';for(var i=1;i<=5;i++)html+='<span onclick="rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">Not rated</span>';html+='</div>';html+='<div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:#67e8f9;width:46px">Manda</span>';if(mk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=mk?'#fbbf24':'rgb(51,65,85)')+'">★</span>'}else if(isM){html+='<span class="rate-stars" onclick="event.stopPropagation()">';for(var i=1;i<=5;i++)html+='<span onclick="rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">Not rated</span>';html+='</div></div>';return html}
-function renderMovies(){var grid=document.getElementById('movies-grid');grid.innerHTML='';var movies=getAllMovies();movies.forEach(function(m,i){var avgRating=0;var rc=0;if(m.ratings){if(m.ratings.ronald){avgRating+=m.ratings.ronald;rc++}if(m.ratings.manda){avgRating+=m.ratings.manda;rc++}if(rc)avgRating=Math.round(avgRating/rc)}var displayStars='';for(var s=0;s<avgRating;s++)displayStars+='★';for(var s2=0;s2<5-avgRating;s2++)displayStars+='☆';var imgSrc=m.image.indexOf('data:')===0?m.image:'https://picsum.photos/seed/'+m.image+'/500/350.jpg';var card=document.createElement('div');card.className='reveal movie-card card-hover rounded-2xl border border-white/5 overflow-hidden group';card.style.background='rgba(255,255,255,.02)';card.style.transitionDelay=(i*100)+'ms';card.innerHTML='<div class="img-hover overflow-hidden" style="height:192px;position:relative"><img src="'+imgSrc+'" alt="'+m.title+'" style="width:100%;height:100%;object-fit:cover"><div class="movie-overlay"></div><div class="movie-number">'+(i+1)+'</div><div style="position:absolute;bottom:12px;left:16px;right:16px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="padding:2px 8px;font-size:10px;font-weight:500;color:#fcd34d;background:rgba(245,158,11,.15);border-radius:9999px">'+m.genre+'</span><span style="font-size:10px;color:rgb(100,116,139)">'+m.year+'</span></div><h3 style="font-size:18px;font-weight:500">'+m.title+'</h3></div></div><div style="padding:16px"><p style="font-size:13px;font-weight:300;color:rgb(148,163,184);line-height:1.6;margin-bottom:8px">"'+m.note+'"</p><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:14px;color:#fbbf24;letter-spacing:.05em">'+(displayStars||'☆☆☆☆☆')+'</span><span style="font-size:10px;color:rgb(100,116,139)">by '+(m.addedBy||'?')+'</span></div>'+renderMovieStars(m)+'</div>';grid.appendChild(card)});document.querySelectorAll('#movies-grid .reveal').forEach(function(el){observer.observe(el)})}
+function renderMovies(){var grid=document.getElementById('movies-grid');grid.innerHTML='';var movies=getAllMovies();if(!movies.length){grid.innerHTML='<p class="text-sm text-slate-700 text-center py-12 col-span-full">No movies yet. Add one! 🍿</p>';return}movies.forEach(function(m,i){var avgRating=0;var rc=0;if(m.ratings){if(m.ratings.ronald){avgRating+=m.ratings.ronald;rc++}if(m.ratings.manda){avgRating+=m.ratings.manda;rc++}if(rc)avgRating=Math.round(avgRating/rc)}var displayStars='';for(var s=0;s<avgRating;s++)displayStars+='★';for(var s2=0;s2<5-avgRating;s2++)displayStars+='☆';var imgSrc=m.image.indexOf('data:')===0?m.image:'https://picsum.photos/seed/'+m.image+'/500/350.jpg';var addedByColor=m.addedBy==='Ronald'?'#93c5fd':'#67e8f9';var card=document.createElement('div');card.className='reveal movie-card card-hover rounded-2xl border border-white/5 overflow-hidden group';card.style.background='rgba(255,255,255,.02)';card.style.transitionDelay=(i*80)+'ms';card.innerHTML='<div class="img-hover overflow-hidden" style="height:192px;position:relative"><img src="'+imgSrc+'" alt="'+m.title+'" style="width:100%;height:100%;object-fit:cover"><div class="movie-overlay"></div><div class="movie-number">'+(i+1)+'</div><div style="position:absolute;bottom:12px;left:16px;right:16px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="padding:2px 8px;border-radius:6px;background:rgba(0,0,0,.4);font-size:10px;color:rgba(255,255,255,.7);backdrop-filter:blur(4px)">'+m.year+'</span><span style="padding:2px 8px;border-radius:6px;background:rgba(0,0,0,.4);font-size:10px;color:rgba(255,255,255,.7);backdrop-filter:blur(4px)">'+m.genre+'</span></div><h3 style="font-size:16px;font-weight:500;color:white;margin-bottom:2px;line-height:1.2">'+m.title+'</h3></div></div><div style="padding:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="display:flex;align-items:center;gap:6px"><img src="'+PROFILE_PICS[m.addedBy.toLowerCase()]+'" style="width:20px;height:20px;border-radius:50%;border:1.5px solid '+addedByColor+';object-fit:cover"><span style="font-size:10px;font-weight:500;color:'+addedByColor+'">'+m.addedBy+'</span></div><div style="font-size:11px;color:#fbbf24">'+displayStars+'</div></div><p style="font-size:12px;font-weight:300;color:rgb(148,163,184);line-height:1.5">'+m.note+'</p>'+renderMovieStars(m)+'</div>';grid.appendChild(card)});setTimeout(function(){document.querySelectorAll('#movies-grid .reveal').forEach(function(el){el.classList.add('reveal-visible')})},100)}
 
-/* ═══ STARS BG ═══ */
-var sc=document.getElementById('stars-container');for(var i=0;i<50;i++){var s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';var sz=(1+Math.random()*2)+'px';s.style.width=sz;s.style.height=sz;s.style.animation='twinkle '+(2+Math.random()*4)+'s ease-in-out '+(Math.random()*4)+'s infinite';sc.appendChild(s)}
+/* ═══ TOAST ═══ */
+function showToast(msg){var container=document.getElementById('toast-container');var toast=document.createElement('div');toast.className='toast-in';toast.style.cssText='padding:10px 20px;border-radius:12px;background:rgba(30,41,59,.95);border:1px solid rgba(255,255,255,.1);color:white;font-size:13px;font-weight:300;font-family:Inter,sans-serif;backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,.3)';toast.textContent=msg;container.appendChild(toast);setTimeout(function(){toast.className='toast-out';setTimeout(function(){if(toast.parentNode)toast.parentNode.removeChild(toast)},400)},3000)}
 
-/* ═══ TYPEWRITER ═══ */
-var te=document.getElementById('typewriter');var phrases=["made this for us...","nothing weird about it...","just a normal website...","definitely not hiding anything..."];var pI=0,cI=0,del=false,spd=60;function tw(){var p=phrases[pI];if(!del){te.textContent=p.substring(0,cI+1);cI++;if(cI===p.length){del=true;spd=2000}else spd=45+Math.random()*40}else{te.textContent=p.substring(0,cI-1);cI--;spd=25;if(cI===0){del=false;pI=(pI+1)%phrases.length;spd=500}}setTimeout(tw,spd)}tw();
+/* ═══ REVEAL ANIMATIONS ═══ */
+var observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting)entry.target.classList.add('reveal-visible')})},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el)});
 
-/* ═══ SCROLL REVEAL ═══ */
-var observer=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('reveal-visible');observer.unobserve(en.target)}})},{threshold:0.1,rootMargin:'0px 0px -30px 0px'});document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el)});
+/* ═══ STARS ═══ */
+function createStars(){var container=document.getElementById('stars-container');for(var i=0;i<50;i++){var star=document.createElement('div');star.className='star';star.style.left=Math.random()*100+'%';star.style.top=Math.random()*100+'%';star.style.width=(Math.random()*2+1)+'px';star.style.height=star.style.width;star.style.animation='twinkle '+(Math.random()*3+2)+'s ease-in-out '+(Math.random()*2)+'s infinite';container.appendChild(star)}}
+createStars();
 
-/* ═══ HEARTS ═══ */
-var heartEmojis=['💕','💗','💖','💝','🩷','♥️','🌸','✨'];var heartInterval=null;
-function spawnHeart(){var h=document.createElement('div');h.className='floating-heart';h.textContent=heartEmojis[Math.floor(Math.random()*heartEmojis.length)];h.style.left=Math.random()*100+'%';h.style.fontSize=(14+Math.random()*16)+'px';h.style.animationDuration=(8+Math.random()*8)+'s';document.body.appendChild(h);setTimeout(function(){h.remove()},16000)}
-function startHearts(){if(!heartInterval)heartInterval=setInterval(spawnHeart,2500);for(var i=0;i<6;i++)setTimeout(spawnHeart,i*300)}
-var clickHeartsEnabled=false;document.addEventListener('click',function(e){if(!clickHeartsEnabled)return;for(var i=0;i<4;i++){var h=document.createElement('div');h.className='burst-heart';h.textContent=heartEmojis[Math.floor(Math.random()*heartEmojis.length)];h.style.left=e.clientX+'px';h.style.top=e.clientY+'px';var a=(Math.PI*2/4)*i+Math.random()*.5,d=40+Math.random()*50;document.body.appendChild(h);(function(hh,aa,dd){requestAnimationFrame(function(){hh.style.transition='all .7s ease-out';hh.style.transform='translate('+Math.cos(aa)*dd+'px,'+(Math.sin(aa)*dd-30)+'px) scale(.2)';hh.style.opacity='0'});setTimeout(function(){hh.remove()},800)})(h,a,d)}});
-
-/* ═══ REVEAL ═══ */
-var revealed=false;function triggerReveal(){if(revealed)return;revealed=true;document.body.classList.add('romance-mode');document.getElementById('hero-icon').textContent='💗';document.getElementById('hero-icon').classList.add('heartbeat');document.getElementById('hero-name').textContent='Manda';document.getElementById('hero-subtitle').textContent="Okay fine... I couldn't keep pretending. This was never 'just a friendly site.'";document.getElementById('date-highlight').className='text-rose-300';document.getElementById('footer-text').textContent='Made with 💗 and a lot of courage';var btn=document.getElementById('trigger-yes-btn');btn.textContent='I knew it 😏💕';btn.disabled=true;btn.style.opacity='.5';document.getElementById('trigger-no-btn').style.display='none';startHearts();clickHeartsEnabled=true;setTimeout(function(){var l=document.getElementById('letter-section');l.classList.add('revealed','section-reveal-anim');l.scrollIntoView({behavior:'smooth',block:'start'});showToast('💕 ...okay you caught me')},1200);for(var i=0;i<15;i++)setTimeout(spawnHeart,i*150)}
-
-var letterOpen=false;function openLetter(){if(letterOpen)return;letterOpen=true;document.getElementById('letter-closed').style.display='none';var o=document.getElementById('letter-open');o.classList.remove('hidden');o.classList.add('letter-unfold');for(var i=0;i<10;i++)setTimeout(spawnHeart,i*150);showToast('💌 You opened it...');setTimeout(function(){var f=document.getElementById('final-section');f.classList.add('revealed','section-reveal-anim');setTimeout(function(){f.scrollIntoView({behavior:'smooth',block:'center'})},300)},2000)}
-
-function handleYes(){var r=document.getElementById('yes-response');r.classList.remove('hidden');r.style.opacity='0';r.style.transform='translateY(20px)';requestAnimationFrame(function(){r.style.transition='all .8s cubic-bezier(.25,.46,.45,.94)';r.style.opacity='1';r.style.transform='translateY(0)'});document.getElementById('no-btn').style.display='none';for(var i=0;i<25;i++)setTimeout(spawnHeart,i*100);showToast('💖 She said yes!! 🥺💕')}
-var noCount=0;var noMsgs=["Are you sure? 🥺","Really? 😢","Think again... 💔","Please? 🙏","I'll be sad 😞","You can't click this 😏","Give me a chance 🌹","Pretty please? 🥹","Okay wow 😤","I believe in us 💪"];function moveNoButton(){var b=document.getElementById('no-btn');noCount++;var mx=window.innerWidth-b.offsetWidth-40,my=180;b.style.transform='translate('+(Math.random()*mx-mx/2)+'px,'+(Math.random()*my-my/2)+'px)';b.style.transition='transform .25s ease-out';b.textContent=noMsgs[noCount%noMsgs.length]}
-var triggerNoCount=0;var triggerNoMsgs=["Liar 😂","Are you sure?","Pick the other one","You're breaking my heart lol","Fine be like that","Okay rude","I see how it is 😤"];function moveTriggerNo(){var b=document.getElementById('trigger-no-btn');triggerNoCount++;var mx=window.innerWidth-b.offsetWidth-40,my=150;b.style.transform='translate('+(Math.random()*mx-mx/2)+'px,'+(Math.random()*my-my/2)+'px)';b.style.transition='transform .25s ease-out';b.textContent=triggerNoMsgs[triggerNoCount%triggerNoMsgs.length]}
-
-function showToast(msg){var c=document.getElementById('toast-container'),t=document.createElement('div');t.className='toast-in';t.style.cssText='padding:12px 20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);border-radius:12px;backdrop-filter:blur(12px);font-size:14px;font-weight:300;color:white;box-shadow:0 4px 20px rgba(0,0,0,.3);max-width:320px;text-align:center';t.textContent=msg;c.appendChild(t);setTimeout(function(){t.classList.replace('toast-in','toast-out');setTimeout(function(){t.remove()},400)},3500)}
-
-try{lucide.createIcons()}catch(e){}
+/* ═══ INITIAL RENDER ═══ */
 renderMovies();
 </script>
 </body>
