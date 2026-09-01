@@ -10,28 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
     <style>
 
-        .game-selector{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:24px}
-        .game-arrow{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:rgb(148,163,184);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:Inter,sans-serif}
-        .game-arrow:hover{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:#93c5fd}
-        .game-arrow:active{transform:scale(.9)}
-        .game-tab-name{font-size:14px;font-weight:400;color:rgba(255,255,255,.8);min-width:160px;text-align:center;letter-spacing:.02em}
-        .game-panel{display:none}.game-panel.active{display:flex}
-        .tap-area{position:relative;width:320px;height:480px;border-radius:16px;overflow:hidden;border:2px solid rgba(59,130,246,.2);background:#0c1929;cursor:crosshair;user-select:none;-webkit-user-select:none}
-        .tap-area img{pointer-events:none}
-        .tap-target{position:absolute;display:flex;align-items:center;justify-content:center;cursor:pointer;animation:tapPop .2s ease-out forwards;z-index:5;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4));transition:transform .1s}
-        .tap-target:active{transform:scale(.85)!important}
-        @keyframes tapPop{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-        .tap-score-float{position:absolute;font-size:18px;font-weight:600;color:#34d399;pointer-events:none;animation:floatUp .6s ease-out forwards;z-index:10;text-shadow:0 1px 4px rgba(0,0,0,.5)}
-        @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(1.3)}}
-        .tap-bomb-float{color:#f87171}
-        .tap-miss{position:absolute;font-size:14px;font-weight:500;color:rgba(255,255,255,.3);pointer-events:none;animation:floatUp .5s ease-out forwards;z-index:10}
-        .tap-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:10;transition:opacity .3s ease}
-        .tap-overlay.hidden{opacity:0;pointer-events:none}
-        .tap-flash{position:absolute;inset:0;background:rgba(248,113,113,.3);z-index:8;pointer-events:none;animation:flashRed .3s ease-out forwards}
-        @keyframes flashRed{0%{opacity:1}100%{opacity:0}}
-        .combo-display{position:absolute;top:44px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:500;color:#fbbf24;z-index:6;pointer-events:none;opacity:0;transition:opacity .2s}
-        .combo-display.show{opacity:1}
-
         .floating-pet{position:fixed;pointer-events:none;z-index:1;opacity:.7;filter:drop-shadow(0 4px 12px rgba(0,0,0,.3));transition:transform .1s linear}
         .floating-pet img{width:100%;height:100%;object-fit:contain}
 
@@ -238,105 +216,69 @@
     </div>
 </section>
 
-<!-- GAMES -->
+<!-- FLAPPY BIRD -->
 <section id="flappy-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
     <div class="max-w-4xl mx-auto">
         <div class="text-center mb-12">
-            <p class="reveal text-xs font-medium section-label text-emerald-400 tracking-widest uppercase mb-4">Mini Games 🎮</p>
-            <h2 class="reveal text-3xl sm:text-4xl font-extralight tracking-tight" style="transition-delay:100ms">Games for <span class="text-accent">us</span></h2>
+            <p class="reveal text-xs font-medium section-label text-emerald-400 tracking-widest uppercase mb-4">Mini Game 🐦</p>
+            <h2 class="reveal text-3xl sm:text-4xl font-extralight tracking-tight" style="transition-delay:100ms">Flappy <span class="text-accent">Bird</span></h2>
+            <p class="reveal text-xs font-light text-slate-600 mt-3" style="transition-delay:150ms">Click or press Space to fly</p>
         </div>
         
-        <div class="reveal" style="transition-delay:200ms">
-            <!-- Game Selector -->
-            <div class="game-selector">
-                <button class="game-arrow" onclick="switchGame(-1)">←</button>
-                <p class="game-tab-name" id="game-tab-name">🐦 Flappy Bird</p>
-                <button class="game-arrow" onclick="switchGame(1)">→</button>
+        <div class="reveal flex flex-col lg:flex-row items-center gap-8" style="transition-delay:200ms">
+            <!-- Game -->
+            <div class="flex-shrink-0">
+                <div class="flappy-container" id="flappy-container">
+                    <div class="flappy-score" id="flappy-score-display">0</div>
+                    <canvas id="flappy-canvas" width="320" height="480"></canvas>
+                    <div class="flappy-overlay" id="flappy-overlay">
+                        <div style="font-size:48px;margin-bottom:12px">🐦</div>
+                        <p style="font-size:18px;font-weight:500;color:white;margin-bottom:4px">Flappy Bird</p>
+                        <p style="font-size:12px;font-weight:300;color:rgba(255,255,255,.6);margin-bottom:24px">Tap or Space to play</p>
+                        <button onclick="startFlappyGame()" style="padding:12px 32px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Play 🎮</button>
+                    </div>
+                    <div class="flappy-overlay hidden" id="flappy-gameover">
+                        <div style="font-size:48px;margin-bottom:12px">💀</div>
+                        <p style="font-size:24px;font-weight:600;color:white;margin-bottom:4px">Game Over</p>
+                        <p style="font-size:32px;font-weight:200;color:#93c5fd;margin-bottom:4px" id="flappy-final-score">0</p>
+                        <p style="font-size:11px;font-weight:300;color:rgba(255,255,255,.5);margin-bottom:24px">points</p>
+                        <button onclick="startFlappyGame()" style="padding:12px 32px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Retry 🔄</button>
+                    </div>
+                </div>
             </div>
             
-            <!-- Games Container -->
-            <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8 justify-center">
-                <!-- Flappy Bird -->
-                <div class="game-panel active" id="panel-flappy">
-                    <div class="flex-shrink-0">
-                        <div class="flappy-container">
-                            <div class="flappy-score" id="flappy-score-display">0</div>
-                            <canvas id="flappy-canvas" width="320" height="480"></canvas>
-                            <div class="flappy-overlay" id="flappy-overlay">
-                                <div style="font-size:48px;margin-bottom:12px">🐦</div>
-                                <p style="font-size:18px;font-weight:500;color:white;margin-bottom:4px">Flappy Bird</p>
-                                <p style="font-size:12px;font-weight:300;color:rgba(255,255,255,.6);margin-bottom:24px">Tap or Space to play</p>
-                                <button onclick="startFlappyGame()" style="padding:12px 32px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Play 🎮</button>
-                            </div>
-                            <div class="flappy-overlay hidden" id="flappy-gameover">
-                                <div style="font-size:48px;margin-bottom:12px">💀</div>
-                                <p style="font-size:24px;font-weight:600;color:white;margin-bottom:4px">Game Over</p>
-                                <p style="font-size:32px;font-weight:200;color:#93c5fd;margin-bottom:4px" id="flappy-final-score">0</p>
-                                <p style="font-size:11px;font-weight:300;color:rgba(255,255,255,.5);margin-bottom:24px">points</p>
-                                <button onclick="startFlappyGame()" style="padding:12px 32px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Retry 🔄</button>
-                            </div>
+            <!-- Highscores -->
+            <div class="flex-1 w-full">
+                <h3 class="text-xs font-medium text-slate-500 tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <span>🏆 Highscores</span>
+                    <span class="sync-dot on" id="flappy-sync-dot" title="Live sync"></span>
+                </h3>
+                <div class="space-y-3">
+                    <div class="highscore-card">
+                        <img src="https://z-cdn-media.chatglm.cn/files/687f5675-fcd2-4ccf-b51b-284041c65492.png?auth_key=1887992950-ce2f69396684415e9879333487afb3ae-0-24db2709cb0d119a5572c7a13f62f17f" alt="Ronald" class="highscore-avatar">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-sky-300">Ronald</p>
+                            <p class="text-[10px] text-slate-600" id="ronald-highscore-time">—</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xl font-semibold text-white" id="ronald-highscore">—</p>
+                            <p class="text-[10px] text-slate-600">points</p>
+                        </div>
+                    </div>
+                    <div class="highscore-card">
+                        <img src="https://z-cdn-media.chatglm.cn/files/e27462bf-620d-4704-b79f-95f37971c363.png?auth_key=1887992950-f735b2e9105c4431bda5c993f79339b5-0-4251c328ab20656e498df7fa30a04c76" alt="Manda" class="highscore-avatar highscore-avatar-manda">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-cyan-300">Manda</p>
+                            <p class="text-[10px] text-slate-600" id="manda-highscore-time">—</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xl font-semibold text-white" id="manda-highscore">—</p>
+                            <p class="text-[10px] text-slate-600">points</p>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Tap Game -->
-                <div class="game-panel" id="panel-tap">
-                    <div class="flex-shrink-0">
-                        <div class="tap-area" id="tap-area">
-                            <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);font-size:32px;font-weight:600;color:white;text-shadow:0 2px 8px rgba(0,0,0,.5);z-index:6" id="tap-score-display">0</div>
-                            <div class="combo-display" id="combo-display"></div>
-                            <div class="tap-overlay" id="tap-overlay">
-                                <div style="font-size:48px;margin-bottom:12px">🦈</div>
-                                <p style="font-size:18px;font-weight:500;color:white;margin-bottom:4px">Tap Game</p>
-                                <p style="font-size:12px;font-weight:300;color:rgba(255,255,255,.6);margin-bottom:6px">Tap 🦈🐶 — Avoid 💣</p>
-                                <p style="font-size:11px;font-weight:300;color:rgba(255,255,255,.4);margin-bottom:24px">Gets faster as you score!</p>
-                                <button onclick="startTapGame()" style="padding:12px 32px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Play 🎮</button>
-                            </div>
-                            <div class="tap-overlay hidden" id="tap-gameover">
-                                <div style="font-size:48px;margin-bottom:12px">💣</div>
-                                <p style="font-size:24px;font-weight:600;color:white;margin-bottom:4px">Game Over</p>
-                                <p style="font-size:32px;font-weight:200;color:#fca5a5;margin-bottom:4px" id="tap-final-score">0</p>
-                                <p style="font-size:11px;font-weight:300;color:rgba(255,255,255,.5);margin-bottom:24px">points</p>
-                                <button onclick="startTapGame()" style="padding:12px 32px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Retry 🔄</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Highscores (shared, switches per game) -->
-                <div class="flex-1 w-full max-w-sm">
-                    <h3 class="text-xs font-medium text-slate-500 tracking-widest uppercase mb-4 flex items-center gap-2">
-                        <span>🏆 Highscores</span>
-                        <span class="sync-dot on" id="flappy-sync-dot" title="Live sync"></span>
-                    </h3>
-                    <div class="space-y-3">
-                        <div class="highscore-card">
-                            <img src="https://z-cdn-media.chatglm.cn/files/687f5675-fcd2-4ccf-b51b-284041c65492.png?auth_key=1887992950-ce2f69396684415e9879333487afb3ae-0-24db2709cb0d119a5572c7a13f62f17f" alt="Ronald" class="highscore-avatar">
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-sky-300">Ronald</p>
-                                <p class="text-[10px] text-slate-600" id="ronald-highscore-time">—</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-xl font-semibold text-white" id="ronald-highscore">—</p>
-                                <p class="text-[10px] text-slate-600">points</p>
-                            </div>
-                        </div>
-                        <div class="highscore-card">
-                            <img src="https://z-cdn-media.chatglm.cn/files/e27462bf-620d-4704-b79f-95f37971c363.png?auth_key=1887992950-f735b2e9105c4431bda5c993f79339b5-0-4251c328ab20656e498df7fa30a04c76" alt="Manda" class="highscore-avatar highscore-avatar-manda">
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-cyan-300">Manda</p>
-                                <p class="text-[10px] text-slate-600" id="manda-highscore-time">—</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-xl font-semibold text-white" id="manda-highscore">—</p>
-                                <p class="text-[10px] text-slate-600">points</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 p-4 rounded-xl border border-white/5 bg-white/3">
-                        <p class="text-[10px] text-slate-600 text-center" id="hs-game-label">Highscores for Flappy Bird 🐦</p>
-                        <p class="text-[10px] text-slate-700 text-center mt-1">Syncs in real-time across devices 🔄</p>
-                    </div>
+                <div class="mt-6 p-4 rounded-xl border border-white/5 bg-white/3">
+                    <p class="text-[10px] text-slate-600 text-center">Highscores sync in real-time across devices 🔄</p>
                 </div>
             </div>
         </div>
@@ -612,292 +554,56 @@ function renderCurrentMoods(){var rk=JSON.parse(safeGet('mood_ronald')||'null'),
 function renderMoodLog(){var log=JSON.parse(safeGet('moodLog4')||'[]'),c=document.getElementById('mood-log'),e=document.getElementById('mood-log-empty');if(!log.length){e.style.display='';return}e.style.display='none';c.innerHTML='';log.forEach(function(m){var cl=moodColors[m.colorKey]||moodColors.slate,nc=m.user==='Ronald'?'#93c5fd':'#67e8f9';var el=document.createElement('div');el.className='log-entry flex items-center gap-3 px-4 py-2.5 rounded-xl border';el.style.borderColor=cl.border;el.style.background=cl.bg;el.innerHTML='<span style="font-size:18px">'+m.emoji+'</span><span style="font-size:10px;font-weight:600;letter-spacing:.05em;color:'+nc+'">'+m.user+'</span><span style="font-size:12px;font-weight:500;color:'+cl.text+'">'+m.label+'</span><span style="font-size:10px;color:rgb(71,85,105);margin-left:auto">'+formatTime(m.timestamp)+'</span>';c.appendChild(el)})}
 function clearMoodLog(){safeSet('moodLog4','[]');try{localStorage.removeItem('mood_ronald')}catch(e){}try{localStorage.removeItem('mood_manda')}catch(e){}document.getElementById('mood-ronald').classList.add('hidden');document.getElementById('mood-manda').classList.add('hidden');document.querySelectorAll('.mood-btn').forEach(function(b){b.classList.remove('selected');b.style.borderColor='';b.style.background=''});renderMoodLog();showToast('Cleared');fbWrite('/current/ronald',null);fbWrite('/current/manda',null);fbWrite('/log',null)}
 
-/* ═══ GAME SWITCHER ═══ */
-var gameNames = ['🐦 Flappy Bird', '🦈 Tap Game'];
-var gameKeys = ['flappy', 'tap'];
-var currentGameIndex = 0;
-
-function switchGame(dir) {
-    // Stop any running game
-    if (flappyGame.running || flappyGame.started) {
-        flappyGame.running = false;
-        flappyGame.gameOver = true;
-        if (flappyGame.animLoop) { cancelAnimationFrame(flappyGame.animLoop); flappyGame.animLoop = null; }
-    }
-    stopTapGame();
-
-    currentGameIndex = (currentGameIndex + dir + gameNames.length) % gameNames.length;
-    document.getElementById('game-tab-name').textContent = gameNames[currentGameIndex];
-    
-    document.getElementById('panel-flappy').classList.remove('active');
-    document.getElementById('panel-tap').classList.remove('active');
-    document.getElementById('panel-' + gameKeys[currentGameIndex]).classList.add('active');
-    
-    var labels = { flappy: 'Highscores for Flappy Bird 🐦', tap: 'Highscores for Tap Game 🦈' };
-    document.getElementById('hs-game-label').textContent = labels[gameKeys[currentGameIndex]];
-    
-    renderHighscores();
-}
-
-/* ═══ SHARED HIGHSCORES ═══ */
-function getHighscoreKey() { return gameKeys[currentGameIndex]; }
-
-function renderHighscores() {
-    var key = getHighscoreKey();
-    var allHS = JSON.parse(safeGet('game_highscores') || '{}');
-    var hs = allHS[key] || { ronald: null, manda: null };
-    
-    var rS = document.getElementById('ronald-highscore'), rT = document.getElementById('ronald-highscore-time');
-    var mS = document.getElementById('manda-highscore'), mT = document.getElementById('manda-highscore-time');
-    
-    if (hs.ronald) { rS.textContent = hs.ronald.score; rT.textContent = formatTime(hs.ronald.timestamp); } else { rS.textContent = '—'; rT.textContent = '—'; }
-    if (hs.manda) { mS.textContent = hs.manda.score; mT.textContent = formatTime(hs.manda.timestamp); } else { mS.textContent = '—'; mT.textContent = '—'; }
-}
-
-function saveHighscore(score) {
-    if (!currentUser) return;
-    var key = getHighscoreKey();
-    var userKey = currentUser.toLowerCase();
-    var allHS = JSON.parse(safeGet('game_highscores') || '{}');
-    if (!allHS[key]) allHS[key] = { ronald: null, manda: null };
-    if (!allHS[key][userKey] || score > allHS[key][userKey].score) {
-        allHS[key][userKey] = { score: score, timestamp: Date.now(), user: currentUser };
-        safeSet('game_highscores', JSON.stringify(allHS));
-        fbWrite('/games/' + key + '/highscores', allHS[key]).then(function() {
-            showToast('🎉 New highscore: ' + score + '!');
-        }).catch(function() {
-            showToast('🎉 Score: ' + score);
-        });
-    }
-    renderHighscores();
-}
-
 /* ═══ FLAPPY BIRD ═══ */
 var flappyCanvas = document.getElementById('flappy-canvas');
 var flappyCtx = flappyCanvas.getContext('2d');
 var flappyGame = {
-    bird: { x: 80, y: 240, vy: 0, radius: 12 }, pipes: [], score: 0,
-    running: false, gameOver: false, started: false,
-    gravity: 0.4, jumpForce: -6.5, pipeGap: 120, pipeWidth: 48, pipeSpeed: 2.2,
-    frameCount: 0, animLoop: null
+    bird: { x: 80, y: 240, vy: 0, radius: 12 },
+    pipes: [],
+    score: 0,
+    running: false,
+    gameOver: false,
+    started: false, // NEW: tracks if player has made first input
+    gravity: 0.4,
+    jumpForce: -6.5,
+    pipeGap: 120,
+    pipeWidth: 48,
+    pipeSpeed: 2.2,
+    frameCount: 0,
+    animLoop: null
 };
 
 function startFlappyGame() {
-    if (!currentUser) { showToast('Pick your name first!'); return; }
-    if (flappyGame.animLoop) { cancelAnimationFrame(flappyGame.animLoop); flappyGame.animLoop = null; }
+    if (!currentUser) {
+        showToast('Pick your name first!');
+        return;
+    }
+    
+    // Cancel any existing animation frame
+    if (flappyGame.animLoop) {
+        cancelAnimationFrame(flappyGame.animLoop);
+        flappyGame.animLoop = null;
+    }
+    
+    // Reset game state
     flappyGame.bird = { x: 80, y: 240, vy: 0, radius: 12 };
-    flappyGame.pipes = []; flappyGame.score = 0; flappyGame.running = false;
-    flappyGame.gameOver = false; flappyGame.started = false; flappyGame.frameCount = 0;
+    flappyGame.pipes = [];
+    flappyGame.score = 0;
+    flappyGame.running = false; // Don't start until first tap
+    flappyGame.gameOver = false;
+    flappyGame.started = false; // NEW
+    flappyGame.frameCount = 0;
+    
     document.getElementById('flappy-overlay').classList.add('hidden');
     document.getElementById('flappy-gameover').classList.add('hidden');
     document.getElementById('flappy-score-display').textContent = '0';
+    
+    // Draw initial state (bird floating, waiting for tap)
     flappyDraw();
+    
+    // Start the loop - but bird won't fall until first tap
     flappyGame.animLoop = requestAnimationFrame(flappyLoop);
 }
-
-function flappyJump() {
-    if (!flappyGame.started && !flappyGame.gameOver) { flappyGame.started = true; flappyGame.running = true; }
-    if (flappyGame.running && !flappyGame.gameOver) flappyGame.bird.vy = flappyGame.jumpForce;
-}
-flappyCanvas.addEventListener('click', flappyJump);
-flappyCanvas.addEventListener('touchstart', function(e) { e.preventDefault(); flappyJump(); }, { passive: false });
-document.addEventListener('keydown', function(e) { if (e.code === 'Space' && !flappyGame.gameOver && document.getElementById('panel-flappy').classList.contains('active')) { e.preventDefault(); flappyJump(); } });
-
-function flappyLoop() {
-    var g = flappyGame;
-    if (!g.started) { g.bird.y = 240 + Math.sin(Date.now() / 300) * 10; flappyDraw(); g.animLoop = requestAnimationFrame(flappyLoop); return; }
-    if (g.gameOver || !g.running) { g.animLoop = null; return; }
-    g.frameCount++;
-    g.bird.vy += g.gravity; g.bird.y += g.bird.vy;
-    if (g.bird.y - g.bird.radius < 0) { g.bird.y = g.bird.radius; g.bird.vy = 0; flappyGameOver(); flappyDraw(); return; }
-    if (g.bird.y + g.bird.radius > flappyCanvas.height) { g.bird.y = flappyCanvas.height - g.bird.radius; g.bird.vy = 0; flappyGameOver(); flappyDraw(); return; }
-    if (g.frameCount > 60 && g.frameCount % 80 === 0) { var minT = 50, maxT = flappyCanvas.height - g.pipeGap - 50; g.pipes.push({ x: flappyCanvas.width, topHeight: minT + Math.random() * (maxT - minT), scored: false }); }
-    var hitPipe = false;
-    for (var i = g.pipes.length - 1; i >= 0; i--) {
-        g.pipes[i].x -= g.pipeSpeed;
-        var b = g.bird, p = g.pipes[i];
-        if (b.x + b.radius > p.x && b.x - b.radius < p.x + g.pipeWidth) { if (b.y - b.radius < p.topHeight || b.y + b.radius > p.topHeight + g.pipeGap) { hitPipe = true; break; } }
-        if (!p.scored && p.x + g.pipeWidth < b.x - b.radius) { p.scored = true; g.score++; document.getElementById('flappy-score-display').textContent = g.score; }
-        if (p.x + g.pipeWidth < -10) g.pipes.splice(i, 1);
-    }
-    if (hitPipe) { flappyGameOver(); flappyDraw(); return; }
-    flappyDraw();
-    g.animLoop = requestAnimationFrame(flappyLoop);
-}
-
-function flappyDraw() {
-    var ctx = flappyCtx, g = flappyGame;
-    var grad = ctx.createLinearGradient(0, 0, 0, flappyCanvas.height);
-    grad.addColorStop(0, '#0c1929'); grad.addColorStop(0.7, '#1a2942'); grad.addColorStop(1, '#1e3a5f');
-    ctx.fillStyle = grad; ctx.fillRect(0, 0, flappyCanvas.width, flappyCanvas.height);
-    ctx.strokeStyle = 'rgba(59,130,246,0.3)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, flappyCanvas.height - 2); ctx.lineTo(flappyCanvas.width, flappyCanvas.height - 2); ctx.stroke();
-    for (var i = 0; i < g.pipes.length; i++) {
-        var p = g.pipes[i], pg = ctx.createLinearGradient(p.x, 0, p.x + g.pipeWidth, 0);
-        pg.addColorStop(0, '#2563eb'); pg.addColorStop(0.5, '#3b82f6'); pg.addColorStop(1, '#2563eb');
-        ctx.fillStyle = pg; ctx.fillRect(p.x, 0, g.pipeWidth, p.topHeight);
-        ctx.fillStyle = '#1d4ed8'; ctx.fillRect(p.x - 3, p.topHeight - 18, g.pipeWidth + 6, 18);
-        var bY = p.topHeight + g.pipeGap; ctx.fillStyle = pg; ctx.fillRect(p.x, bY, g.pipeWidth, flappyCanvas.height - bY);
-        ctx.fillStyle = '#1d4ed8'; ctx.fillRect(p.x - 3, bY, g.pipeWidth + 6, 18);
-    }
-    ctx.save(); ctx.translate(g.bird.x, g.bird.y);
-    ctx.rotate(Math.max(-0.5, Math.min(0.5, g.bird.vy * 0.06)));
-    ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.ellipse(0, 0, g.bird.radius, g.bird.radius * 0.8, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.fillStyle = 'white'; ctx.beginPath(); ctx.arc(5, -3, 4, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(6, -3, 2, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.moveTo(10, 0); ctx.lineTo(17, 2); ctx.lineTo(10, 4); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.ellipse(-3, 3 + Math.sin(g.frameCount * 0.15) * 3, 8, 5, -0.2, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
-    if (!g.started && !g.gameOver) { ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = '14px Inter,sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Tap to start!', flappyCanvas.width / 2, flappyCanvas.height - 40); }
-}
-
-function flappyGameOver() {
-    flappyGame.running = false; flappyGame.gameOver = true;
-    if (flappyGame.animLoop) { cancelAnimationFrame(flappyGame.animLoop); flappyGame.animLoop = null; }
-    document.getElementById('flappy-final-score').textContent = flappyGame.score;
-    document.getElementById('flappy-gameover').classList.remove('hidden');
-    saveHighscore(flappyGame.score);
-}
-
-flappyDraw();
-
-/* ═══ TAP GAME ═══ */
-var SHARK_IMG = 'https://z-cdn-media.chatglm.cn/files/bfcb5932-653b-48bc-9d45-dbb2d1d269fa.png?auth_key=1888264828-5455423eddb14aa8a040bbaaa46b6086-0-b7ed9750075d6568697109734d3ecce2';
-var DOG_IMG = 'https://z-cdn-media.chatglm.cn/files/02c1cc32-29d3-4325-a8ce-bcb7ded6a8ba.png?auth_key=1888264828-60386a86410e4c23a435a939d6ad7573-0-7c198f46da5938357596b38dfae5d2bc';
-
-var tapGame = {
-    score: 0, running: false, gameOver: false, started: false,
-    spawnTimer: null, targets: [],
-    spawnRate: 1100, targetLife: 1600, bombChance: 0.2,
-    combo: 0, maxCombo: 0
-};
-var tapArea = document.getElementById('tap-area');
-
-function startTapGame() {
-    if (!currentUser) { showToast('Pick your name first!'); return; }
-    stopTapGame();
-    tapGame.score = 0; tapGame.running = true; tapGame.gameOver = false; tapGame.started = true;
-    tapGame.spawnRate = 1100; tapGame.targetLife = 1600; tapGame.bombChance = 0.2;
-    tapGame.combo = 0; tapGame.maxCombo = 0;
-    // Clear old targets
-    tapArea.querySelectorAll('.tap-target,.tap-score-float,.tap-miss,.tap-flash').forEach(function(e) { e.remove(); });
-    document.getElementById('tap-overlay').classList.add('hidden');
-    document.getElementById('tap-gameover').classList.add('hidden');
-    document.getElementById('tap-score-display').textContent = '0';
-    document.getElementById('combo-display').classList.remove('show');
-    tapGame.spawnTimer = setInterval(spawnTapTarget, tapGame.spawnRate);
-}
-
-function stopTapGame() {
-    tapGame.running = false;
-    if (tapGame.spawnTimer) { clearInterval(tapGame.spawnTimer); tapGame.spawnTimer = null; }
-    tapArea.querySelectorAll('.tap-target').forEach(function(t) { clearTimeout(t._lifeTimer); t.remove(); });
-}
-
-function spawnTapTarget() {
-    if (!tapGame.running || tapGame.gameOver) return;
-    var area = tapArea;
-    var size = 50;
-    var padding = 10;
-    var maxX = area.clientWidth - size - padding;
-    var maxY = area.clientHeight - size - padding - 40; // 40 for score bar
-    var x = padding + Math.random() * Math.max(0, maxX);
-    var y = 40 + padding + Math.random() * Math.max(0, maxY);
-    
-    var isBomb = Math.random() < tapGame.bombChance;
-    
-    var el = document.createElement('div');
-    el.className = 'tap-target';
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
-    el.style.width = size + 'px';
-    el.style.height = size + 'px';
-    
-    if (isBomb) {
-        el.innerHTML = '<span style="font-size:40px;pointer-events:none">💣</span>';
-        el.onclick = function(e) {
-            e.stopPropagation();
-            if (!tapGame.running) return;
-            tapGame.running = false; tapGame.gameOver = true;
-            clearInterval(tapGame.spawnTimer); tapGame.spawnTimer = null;
-            // Flash red
-            var flash = document.createElement('div'); flash.className = 'tap-flash';
-            area.appendChild(flash); setTimeout(function() { flash.remove(); }, 300);
-            // Remove all targets
-            area.querySelectorAll('.tap-target').forEach(function(t) { clearTimeout(t._lifeTimer); t.remove(); });
-            tapGame.combo = 0;
-            document.getElementById('combo-display').classList.remove('show');
-            setTimeout(function() {
-                document.getElementById('tap-final-score').textContent = tapGame.score;
-                document.getElementById('tap-gameover').classList.remove('hidden');
-                saveHighscore(tapGame.score);
-            }, 400);
-        };
-    } else {
-        var img = Math.random() < 0.5 ? SHARK_IMG : DOG_IMG;
-        el.innerHTML = '<img src="' + img + '" style="width:100%;height:100%;object-fit:contain;pointer-events:none">';
-        el.onclick = function(e) {
-            e.stopPropagation();
-            if (!tapGame.running) return;
-            clearTimeout(el._lifeTimer);
-            // Score
-            tapGame.score++;
-            tapGame.combo++;
-            if (tapGame.combo > tapGame.maxCombo) tapGame.maxCombo = tapGame.combo;
-            document.getElementById('tap-score-display').textContent = tapGame.score;
-            // Float +1
-            var floater = document.createElement('div');
-            floater.className = 'tap-score-float';
-            floater.style.left = (x + size / 2 - 10) + 'px';
-            floater.style.top = (y - 5) + 'px';
-            floater.textContent = '+1';
-            area.appendChild(floater);
-            setTimeout(function() { floater.remove(); }, 600);
-            // Combo
-            if (tapGame.combo >= 3) {
-                var cd = document.getElementById('combo-display');
-                cd.textContent = '🔥 ' + tapGame.combo + 'x combo!';
-                cd.classList.add('show');
-            }
-            el.remove();
-            // Speed up
-            tapGame.spawnRate = Math.max(350, 1100 - tapGame.score * 25);
-            tapGame.targetLife = Math.max(500, 1600 - tapGame.score * 30);
-            tapGame.bombChance = Math.min(0.45, 0.2 + tapGame.score * 0.008);
-            // Restart interval with new speed
-            clearInterval(tapGame.spawnTimer);
-            tapGame.spawnTimer = setInterval(spawnTapTarget, tapGame.spawnRate);
-        };
-    }
-    
-    // Auto-remove after lifetime
-    el._lifeTimer = setTimeout(function() {
-        if (el.parentNode) {
-            if (!isBomb) {
-                // Missed! Reset combo
-                tapGame.combo = 0;
-                document.getElementById('combo-display').classList.remove('show');
-                // Show miss
-                var miss = document.createElement('div');
-                miss.className = 'tap-miss';
-                miss.style.left = (x + size / 2 - 8) + 'px';
-                miss.style.top = (y + size / 2 - 8) + 'px';
-                miss.textContent = '✕';
-                area.appendChild(miss);
-                setTimeout(function() { miss.remove(); }, 500);
-            }
-            el.remove();
-        }
-    }, tapGame.targetLife);
-    
-    area.appendChild(el);
-}
-
-// Prevent tap area click from doing anything else
-tapArea.addEventListener('click', function(e) { e.stopPropagation(); });
-
-/* ═══ INITIAL HIGHSCORE RENDER ═══ */
-renderHighscores();
 
 function flappyJump() {
     // First tap starts the game
@@ -1174,7 +880,7 @@ function flappyGameOver() {
             });
     }
     
-    renderHighscores();
+    renderFlappyHighscores();
 }
 
 function renderFlappyHighscores() {
@@ -1289,14 +995,6 @@ function syncNow() {
         }
     });
 
-    // Add this after the existing flappy highscores sync block in syncNow()
-if (data.games) {
-    var newGameHS = JSON.stringify(data.games);
-    if (safeGet('game_highscores') !== newGameHS) {
-        safeSet('game_highscores', newGameHS);
-        renderHighscores();
-    }
-}
 
     fbRead("/flappy/highscores", function(highscoreData) {
 
