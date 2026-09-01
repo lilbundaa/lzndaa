@@ -847,13 +847,7 @@ flappyDraw();
 var syncInterval = null;
 
 function startSync() {
-    if (syncInterval) return;
-
     syncNow();
-
-    syncInterval = setInterval(function() {
-        syncNow();
-    }, 3000);
 }
 
 
