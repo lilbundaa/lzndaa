@@ -543,17 +543,19 @@ function clearMoodLog(){safeSet('moodLog4','[]');try{localStorage.removeItem('mo
 var flappyCanvas = document.getElementById('flappy-canvas');
 var flappyCtx = flappyCanvas.getContext('2d');
 var flappyGame = {
-    bird: { x: 80, y: 240, vy: 0, radius: 15 },
+    bird: { x: 80, y: 240, vy: 0, radius: 12 },
     pipes: [],
     score: 0,
     running: false,
     gameOver: false,
-    gravity: 0.45,
-    jumpForce: -7,
-    pipeGap: 130,
-    pipeWidth: 52,
-    pipeSpeed: 2.5,
-    frameCount: 0
+    started: false, // NEW: tracks if player has made first input
+    gravity: 0.4,
+    jumpForce: -6.5,
+    pipeGap: 120,
+    pipeWidth: 48,
+    pipeSpeed: 2.2,
+    frameCount: 0,
+    animLoop: null
 };
 
 function startFlappyGame() {
@@ -561,52 +563,110 @@ function startFlappyGame() {
         showToast('Pick your name first!');
         return;
     }
-    flappyGame.bird = { x: 80, y: 240, vy: 0, radius: 15 };
+    
+    // Cancel any existing animation frame
+    if (flappyGame.animLoop) {
+        cancelAnimationFrame(flappyGame.animLoop);
+        flappyGame.animLoop = null;
+    }
+    
+    // Reset game state
+    flappyGame.bird = { x: 80, y: 240, vy: 0, radius: 12 };
     flappyGame.pipes = [];
     flappyGame.score = 0;
-    flappyGame.running = true;
+    flappyGame.running = false; // Don't start until first tap
     flappyGame.gameOver = false;
+    flappyGame.started = false; // NEW
     flappyGame.frameCount = 0;
+    
     document.getElementById('flappy-overlay').classList.add('hidden');
     document.getElementById('flappy-gameover').classList.add('hidden');
     document.getElementById('flappy-score-display').textContent = '0';
-    if (!flappyGame.animLoop) {
-        flappyGame.animLoop = requestAnimationFrame(flappyLoop);
-    }
+    
+    // Draw initial state (bird floating, waiting for tap)
+    flappyDraw();
+    
+    // Start the loop - but bird won't fall until first tap
+    flappyGame.animLoop = requestAnimationFrame(flappyLoop);
 }
 
 function flappyJump() {
+    // First tap starts the game
+    if (!flappyGame.started && !flappyGame.gameOver) {
+        flappyGame.started = true;
+        flappyGame.running = true;
+    }
+    
     if (flappyGame.running && !flappyGame.gameOver) {
         flappyGame.bird.vy = flappyGame.jumpForce;
     }
 }
 
 flappyCanvas.addEventListener('click', flappyJump);
-flappyCanvas.addEventListener('touchstart', function(e) { e.preventDefault(); flappyJump(); });
-document.addEventListener('keydown', function(e) {
-    if (e.code === 'Space' && flappyGame.running && !flappyGame.gameOver) {
-        e.preventDefault();
-        flappyJump();
-    }
+flappyCanvas.addEventListener('touchstart', function(e) { 
+    e.preventDefault(); 
+    flappyJump(); 
+}, { passive: false });
+document.addEventListener('keydown', function(e) { 
+    if (e.code === 'Space' && !flappyGame.gameOver) { 
+        e.preventDefault(); 
+        flappyJump(); 
+    } 
 });
 
 function flappyLoop() {
-    if (!flappyGame.running) {
-        flappyGame.animLoop = null;
+    var g = flappyGame;
+    
+    // If game hasn't started, just redraw the waiting state
+    if (!g.started) {
+        // Make bird float up and down slightly while waiting
+        g.bird.y = 240 + Math.sin(Date.now() / 300) * 10;
+        flappyDraw();
+        g.animLoop = requestAnimationFrame(flappyLoop);
         return;
     }
     
-    var g = flappyGame;
+    // Stop if game over
+    if (g.gameOver) {
+        g.animLoop = null;
+        return;
+    }
+    
+    // Stop if not running (shouldn't happen but safety check)
+    if (!g.running) {
+        g.animLoop = null;
+        return;
+    }
+    
     g.frameCount++;
     
-    // Update bird
+    // 1. Update bird position
     g.bird.vy += g.gravity;
     g.bird.y += g.bird.vy;
     
-    // Add pipes
-    if (g.frameCount % 90 === 0) {
-        var minTop = 60;
-        var maxTop = flappyCanvas.height - g.pipeGap - 60;
+    // 2. Check floor/ceiling collision FIRST (before pipes move)
+    var hitCeiling = g.bird.y - g.bird.radius < 0;
+    var hitFloor = g.bird.y + g.bird.radius > flappyCanvas.height;
+    
+    if (hitCeiling || hitFloor) {
+        // Clamp position so bird doesn't go off screen
+        if (hitCeiling) {
+            g.bird.y = g.bird.radius;
+            g.bird.vy = 0;
+        }
+        if (hitFloor) {
+            g.bird.y = flappyCanvas.height - g.bird.radius;
+            g.bird.vy = 0;
+        }
+        flappyGameOver();
+        flappyDraw(); // Draw final position
+        return;
+    }
+    
+    // 3. Add new pipes (after a delay so player has time)
+    if (g.frameCount > 60 && g.frameCount % 80 === 0) {
+        var minTop = 50;
+        var maxTop = flappyCanvas.height - g.pipeGap - 50;
         var topHeight = minTop + Math.random() * (maxTop - minTop);
         g.pipes.push({
             x: flappyCanvas.width,
@@ -615,191 +675,180 @@ function flappyLoop() {
         });
     }
     
-    // Update pipes
+    // 4. Update pipes and check collisions
+    var hitPipe = false;
     for (var i = g.pipes.length - 1; i >= 0; i--) {
         g.pipes[i].x -= g.pipeSpeed;
         
-        // Score
-        if (!g.pipes[i].scored && g.pipes[i].x + g.pipeWidth < g.bird.x) {
-            g.pipes[i].scored = true;
+        // Check pipe collision
+        var bird = g.bird;
+        var pipe = g.pipes[i];
+        
+        // Is bird horizontally overlapping with pipe?
+        if (bird.x + bird.radius > pipe.x && bird.x - bird.radius < pipe.x + g.pipeWidth) {
+            // Is bird outside the gap?
+            if (bird.y - bird.radius < pipe.topHeight || 
+                bird.y + bird.radius > pipe.topHeight + g.pipeGap) {
+                hitPipe = true;
+                break;
+            }
+        }
+        
+        // Score ONLY if bird has safely passed the pipe
+        // The right edge of pipe is past the left edge of bird
+        if (!pipe.scored && pipe.x + g.pipeWidth < bird.x - bird.radius) {
+            pipe.scored = true;
             g.score++;
             document.getElementById('flappy-score-display').textContent = g.score;
         }
         
         // Remove off-screen pipes
-        if (g.pipes[i].x + g.pipeWidth < 0) {
+        if (pipe.x + g.pipeWidth < -10) {
             g.pipes.splice(i, 1);
         }
     }
     
-    // Check collision
-    var bird = g.bird;
-    var hitCeiling = bird.y - bird.radius < 0;
-    var hitFloor = bird.y + bird.radius > flappyCanvas.height;
-    var hitPipe = false;
-    
-    for (var j = 0; j < g.pipes.length; j++) {
-        var pipe = g.pipes[j];
-        if (bird.x + bird.radius > pipe.x && bird.x - bird.radius < pipe.x + g.pipeWidth) {
-            if (bird.y - bird.radius < pipe.topHeight || bird.y + bird.radius > pipe.topHeight + g.pipeGap) {
-                hitPipe = true;
-                break;
-            }
-        }
+    if (hitPipe) {
+        flappyGameOver();
+        flappyDraw();
+        return;
     }
     
-    if (hitCeiling || hitFloor || hitPipe) {
-        var userKey = currentUser.toLowerCase();
-
-var highscores = JSON.parse(
-    safeGet("flappy_highscores") ||
-    '{"ronald":null,"manda":null}'
-);
-
-var oldScore = highscores[userKey]
-    ? highscores[userKey].score
-    : -1;
-
-
-if (flappyGame.score > oldScore) {
-
-    highscores[userKey] = {
-        score: flappyGame.score,
-        timestamp: Date.now(),
-        user: currentUser
-    };
-
-    safeSet(
-        "flappy_highscores",
-        JSON.stringify(highscores)
-    );
-
-    renderFlappyHighscores();
-
-
-    fbWrite(
-        "/flappy/highscores",
-        highscores
-    )
-    .then(function() {
-
-        showToast(
-            "🎉 New highscore: " +
-            flappyGame.score +
-            "! Synced!"
-        );
-
-    })
-    .catch(function() {
-
-        showToast(
-            "⚠️ Highscore saved locally but failed to sync"
-        );
-
-    });
-}
-    }
-    
-    // Draw
+    // 5. Draw everything
     flappyDraw();
     
-    flappyGame.animLoop = requestAnimationFrame(flappyLoop);
+    // 6. Continue loop
+    g.animLoop = requestAnimationFrame(flappyLoop);
 }
 
 function flappyDraw() {
     var ctx = flappyCtx;
     var g = flappyGame;
     
-    // Background
+    // Background gradient
     var gradient = ctx.createLinearGradient(0, 0, 0, flappyCanvas.height);
     gradient.addColorStop(0, '#0c1929');
-    gradient.addColorStop(1, '#1a2942');
+    gradient.addColorStop(0.7, '#1a2942');
+    gradient.addColorStop(1, '#1e3a5f');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, flappyCanvas.width, flappyCanvas.height);
+    
+    // Draw ground line
+    ctx.strokeStyle = 'rgba(59, 130, 246, 0.3)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, flappyCanvas.height - 2);
+    ctx.lineTo(flappyCanvas.width, flappyCanvas.height - 2);
+    ctx.stroke();
     
     // Draw pipes
     for (var i = 0; i < g.pipes.length; i++) {
         var pipe = g.pipes[i];
         
-        // Top pipe
+        // Pipe gradient
         var pipeGrad = ctx.createLinearGradient(pipe.x, 0, pipe.x + g.pipeWidth, 0);
-        pipeGrad.addColorStop(0, '#3b82f6');
-        pipeGrad.addColorStop(0.5, '#60a5fa');
-        pipeGrad.addColorStop(1, '#3b82f6');
+        pipeGrad.addColorStop(0, '#2563eb');
+        pipeGrad.addColorStop(0.5, '#3b82f6');
+        pipeGrad.addColorStop(1, '#2563eb');
+        
+        // Top pipe body
         ctx.fillStyle = pipeGrad;
         ctx.fillRect(pipe.x, 0, g.pipeWidth, pipe.topHeight);
         
         // Top pipe cap
-        ctx.fillStyle = '#2563eb';
-        ctx.fillRect(pipe.x - 4, pipe.topHeight - 20, g.pipeWidth + 8, 20);
-        ctx.strokeStyle = '#1d4ed8';
+        ctx.fillStyle = '#1d4ed8';
+        ctx.fillRect(pipe.x - 3, pipe.topHeight - 18, g.pipeWidth + 6, 18);
+        ctx.strokeStyle = '#1e40af';
         ctx.lineWidth = 1;
-        ctx.strokeRect(pipe.x - 4, pipe.topHeight - 20, g.pipeWidth + 8, 20);
+        ctx.strokeRect(pipe.x - 3, pipe.topHeight - 18, g.pipeWidth + 6, 18);
         
-        // Bottom pipe
+        // Bottom pipe body
         var bottomY = pipe.topHeight + g.pipeGap;
         ctx.fillStyle = pipeGrad;
         ctx.fillRect(pipe.x, bottomY, g.pipeWidth, flappyCanvas.height - bottomY);
         
         // Bottom pipe cap
-        ctx.fillStyle = '#2563eb';
-        ctx.fillRect(pipe.x - 4, bottomY, g.pipeWidth + 8, 20);
-        ctx.strokeStyle = '#1d4ed8';
-        ctx.strokeRect(pipe.x - 4, bottomY, g.pipeWidth + 8, 20);
+        ctx.fillStyle = '#1d4ed8';
+        ctx.fillRect(pipe.x - 3, bottomY, g.pipeWidth + 6, 18);
+        ctx.strokeStyle = '#1e40af';
+        ctx.strokeRect(pipe.x - 3, bottomY, g.pipeWidth + 6, 18);
     }
     
     // Draw bird
     ctx.save();
     ctx.translate(g.bird.x, g.bird.y);
-    var angle = Math.min(g.bird.vy * 0.08, 0.5);
+    
+    // Rotate bird based on velocity (but not too much)
+    var angle = Math.max(-0.5, Math.min(0.5, g.bird.vy * 0.06));
     ctx.rotate(angle);
     
-    // Bird body
+    // Bird body (golden)
     ctx.fillStyle = '#fbbf24';
     ctx.beginPath();
-    ctx.ellipse(0, 0, g.bird.radius, g.bird.radius * 0.85, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, g.bird.radius, g.bird.radius * 0.8, 0, 0, Math.PI * 2);
     ctx.fill();
+    
+    // Bird outline
     ctx.strokeStyle = '#f59e0b';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.5;
     ctx.stroke();
     
-    // Bird eye
+    // Bird eye (white)
     ctx.fillStyle = 'white';
     ctx.beginPath();
-    ctx.arc(6, -4, 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.arc(7, -4, 2.5, 0, Math.PI * 2);
+    ctx.arc(5, -3, 4, 0, Math.PI * 2);
     ctx.fill();
     
-    // Bird beak
+    // Bird pupil (black)
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.arc(6, -3, 2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Bird beak (orange/red)
     ctx.fillStyle = '#ef4444';
     ctx.beginPath();
-    ctx.moveTo(12, 0);
-    ctx.lineTo(20, 2);
-    ctx.lineTo(12, 5);
+    ctx.moveTo(10, 0);
+    ctx.lineTo(17, 2);
+    ctx.lineTo(10, 4);
     ctx.closePath();
     ctx.fill();
     
     // Bird wing
     ctx.fillStyle = '#f59e0b';
     ctx.beginPath();
-    ctx.ellipse(-4, 4, 10, 6, -0.3, 0, Math.PI * 2);
+    var wingFlap = Math.sin(g.frameCount * 0.15) * 3;
+    ctx.ellipse(-3, 3 + wingFlap, 8, 5, -0.2, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.restore();
+    
+    // Draw "Tap to start" text if not started
+    if (!g.started && !g.gameOver) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.font = '14px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Tap to start!', flappyCanvas.width / 2, flappyCanvas.height - 40);
+    }
 }
 
 function flappyGameOver() {
     flappyGame.running = false;
     flappyGame.gameOver = true;
+    
+    // Cancel animation frame
+    if (flappyGame.animLoop) {
+        cancelAnimationFrame(flappyGame.animLoop);
+        flappyGame.animLoop = null;
+    }
+    
     document.getElementById('flappy-final-score').textContent = flappyGame.score;
     document.getElementById('flappy-gameover').classList.remove('hidden');
     
     // Update highscore
     var userKey = currentUser.toLowerCase();
     var highscores = JSON.parse(safeGet('flappy_highscores') || '{"ronald":null,"manda":null}');
+    
     if (!highscores[userKey] || flappyGame.score > highscores[userKey].score) {
         highscores[userKey] = {
             score: flappyGame.score,
@@ -807,8 +856,13 @@ function flappyGameOver() {
             user: currentUser
         };
         safeSet('flappy_highscores', JSON.stringify(highscores));
-        fbWrite('/flappy/highscores', highscores);
-        showToast('🎉 New highscore: ' + flappyGame.score + '!');
+        fbWrite('/flappy/highscores', highscores)
+            .then(function() {
+                showToast('🎉 New highscore: ' + flappyGame.score + '!');
+            })
+            .catch(function() {
+                showToast('🎉 Score: ' + flappyGame.score);
+            });
     }
     
     renderFlappyHighscores();
@@ -839,7 +893,7 @@ function renderFlappyHighscores() {
     }
 }
 
-// Initial draw for flappy bird
+// Draw initial state
 flappyDraw();
 
 /* ═══ SYNC ═══ */
