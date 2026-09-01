@@ -9,152 +9,104 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Inter',sans-serif;background:#050816;color:#fff;overflow-x:hidden;transition:background-color 1.8s cubic-bezier(0.25,0.46,0.45,0.94)}
+        body{font-family:'Inter',sans-serif;background:#0f172a;color:#fff;overflow-x:hidden;transition:background-color 1.8s cubic-bezier(0.25,0.46,0.45,0.94)}
         body.romance-mode{background:#0a0510}
         @keyframes globalFadeIn{0%{opacity:0}100%{opacity:1}}body{animation:globalFadeIn 1s ease-out forwards}
 
-        .bg-mesh{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-        .bg-mesh::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(59,130,246,.1) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 90%,rgba(6,182,212,.08) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 50% 50%,rgba(99,102,241,.06) 0%,transparent 70%);animation:meshShift 15s ease-in-out infinite alternate}
-        @keyframes meshShift{0%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}100%{opacity:.8;transform:scale(.98)}}
-        body.romance-mode .bg-mesh::before{background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(244,114,182,.12) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 90%,rgba(196,181,253,.1) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 50% 50%,rgba(253,164,175,.08) 0%,transparent 70%)}
-        .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 70% at 50% 30%,black 20%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse 70% 70% at 50% 30%,black 20%,transparent 70%)}
-        .bg-noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3Cfilter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:128px 128px}
-        .bg-vignette{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 40%,rgba(5,8,22,.85) 100%)}
-        body.romance-mode .bg-vignette{background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 40%,rgba(10,5,16,.85) 100%)}
-        .glow-orb{position:absolute;border-radius:50%;filter:blur(80px);transition:background 2s ease}
-        .glow-1{width:500px;height:500px;top:-15%;left:-5%;background:rgba(59,130,246,.12);animation:orbFloat1 20s ease-in-out infinite}
-        .glow-2{width:400px;height:400px;top:40%;right:-10%;background:rgba(6,182,212,.1);animation:orbFloat2 18s ease-in-out infinite}
-        .glow-3{width:350px;height:350px;bottom:-5%;left:25%;background:rgba(139,92,246,.08);animation:orbFloat3 22s ease-in-out infinite}
-        .glow-4{width:280px;height:280px;top:15%;left:45%;background:rgba(59,130,246,.06);animation:orbFloat4 16s ease-in-out infinite}
-        .glow-5{width:320px;height:320px;bottom:25%;right:15%;background:rgba(6,182,212,.05);animation:orbFloat5 24s ease-in-out infinite}
-        body.romance-mode .glow-1{background:rgba(244,114,182,.15)}body.romance-mode .glow-2{background:rgba(196,181,253,.12)}body.romance-mode .glow-3{background:rgba(253,164,175,.1)}body.romance-mode .glow-4{background:rgba(244,114,182,.08)}body.romance-mode .glow-5{background:rgba(196,181,253,.06)}
-        @keyframes orbFloat1{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(40px,30px) scale(1.1)}50%{transform:translate(-20px,60px) scale(.95)}75%{transform:translate(30px,-20px) scale(1.05)}}
-        @keyframes orbFloat2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-50px,-30px) scale(1.08)}50%{transform:translate(20px,-50px) scale(.92)}75%{transform:translate(-30px,20px) scale(1.03)}}
-        @keyframes orbFloat3{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-40px) scale(1.12)}66%{transform:translate(-40px,30px) scale(.9)}}
-        @keyframes orbFloat4{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.15)}}
-        @keyframes orbFloat5{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,-50px) scale(1.1)}}
-        .floating-particle{position:fixed;width:2px;height:2px;background:rgba(147,197,253,.4);border-radius:50%;pointer-events:none;z-index:0;animation:particleFloat linear infinite}
-        @keyframes particleFloat{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:.8}90%{opacity:.4}100%{transform:translateY(-10vh) translateX(30px);opacity:0}}
-        body.romance-mode .floating-particle{background:rgba(244,114,182,.5)}
-        .shooting-star{position:fixed;width:80px;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.6),transparent);pointer-events:none;z-index:0;opacity:0;animation:shoot 8s linear infinite}
-        @keyframes shoot{0%{transform:translateX(-100px) translateY(0) rotate(-35deg);opacity:0}2%{opacity:.7}8%{transform:translateX(400px) translateY(200px) rotate(-35deg);opacity:0}100%{opacity:0}}
-
+        /* Profile pictures */
         .profile-pic{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid rgba(59,130,246,.3);transition:all .3s ease}
         .profile-pic-manda{border-color:rgba(6,182,212,.3)}
         .entry-card{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 32px;border-radius:24px;cursor:pointer;transition:all .3s ease;position:relative}
         .entry-card::before{content:'';position:absolute;inset:-1px;border-radius:25px;padding:1px;background:linear-gradient(135deg,rgba(59,130,246,.2),transparent,rgba(59,130,246,.1));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:0;transition:opacity .3s ease}
         .entry-card-manda::before{background:linear-gradient(135deg,rgba(6,182,212,.2),transparent,rgba(6,182,212,.1))}
-        .entry-card:hover{transform:translateY(-6px) scale(1.03)}.entry-card:hover::before{opacity:1}.entry-card:active{transform:scale(.97)}
+        .entry-card:hover{transform:translateY(-6px) scale(1.03)}
+        .entry-card:hover::before{opacity:1}
+        .entry-card:active{transform:scale(.97)}
         .entry-card-ronald{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.12)}
         .entry-card-ronald:hover{background:rgba(59,130,246,.12);box-shadow:0 12px 40px -12px rgba(59,130,246,.2)}
         .entry-card-manda{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.12)}
         .entry-card-manda:hover{background:rgba(6,182,212,.12);box-shadow:0 12px 40px -12px rgba(6,182,212,.2)}
+
         .badge-pic{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(59,130,246,.3);transition:border-color 1.5s ease}
         body.romance-mode .badge-pic{border-color:rgba(244,114,182,.3)}
-        #entry-screen{position:fixed;inset:0;z-index:200;background:#050816;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .6s ease,transform .6s ease}
-        body.romance-mode #entry-screen{background:#0a0510}
+
+        #entry-screen{position:fixed;inset:0;z-index:200;background:#0f172a;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .6s ease,transform .6s ease}
         #entry-screen.leaving{opacity:0;transform:scale(1.05);pointer-events:none}
         #entry-screen.gone{display:none!important}
+
         .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.25,.46,.45,.94),transform .8s cubic-bezier(.25,.46,.45,.94)}
         .reveal-visible{opacity:1;transform:translateY(0)}
+
         .text-accent{background:linear-gradient(135deg,#93c5fd,#67e8f9,#93c5fd);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s ease-in-out infinite;transition:all 1.5s ease}
         body.romance-mode .text-accent{background:linear-gradient(135deg,#fda4af,#f9a8d4,#c4b5fd,#fda4af);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s ease-in-out infinite}
         @keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
         .section-label{transition:color 1.5s ease}body.romance-mode .section-label{color:#f472b6}
+        .glow-orb{transition:background 2s ease,opacity 2s ease}
+        .glow-1{background:rgba(59,130,246,.08)}.glow-2{background:rgba(6,182,212,.06)}.glow-3{background:rgba(99,102,241,.05)}
+        body.romance-mode .glow-1{background:rgba(244,114,182,.08)}body.romance-mode .glow-2{background:rgba(196,181,253,.06)}body.romance-mode .glow-3{background:rgba(253,230,138,.05)}
+
         .card-hover{transition:transform 500ms cubic-bezier(.25,.46,.45,.94),box-shadow 500ms cubic-bezier(.25,.46,.45,.94),border-color 500ms cubic-bezier(.25,.46,.45,.94)}
         .card-hover:hover{transform:translateY(-5px);box-shadow:0 12px 40px -12px rgba(59,130,246,.15);border-color:rgba(59,130,246,.15)}
         body.romance-mode .card-hover:hover{box-shadow:0 12px 40px -12px rgba(244,114,182,.25);border-color:rgba(244,114,182,.2)}
-        @keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.2)}28%{transform:scale(1)}42%{transform:scale(1.12)}56%{transform:scale(1)}}.heartbeat{animation:heartbeat 1.8s ease-in-out infinite;display:inline-block}
+
+        .img-hover img{transition:transform 700ms cubic-bezier(.25,.46,.45,.94)}.img-hover:hover img{transform:scale(1.05)}
+        @keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.2)}28%{transform:scale(1)}42%{transform:scale(1.12)}56%{transform:scale(1)}}
+        .heartbeat{animation:heartbeat 1.8s ease-in-out infinite;display:inline-block}
+
+        @keyframes floatHeart{0%{transform:translateY(100vh) rotate(0) scale(0);opacity:0}10%{opacity:.7;scale:1}90%{opacity:.3}100%{transform:translateY(-10vh) rotate(360deg) scale(.3);opacity:0}}
+        .floating-heart{position:fixed;bottom:-20px;pointer-events:none;z-index:0;animation:floatHeart linear forwards;font-size:16px}
+
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}.cursor-blink::after{content:'|';animation:blink 1s step-end infinite;color:#67e8f9;margin-left:2px;transition:color 1.5s ease}body.romance-mode .cursor-blink::after{color:#f9a8d4}
+
         @keyframes slideInUp{0%{transform:translateY(20px) scale(.95);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
         @keyframes slideOutDown{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(20px) scale(.95);opacity:0}}
         .toast-in{animation:slideInUp .4s ease-out forwards}.toast-out{animation:slideOutDown .4s ease-in forwards}
+
         @keyframes burstHeart{0%{opacity:1}100%{opacity:0}}.burst-heart{position:fixed;pointer-events:none;z-index:999;font-size:20px}
+        @keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.8}}.star{position:fixed;background:#fff;border-radius:50%;pointer-events:none;z-index:0}
+
         @keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(244,114,182,.3),0 0 60px rgba(244,114,182,.1)}50%{box-shadow:0 0 40px rgba(244,114,182,.5),0 0 100px rgba(244,114,182,.2)}}.glow-pulse{animation:glowPulse 2s ease-in-out infinite}
+
         @keyframes unfold{0%{max-height:0;opacity:0;padding:0 24px}100%{max-height:800px;opacity:1;padding:24px}}.letter-unfold{animation:unfold 1.2s cubic-bezier(.25,.46,.45,.94) forwards;overflow:hidden}
-        .movie-card{position:relative;overflow:hidden}
-        .movie-card .movie-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,8,22,.95) 0%,rgba(5,8,22,.4) 50%,transparent 100%);transition:background 2s ease}
-        body.romance-mode .movie-card .movie-overlay{background:linear-gradient(to top,rgba(10,5,16,.95) 0%,rgba(10,5,16,.4) 50%,transparent 100%)}
-        .movie-number{position:absolute;top:12px;left:12px;width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#93c5fd;transition:all 1.5s ease;z-index:5}
-        body.romance-mode .movie-number{background:rgba(244,114,182,.2);border-color:rgba(244,114,182,.3);color:#fda4af}
+
+        .movie-card{position:relative;overflow:hidden}.movie-card .movie-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,23,42,.95) 0%,rgba(15,23,42,.4) 50%,transparent 100%);transition:background 2s ease}body.romance-mode .movie-card .movie-overlay{background:linear-gradient(to top,rgba(10,5,16,.95) 0%,rgba(10,5,16,.4) 50%,transparent 100%)}
+        .movie-number{position:absolute;top:12px;left:12px;width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#93c5fd;transition:all 1.5s ease}body.romance-mode .movie-number{background:rgba(244,114,182,.2);border-color:rgba(244,114,182,.3);color:#fda4af}
+
         .mood-btn{transition:all 300ms cubic-bezier(.25,.46,.45,.94)}.mood-btn:hover{transform:translateY(-4px) scale(1.08)}.mood-btn:active{transform:scale(.95)}.mood-btn.selected{transform:scale(1.1);box-shadow:0 0 30px var(--mood-glow)}
+        @keyframes moodPop{0%{transform:scale(.5);opacity:0}50%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}.mood-pop{animation:moodPop .5s cubic-bezier(.25,.46,.45,.94) forwards}
         @keyframes breathe{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}.mood-breathe{animation:breathe 3s ease-in-out infinite}
         @keyframes logSlide{0%{transform:translateX(-20px);opacity:0}100%{transform:translateX(0);opacity:1}}.log-entry{animation:logSlide .4s ease-out forwards}
+
         .hidden-section{display:none}.hidden-section.revealed{display:block}
         @keyframes revealSection{0%{opacity:0;transform:translateY(40px)}100%{opacity:1;transform:translateY(0)}}.section-reveal-anim{animation:revealSection 1.2s cubic-bezier(.25,.46,.45,.94) forwards}
+
+        .trigger-yes{background:linear-gradient(135deg,#3b82f6,#06b6d4);transition:all .3s ease}.trigger-yes:hover{background:linear-gradient(135deg,#60a5fa,#22d3ee)}
         .user-badge{transition:all 1.5s ease}body.romance-mode .user-badge{border-color:rgba(244,114,182,.3);background:rgba(244,114,182,.1)}body.romance-mode .user-badge-text{color:#fda4af}
-        .sync-dot{width:6px;height:6px;border-radius:50%;display:inline-block;transition:background .3s ease}.sync-dot.on{background:#34d399}.sync-dot.off{background:#64748b}
 
-        /* ═══ FLAPPY BIRD ═══ */
-        .flappy-container{position:relative;width:120px;height:120px;margin:0 auto 20px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-        .flappy-body{position:relative;width:100%;height:100%;transition:transform-origin:50% 50%;animation:flapIdle 2s ease-in-out infinite}
-        .flappy-wing{position:absolute;top:0;width:48%;height:100%;background:rgba(147,197,253,.15);border-radius:50% 50%;transform-origin:100% 50%;transition:transform-origin:0% 0%}
-        .flappy-wing.right{right:0;transform-origin:100% 0%;border-radius:50% 50%}
-        .flappy-eye{position:absolute;width:8px;height:8px;background:rgba(255,255,255,.9);border-radius:50%;top:22%;left:50%;transform:translateX(-50%)}
-        .flappy-beak{position:absolute;bottom:0;left:50%;width:12px;height:3px;background:rgba(249,115,87,.8);border-radius:0 0 0 3px;transform:translateX(-50%)}
-        @keyframes flapIdle{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-25deg)}100%{transform:rotate(0deg)}}
-        .flappy-container:hover .flappy-body{animation:flapFlap .4s ease-in-out forwards}
-        @keyframes flapFlap{0%{transform:rotate(0deg) scaleY(1)}30%{transform:rotate(-30deg) scaleY(1)}60%{transform:rotate(-15deg) scaleY(1)}100%{transform:rotate(0deg) scaleY(1)}}
+        .sync-dot{width:6px;height:6px;border-radius:50%;display:inline-block;transition:background .3s ease}
+        .sync-dot.on{background:#34d399}.sync-dot.off{background:#64748b}
 
-        /* ═══ GAME SECTION ═══ */
-        .game-section{position:relative;overflow:hidden;transition:max-height:0;opacity:0}
-        .game-section.open{max-height:2000px;opacity:1}
-        @keyframes gameReveal{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
+        #movie-modal{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px}
+        #movie-modal.open{display:flex}
+        .modal-content{background:#1e293b;border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:24px}
+        .form-input{width:100%;padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:white;font-size:14px;font-weight:300;font-family:Inter,sans-serif;outline:none;transition:border-color .2s}
+        .form-input:focus{border-color:rgba(59,130,246,.5)}.form-input::placeholder{color:rgb(71,85,105)}
+        .img-option{width:80px;height:56px;border-radius:10px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:all .2s;flex-shrink:0}
+        .img-option:hover{border-color:rgba(59,130,246,.4)}.img-option.selected{border-color:rgb(59,130,246);box-shadow:0 0 15px rgba(59,130,246,.3)}
+        .img-option img{width:100%;height:100%;object-fit:cover}
+        .rate-stars{display:inline-flex;gap:2px;cursor:pointer}.rate-stars span{font-size:14px;color:rgb(71,85,105);transition:color .15s}.rate-stars span.filled{color:#fbbf24}
 
-        .flappy-score-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:20px 24px;text-align:center;transition:all .3s ease}
-        .flappy-score-card:hover{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2);box-shadow:0 8px 30px -8px rgba(59,130,246,.15)}
-        body.romance-mode .flappy-score-card{background:rgba(244,114,182,.06);border-color:rgba(244,114,182,.15);box-shadow:0 8px 30px -8px rgba(244,114,182,.2)}
-
-        .score-display{font-size:48px;font-weight:200;color:rgba(255,255,255,.6);line-height:1;letter-spacing:-.02em}
-        .score-label{font-size:10px;font-weight:500;color:rgb(148,163,184);letter-spacing:.15em;text-transform:uppercase;margin-top:4px}
-        .score-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:8px}
-        .score-name{font-size:13px;font-weight:400;color:rgb(203,213,252);min-width:80px}
-        .score-value{font-size:32px;font-weight:200;color:#fbbf24;letter-spacing:-.02em}
-        .score-divider{width:1px;height:24px;background:rgba(255,255,255,.06);margin:0 12px}
-        .score-date{font-size:10px;color:rgb(100,116,139);margin-top:2px}
-
-        .game-input{width:100%;padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:white;font-size:14px;font-weight:300;font-family:Inter,sans-serif;outline:none;transition:border-color .2s}
-        .game-input:focus{border-color:rgba(59,130,246,.5)}
-        .game-input::placeholder{color:rgb(71,85,105)}
-
-        .game-submit{width:100%;padding:12px 24px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s}
-        .game-submit:hover{opacity:.85}
-        .game-submit:active{transform:scale(.97)}
-
-        /* ═══ DELETE CONFIRM MODAL ═══ */
-        #delete-confirm-modal{position:fixed;inset:0;z-index:160;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px}
-        #delete-confirm-modal.open{display:flex}
-        .modal-content{background:rgba(15,23,42,.98);border:1px solid rgba(255,255,255,.1);border-radius:20px;max-width:400px;width:100%;text-align:center;padding:24px}
-        .delete-movie-img{width:60px;height:84px;border-radius:12px;object-fit:cover;border:2px solid rgba(255,255,255,.1);margin-bottom:16px}
-        .delete-btn-row{display:flex;gap:12px}
-
-        section{position:relative;z-index:1}
-        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#050816;transition:background 1.5s ease}body.romance-mode ::-webkit-scrollbar-track{background:#0a0510}::-webkit-scrollbar-thumb{background:rgba(59,130,246,.3);border-radius:3px;transition:background 1.5s ease}body.romance-mode ::-webkit-scrollbar-thumb{background:rgba(244,114,182,.3)}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#0f172a;transition:background 1.5s ease}body.romance-mode ::-webkit-scrollbar-track{background:#0a0510}::-webkit-scrollbar-thumb{background:rgba(59,130,246,.3);border-radius:3px;transition:background 1.5s ease}body.romance-mode ::-webkit-scrollbar-thumb{background:rgba(244,114,182,.3)}
     </style>
 </head>
 <body>
 
-<div class="bg-mesh"></div>
-<div class="bg-grid"></div>
-<div class="bg-noise"></div>
-<div class="bg-vignette"></div>
-<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <div class="glow-orb glow-1"></div>
-    <div class="glow-orb glow-2"></div>
-    <div class="glow-orb glow-3"></div>
-    <div class="glow-orb glow-4"></div>
-    <div class="glow-orb glow-5"></div>
-</div>
-<div id="particles-container"></div>
-<div class="shooting-star" style="top:15%;left:10%;animation-delay:0s"></div>
-<div class="shooting-star" style="top:35%;left:50%;animation-delay:3.5s"></div>
-<div class="shooting-star" style="top:60%;left:25%;animation-delay:7s"></div>
-
-<!-- ENTRY SCREEN -->
+<!-- ═══ ENTRY SCREEN ═══ -->
 <div id="entry-screen">
     <div style="position:fixed;inset:0;pointer-events:none;overflow:hidden">
-        <div style="position:absolute;top:20%;left:10%;width:300px;height:300px;background:rgba(59,130,246,.08);border-radius:50%;filter:blur(100px)"></div>
-        <div style="position:absolute;bottom:20%;right:10%;width:250px;height:250px;background:rgba(6,182,212,.06);border-radius:50%;filter:blur(80px)"></div>
+        <div style="position:absolute;top:20%;left:10%;width:300px;height:300px;background:rgba(59,130,246,.05);border-radius:50%;filter:blur(100px)"></div>
+        <div style="position:absolute;bottom:20%;right:10%;width:250px;height:250px;background:rgba(6,182,212,.05);border-radius:50%;filter:blur(80px)"></div>
     </div>
     <div style="position:relative;z-index:10;text-align:center;padding:0 24px">
         <div style="font-size:40px;margin-bottom:12px">🎮</div>
@@ -175,9 +127,16 @@
 </div>
 
 <div id="toast-container" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;align-items:center;gap:12px"></div>
+<div id="stars-container"></div>
+
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="glow-orb glow-1" style="position:absolute;top:-200px;left:-100px;width:500px;height:500px;border-radius:50%;filter:blur(120px)"></div>
+    <div class="glow-orb glow-2" style="position:absolute;top:50%;right:-200px;width:400px;height:400px;border-radius:50%;filter:blur(100px)"></div>
+    <div class="glow-orb glow-3" style="position:absolute;bottom:-100px;left:30%;width:350px;height:350px;border-radius:50%;filter:blur(100px)"></div>
+</div>
 
 <!-- HERO -->
-<section class="relative min-h-screen flex items-center justify-content px-4 pt-16 pb-20">
+<section class="relative min-h-screen flex items-center justify-center px-4 pt-16 pb-20">
     <div class="max-w-3xl mx-auto text-center relative z-10">
         <div class="reveal mb-6 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 user-badge">
             <img id="badge-pic" src="" alt="" class="badge-pic" style="display:none">
@@ -197,14 +156,14 @@
         <div class="reveal" style="transition-delay:900ms">
             <button onclick="document.getElementById('mood-section').scrollIntoView({behavior:'smooth'})" class="inline-flex flex-col items-center gap-2 text-slate-500 hover:text-sky-400 transition-colors group">
                 <span class="text-xs tracking-widest uppercase">Check it out</span>
-                <svg class="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                <i data-lucide="chevron-down" class="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300"></i>
             </button>
         </div>
     </div>
 </section>
 
 <!-- MOOD -->
-<section id="mood-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5" style="background:rgba(255,255,255,.01)">
+<section id="mood-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
     <div class="max-w-3xl mx-auto">
         <div class="text-center mb-10">
             <p class="reveal text-xs font-medium section-label text-cyan-400 tracking-widest uppercase mb-4">Daily check-in <span class="sync-dot off" id="sync-dot" title="Sync status"></span></p>
@@ -217,112 +176,21 @@
         </div>
         <div class="reveal grid grid-cols-3 sm:grid-cols-6 gap-3 mb-12" style="transition-delay:250ms">
             <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(52,211,153,.3)" onclick="setMood('amazing','🤩','Amazing','emerald')" data-mood="amazing"><span class="text-2xl">🤩</span><span class="text-[10px] font-medium text-emerald-400 tracking-wide">Amazing</span></button>
-            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border-white/5 bg-white/3" style="--mood-glow:rgba(251,191,36,.3)" onclick="setMood('happy','😊','Happy','amber')" data-mood="happy"><span class="text-2xl">😊</span><span class="text-[10px] font-medium text-amber-400 tracking-wide">Happy</span></button>
-            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border-white/5 bg-white/3" style="--mood-glow:rgba(148,163,184,.3)" onclick="setMood('okay','😐','Okay','slate')" data-mood="okay"><span class="text-2xl">😐</span><span class="text-[10px] font-medium text-slate-400 tracking-wide">Okay</span></button>
-            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border-white/5 bg-white/3" style="--mood-glow:rgba(96,165,250,.3)" onclick="setMood('sad','😢','Sad','blue')" data-mood="sad"><span class="text-2xl">😢</span><span class="text-[10px] font-medium text-blue-400 tracking-wide">Sad</span></button>
-            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border-white/5 bg-white/3" style="--mood-glow:rgba(244,114,182,.3)" onclick="setMood('bad','😔','Bad Mood','rose')" data-mood="bad"><span class="text-2xl">😔</span><span class="text-[10px] font-medium text-rose-400 tracking-wide">Bad Mood</span></button>
-            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border-white/5 bg-white/3" style="--mood-glow:rgba(248,113,113,.3)" onclick="setMood('angry','😤','Angry','red')" data-mood="angry"><span class="text-2xl">😤</span><span class="text-[10px] font-medium text-red-400 tracking-wide">Angry</span></button>
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(251,191,36,.3)" onclick="setMood('happy','😊','Happy','amber')" data-mood="happy"><span class="text-2xl">😊</span><span class="text-[10px] font-medium text-amber-400 tracking-wide">Happy</span></button>
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(148,163,184,.3)" onclick="setMood('okay','😐','Okay','slate')" data-mood="okay"><span class="text-2xl">😐</span><span class="text-[10px] font-medium text-slate-400 tracking-wide">Okay</span></button>
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(96,165,250,.3)" onclick="setMood('sad','😢','Sad','blue')" data-mood="sad"><span class="text-2xl">😢</span><span class="text-[10px] font-medium text-blue-400 tracking-wide">Sad</span></button>
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(244,114,182,.3)" onclick="setMood('bad','😔','Bad Mood','rose')" data-mood="bad"><span class="text-2xl">😔</span><span class="text-[10px] font-medium text-rose-400 tracking-wide">Bad Mood</span></button>
+            <button class="mood-btn flex flex-col items-center gap-2 p-4 rounded-2xl border border-white/5 bg-white/3" style="--mood-glow:rgba(248,113,113,.3)" onclick="setMood('angry','😤','Angry','red')" data-mood="angry"><span class="text-2xl">😤</span><span class="text-[10px] font-medium text-red-400 tracking-wide">Angry</span></button>
         </div>
         <div class="reveal" style="transition-delay:350ms">
-            <div class="flex items-center justify-content-between mb-4"><h3 class="text-xs font-medium text-slate-500 tracking-widest uppercase">History</h3><button onclick="clearMoodLog()" class="text-[10px] text-slate-600 hover:text-rose-400 transition-colors">Clear</button></div>
+            <div class="flex items-center justify-between mb-4"><h3 class="text-xs font-medium text-slate-500 tracking-widest uppercase">History</h3><button onclick="clearMoodLog()" class="text-[10px] text-slate-600 hover:text-rose-400 transition-colors">Clear</button></div>
             <div id="mood-log" class="space-y-2 max-h-72 overflow-y-auto pr-1"><p id="mood-log-empty" class="text-xs text-slate-700 text-center py-8">No moods logged yet...</p></div>
         </div>
     </div>
 </section>
 
-<!-- ═══ GAMES SECTION ═══ -->
-<section id="game-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5" style="background:rgba(255,255,255,.01)">
-    <div class="max-w-3xl mx-auto">
-        <div class="text-center mb-12">
-            <p class="reveal text-xs font-medium section-label text-green-400 tracking-widest uppercase mb-4">Our Games 🎮</p>
-            <h2 class="reactext-3xl sm:text-4xl md:text-5xl font-extralight tracking-tight" style="transition-delay:100ms">Compete for <span class="text-accent">high score</span></h2>
-        </div>
-        <div class="reactext text-center mb-10" style="transition-delay:150ms">
-            <button onclick="openAddGameModal()" style="padding:10px 24px;border-radius:12px;border:1px solid rgba(52,211,153,.3);background:rgba(52,211,153,.1);color:rgb(52,211,153);font-size:13px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.background='rgba(52,211,153,.2)'" onmouseout="this.style.background='rgba(52,211,153,.1)'">+ Add Game</button>
-        </div>
-
-        <div class="reactext grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" style="transition-delay:200ms">
-            <!-- Flappy Bird Card -->
-            <div class="reactext card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center">
-                <div class="flappy-container" onclick="openAddGameModal()">
-                    <div class="flappy-body">
-                        <div class="flappy-wing left"></div>
-                        <div class="flappy-eye"></div>
-                        <div class="flappy-beak"></div>
-                    </div>
-                    <p class="text-2xl font-medium text-emerald-400 tracking-wide mt-3 mb-1">Flappy Bird</p>
-                </div>
-            </div>
-
-            <!-- High Score Cards -->
-            <div class="reactext card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:80ms">
-                <div class="flappy-container" onclick="openAddGameModal()">
-                    <div class="flappy-body">
-                        <div class="flappy-wing left"></div>
-                        <div class="flappy-eye"></div>
-                        <div class="flappy-beak"></div>
-                    </div>
-                    <p class="text-2xl font-medium text-emerald-400 tracking-wide mb-1">Flappy Bird</p>
-                </div>
-            </div>
-
-            <!-- Ronald Score Card -->
-            <div class="reactext card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:160ms">
-                <div style="font-size:10px;font-weight:500;color:rgb(59,130,246,.6);letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px">Ronald</p>
-                <div class="score-display" id="ronald-score-value">0</div>
-                <div class="score-divider"></div>
-                <div class="score-date">—</div>
-            </div>
-
-            <!-- Manda Score Card -->
-            <div class="reactext card-hover p-6 rounded-2xl border border-white/5 bg-white/3 text-center" style="transition-delay:240ms">
-                <div style="font-size:10px;font-weight:500;color:rgb(6,182,212,.6);letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px">Manda</p>
-                <div class="score-display" id="manda-score-value">0</div>
-                <div class="score-divider"></div>
-                <div class="score-date">—</div>
-            </div>
-
-            <!-- Add Game Modal -->
-            <div id="game-modal">
-                <div class="modal-content" style="max-width:480px">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-                        <h3 style="font-size:18px;font-weight:500" id="game-modal-title">Add a Game 🎮</h3>
-                        <button onclick="closeGameModal()" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px">✕</button>
-                    </div>
-                    <div style="display:flex;flex-direction:column;gap:14px">
-                        <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Game Name *</label><input type="text" id="game-name" class="game-input" placeholder="e.g. Flappy Bird"></div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                            <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Score *</label><input type="number" id="game-score" class="game-input" placeholder="0" min="0" max="99999" step="1"></div>
-                            <div><label style="font-size:11px;font-weight:500;color:rgb(148,163,184);letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px">Game Type</label><select id="game-type" class="game-input" style="cursor:pointer;font-family:Inter,sans-serif;color:white;font-size:14px;font-weight:300;padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);outline:none"><option value="">Choose...</option><option value="flappy">Flappy Bird</option><option value="click">Click</option></option><option value="tap">Tap to see</option></option></select></div>
-                        </div>
-                        <button onclick="submitGame()" class="game-submit">Add Game 🎮</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Delete Game Confirm Modal -->
-            <div id="delete-game-modal">
-                <div class="modal-content" style="max-width:400px;text-align:center">
-                    <div style="font-size:48px;margin-bottom:16px">🗑️</div>
-                    <h3 style="font-size:18px;font-weight:500;margin-bottom:8px">Delete Game?</h3>
-                    <p style="font-size:14px;font-weight:300;color:rgb(148,163,184);margin-bottom:24px">This will permanently remove "<span id="delete-game-name"></span>" and all its scores.</p>
-                    <div style="display:flex;gap:12px">
-                        <button onclick="closeDeleteGameConfirm()" style="flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background='transparent'">Cancel</button>
-                        <button onclick="confirmDeleteGame()" style="flex:1;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,#f87171,#ef4444);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Delete</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Show More Games Button -->
-            <div id="show-games-container" class="text-center mt-10" style="display:none">
-                <button onclick="toggleShowGames()" class="show-more-btn" id="show-games-btn">Show More ↓</button>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- MOVIES -->
-<section id="movies" class="relative py-24 sm:py-32 px-4 border-y border-white/5" style="background:rgba(255,255,255,.01)">
+<section id="movies" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
     <div class="max-w-6xl mx-auto">
         <div class="text-center mb-12">
             <p class="reveal text-xs font-medium section-label text-amber-400 tracking-widest uppercase mb-4">Watchlist 🍿</p>
@@ -339,7 +207,7 @@
 <div id="movie-modal">
     <div class="modal-content">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-            <h3 style="font-size:18px;font-weight:500" id="movie-modal-title">Add a Movie 🎬</h3>
+            <h3 style="font-size:18px;font-weight:500">Add a Movie 🎬</h3>
             <button onclick="closeMovieModal()" style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgb(148,163,184);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px">✕</button>
         </div>
         <div style="display:flex;flex-direction:column;gap:14px">
@@ -358,11 +226,11 @@
                 </div>
                 <div id="img-url-input" style="display:none;margin-top:10px"><input type="text" id="mv-img-url" class="form-input" placeholder="https://example.com/image.jpg" oninput="selectCustomImage()"></div>
                 <div id="img-upload-input" style="display:none;margin-top:10px">
-                    <label style="display:block;padding:20px;border:2px dashed rgba(255,255,255,.1);border-radius:12px;text-align:center;cursor:pointer;color:rgb(100,116,139);font-size:13px;font-weight:300">📷 Click to upload<input type="file" id="mv-file" accept="image/*" style="display:none" onchange="handleImageUpload(event)"></label></label>
+                    <label style="display:block;padding:20px;border:2px dashed rgba(255,255,255,.1);border-radius:12px;text-align:center;cursor:pointer;color:rgb(100,116,139);font-size:13px;font-weight:300">📷 Click to upload<input type="file" id="mv-file" accept="image/*" style="display:none" onchange="handleImageUpload(event)"></label>
                     <div id="upload-preview" style="display:none;margin-top:10px;text-align:center"></div>
                 </div>
             </div>
-            <button onclick="submitMovie()" id="movie-submit-btn" style="width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Add Movie 🍿</button>
+            <button onclick="submitMovie()" style="width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;font-size:14px;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;transition:all .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Add Movie 🍿</button>
         </div>
     </div>
 </div>
@@ -383,18 +251,19 @@
 </section>
 
 <!-- TRIGGER -->
-<section id="trigger-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5" style="background:rgba(255,255,255,.01)">
+<!--<section id="trigger-section" class="relative py-24 sm:py-32 px-4 border-y border-white/5">
     <div class="max-w-2xl mx-auto text-center relative z-10">
         <div class="reveal"><span style="font-size:40px;display:block;margin-bottom:24px">🤔</span></div>
         <h2 class="reveal text-2xl sm:text-3xl font-extralight tracking-tight leading-tight mb-4" style="transition-delay:100ms">Okay random question</h2>
         <p class="reveal text-base font-light text-slate-400 mb-10" style="transition-delay:200ms">Do you actually enjoy watching movies with me or are you just being nice? 😂</p>
-        <div class="reveal flex flex-col sm:flex-row items-center justify-content-center gap-4" style="transition-delay:300ms">
+        <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-4" style="transition-delay:300ms">
             <button id="trigger-yes-btn" onclick="triggerReveal()" class="trigger-yes px-10 py-4 text-white text-sm font-medium rounded-full active:scale-95 transition-all duration-200 shadow-lg">Yeah I actually like it 😅</button>
             <button id="trigger-no-btn" onmouseover="moveTriggerNo()" onclick="moveTriggerNo()" class="px-10 py-4 border border-white/10 text-sm font-light text-slate-500 rounded-full transition-all duration-200">Hmm...</button>
         </div>
     </div>
 </section>
-
+-->
+    
 <!-- HIDDEN: LETTER -->
 <section id="letter-section" class="hidden-section relative py-24 sm:py-32 px-4 border-t border-white/5">
     <div class="max-w-2xl mx-auto">
@@ -419,7 +288,7 @@
         <h2 class="text-3xl sm:text-4xl md:text-5xl font-extralight tracking-tight leading-tight mb-4">So here it is...</h2>
         <p class="text-xl sm:text-2xl font-light text-romance mt-8 mb-4">Would you be my girl?</p>
         <p class="text-xs font-light text-slate-600 mb-12">yes this is actually happening rn</p>
-        <div class="flex flex-col sm:flex-row items-center justify-content-center gap-4">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button onclick="handleYes()" class="glow-pulse px-10 py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-sm font-medium rounded-full hover:from-rose-400 hover:to-pink-400 active:scale-95 transition-all duration-200 shadow-2xl shadow-rose-500/30">Yes 💕</button>
             <button id="no-btn" onmouseover="moveNoButton()" onclick="moveNoButton()" class="px-10 py-4 border border-white/10 text-sm font-light text-slate-500 rounded-full transition-all duration-200">Let me think...</button>
         </div>
@@ -427,7 +296,7 @@
     </div>
 </section>
 
-<footer class="relative border-t border-white/5 py-10 px-4" style="background:rgba(0,0,0,.2)">
+<footer class="relative border-t border-white/5 py-10 px-4">
     <div class="max-w-4xl mx-auto text-center">
         <p class="text-xs font-light text-slate-600 tracking-wide" id="footer-text">Made for fun 🎮</p>
         <p class="text-xs font-light text-slate-700 mt-1">— since Aug 21, 2026</p>
@@ -435,17 +304,17 @@
 </footer>
 
 <script>
-/* ═══ PARTICLES ═══ */
-function createParticles(){var c=document.getElementById('particles-container');for(var i=0;i<25;i++){var p=document.createElement('div');p.className='floating-particle';p.style.left=Math.random()*100+'%';p.style.animationDuration=(15+Math.random()*25)+'s';p.style.animationDelay=Math.random()*20+'s';p.style.width=(1+Math.random()*2)+'px';p.style.height=p.style.width;p.style.opacity=.1+Math.random()*.3;c.appendChild(p)}}
-createParticles();
+/* ═══ PROFILE PICTURES ═══ */
+var PROFILE_PICS = {
+    ronald: "https://z-cdn-media.chatglm.cn/files/687f5675-fcd2-4ccf-b51b-284041c65492.png?auth_key=1887992950-ce2f69396684415e9879333487afb3ae-0-24db2709cb0d119a5572c7a13f62f17f",
+    manda: "https://z-cdn-media.chatglm.cn/files/e27462bf-620d-4704-b79f-95f37971c363.png?auth_key=1887992950-f735b2e9105c4431bda5c993f79339b5-0-4251c328ab20656e498df7fa30a04c76"
+};
 
-/* ═══ PROFILE PICS ═══ */
-var PROFILE_PICS={ronald:"https://z-cdn-media.chatglm.cn/files/687f5675-fcd2-4ccf-b51b-284041c65492.png?auth_key=1887992950-ce2f69396684415e9879333487afb3ae-0-24db2709cb0d119a5572c7a13f62f17f",manda:"https://z-cdn-media.chatglm.cn/files/e27462bf-620d-4704-b79f-95f37971c363.png?auth_key=1887992950-f735b2e9105c4431bda5c993f79339b5-0-4251c328ab20656e498df7fa30a04c76"}
-var FIREBASE_URL="https://webs-2cd86-default-rtdb.asia-southeast1.firebasedatabase.app";
+var FIREBASE_URL = "https://webs-2cd86-default-rtdb.asia-southeast1.firebasedatabase.app";
 function isFirebaseReady(){return FIREBASE_URL&&FIREBASE_URL.indexOf('PASTE')===-1&&FIREBASE_URL.indexOf('http')===0}
 function fbWrite(p,d){if(!isFirebaseReady())return;try{fetch(FIREBASE_URL+p+'.json',{method:'PUT',body:JSON.stringify(d)}).catch(function(){})}catch(e){}}
-function fbDelete(p){if(!isFirebaseReady())return;try{fetch(FIREBASE_URL+p+'.json',{method:'DELETE'}).catch(function(){})}catch(e){}}
 function fbRead(p,cb){if(!isFirebaseReady()){cb(null);return}try{fetch(FIREBASE_URL+p+'.json').then(function(r){return r.json()}).then(function(d){cb(d)}).catch(function(){cb(null)})}catch(e){cb(null)}}
+
 function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function safeGetS(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
@@ -453,359 +322,100 @@ function safeSetS(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
 
 /* ═══ DEFAULT MOVIES ═══ */
 var defaultMovies=[
-    {id:'default_1',title:"Smile",year:"2022",note:"SO CREEPY",genre:"Horror",emoji:"😱",image:"https://z-cdn-media.chatglm.cn/files/efce0c5b-c249-4af1-86ae-8f292b02677b.png?auth_key=1888256514-4b81b850ccf74c08ab0117ecbc89dea9-0-d1d02b6a2e32fb9fc87226574c7813da",addedBy:"Ronald",ratings:{ronald:4,manda:null},timestamp:1000},
-    {id:'default_2',title:"Wuthering Heights",year:"2011",note:"HEATHCLIFF BABIII",genre:"Romance / Drama",emoji:" Heathcliff",image:"https://z-cdn-media.chatglm.cn/files/c4bac760-7828-477b-9d38-2dd3a9e30e1a.png?auth_key=1888252514-6dc2db923eb149aeb086e6ca68adb416-0-42ac693424fda00d5101d2db8e9c379a",addedBy:"Ronald",ratings:{ronald:5,manda:null},timestamp:999}
+
 ];
 
 /* ═══ USER ═══ */
-var currentUser=null;
-function pickUser(name){
-    currentUser=name;safeSetS('currentUser',name);
-    document.getElementById('user-badge-name').textContent=name;
-    var bp=document.getElementById('badge-pic');bp.src=PROFILE_PICS[name.toLowerCase()];bp.style.display='block';
-    document.getElementById('badge-dot').style.display='none';
-    var s=document.getElementById('entry-screen');s.classList.add('leaving');
-    setTimeout(function(){s.classList.add('gone')},600);
-    showToast('Hey '+name+' 👋');startSync();
+var currentUser = null;
+function pickUser(name) {
+    currentUser = name;
+    safeSetS('currentUser', name);
+    document.getElementById('user-badge-name').textContent = name;
+    var bp = document.getElementById('badge-pic');
+    bp.src = PROFILE_PICS[name.toLowerCase()];
+    bp.style.display = 'block';
+    document.getElementById('badge-dot').style.display = 'none';
+    var s = document.getElementById('entry-screen');
+    s.classList.add('leaving');
+    setTimeout(function(){ s.classList.add('gone'); }, 600);
+    showToast('Hey ' + name + ' 👋');
+    startSync();
 }
-var savedUser=safeGetS('currentUser');
-if(savedUser){
-    currentUser=savedUser;document.getElementById('user-badge-name').textContent=savedUser;
-    var bp2=document.getElementById('badge-pic');bp2.src=PROFILE_PICS[savedUser.toLowerCase()];bp2.style.display='block';
-    document.getElementById('badge-dot').style.display='none';
-    document.getElementById('entry-screen').classList.add('gone');startSync();
+var savedUser = safeGetS('currentUser');
+if (savedUser) {
+    currentUser = savedUser;
+    document.getElementById('user-badge-name').textContent = savedUser;
+    var bp2 = document.getElementById('badge-pic');
+    bp2.src = PROFILE_PICS[savedUser.toLowerCase()];
+    bp2.style.display = 'block';
+    document.getElementById('badge-dot').style.display = 'none';
+    document.getElementById('entry-screen').classList.add('gone');
+    startSync();
 }
+
 (function(){var s=new Date('2026-08-21'),n=new Date();document.getElementById('days-counter').textContent=Math.floor((n-s)/86400000)+' days'})();
 
 /* ═══ MOOD ═══ */
 var moodColors={emerald:{bg:'rgba(52,211,153,.1)',border:'rgba(52,211,153,.2)',text:'#34d399'},amber:{bg:'rgba(251,191,36,.1)',border:'rgba(251,191,36,.2)',text:'#fbbf24'},slate:{bg:'rgba(148,163,184,.1)',border:'rgba(148,163,184,.2)',text:'#94a3b8'},blue:{bg:'rgba(96,165,250,.1)',border:'rgba(96,165,250,.2)',text:'#60a5fa'},rose:{bg:'rgba(244,114,182,.1)',border:'rgba(244,114,182,.2)',text:'#f472b6'},red:{bg:'rgba(248,113,113,.1)',border:'rgba(248,113,113,.2)',text:'#f87171'}};
 function formatTime(ts){var d=new Date(ts),n=new Date(),diff=Math.floor((n-d)/60000);if(diff<1)return'just now';if(diff<60)return diff+'m ago';var h=Math.floor(diff/60);if(h<24)return h+'h ago';return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}
-function setMood(key,emoji,label,colorKey){if(!currentUser){showToast('Pick your name first!');return}var now=Date.now(),entry={user:currentUser,key:key,emoji:emoji:emoji,label:label:colorKey:colorKey:colorKey:colorKey:timestamp:now},userKey=currentUser.toLowerCase();safeSet('mood_'+userKey,JSON.stringify(entry));var log=JSON.parse(safeGet('moodLog4')||'[]');log.unshift(entry);if(log.length>100)log.pop();safeSet('moodLog4',JSON.stringify(log));fbWrite('/current/'+userKey,entry);fbWrite('/log/m_'+now,entry);renderCurrentMoods();renderMoodLog();document.querySelectorAll('.mood-btn').forEach(function(b){b.classList.remove('selected');b.style.borderColor='';b.style.background=''});var sel=document.querySelector('[data-mood="'+key+'"]');if(sel){sel.classList.add('selected');var c=moodColors[colorKey];sel.style.borderColor=c.border;sel.style.background=c.bg}var msgs={amazing:'🤩 '+currentUser+' is amazing!',happy:'😊 '+currentUser+' is happy!',okay:'😐 Okay, hope it gets better',sad:'😢 Sad... I\'m here tho',bad:'😔 Bad mood noted. You good?',angry:'😤 Angry. Want me to fight someone?'};showToast(msgs[key]||'Mood updated')}
+function setMood(key,emoji,label,colorKey){if(!currentUser){showToast('Pick your name first!');return}var now=Date.now(),entry={user:currentUser,key:key,emoji:emoji,label:label,colorKey:colorKey,timestamp:now},userKey=currentUser.toLowerCase();safeSet('mood_'+userKey,JSON.stringify(entry));var log=JSON.parse(safeGet('moodLog4')||'[]');log.unshift(entry);if(log.length>100)log.pop();safeSet('moodLog4',JSON.stringify(log));fbWrite('/current/'+userKey,entry);fbWrite('/log/m_'+now,entry);renderCurrentMoods();renderMoodLog();document.querySelectorAll('.mood-btn').forEach(function(b){b.classList.remove('selected');b.style.borderColor='';b.style.background=''});var sel=document.querySelector('[data-mood="'+key+'"]');if(sel){sel.classList.add('selected');var c=moodColors[colorKey];sel.style.borderColor=c.border;sel.style.background=c.bg}var msgs={amazing:'🤩 '+currentUser+' is amazing!',happy:'😊 '+currentUser+' is happy!',okay:'😐 Okay, hope it gets better',sad:'😢 Sad... I\'m here tho',bad:'😔 Bad mood noted. You good?',angry:'😤 Angry. Want me to fight someone?'};showToast(msgs[key]||'Mood updated')}
 function renderCurrentMoods(){var rk=JSON.parse(safeGet('mood_ronald')||'null'),rBox=document.getElementById('mood-ronald');if(rk){rBox.classList.remove('hidden');document.getElementById('mood-ronald-emoji').textContent=rk.emoji;var rl=document.getElementById('mood-ronald-label');rl.textContent=rk.label;rl.style.color=moodColors[rk.colorKey].text;document.getElementById('mood-ronald-time').textContent=formatTime(rk.timestamp)}else{rBox.classList.add('hidden')}var mk=JSON.parse(safeGet('mood_manda')||'null'),mBox=document.getElementById('mood-manda');if(mk){mBox.classList.remove('hidden');document.getElementById('mood-manda-emoji').textContent=mk.emoji;var ml=document.getElementById('mood-manda-label');ml.textContent=mk.label;ml.style.color=moodColors[mk.colorKey].text;document.getElementById('mood-manda-time').textContent=formatTime(mk.timestamp)}else{mBox.classList.add('hidden')}}
-
 function renderMoodLog(){var log=JSON.parse(safeGet('moodLog4')||'[]'),c=document.getElementById('mood-log'),e=document.getElementById('mood-log-empty');if(!log.length){e.style.display='';return}e.style.display='none';c.innerHTML='';log.forEach(function(m){var cl=moodColors[m.colorKey]||moodColors.slate,nc=m.user==='Ronald'?'#93c5fd':'#67e8f9';var el=document.createElement('div');el.className='log-entry flex items-center gap-3 px-4 py-2.5 rounded-xl border';el.style.borderColor=cl.border;el.style.background=cl.bg;el.innerHTML='<span style="font-size:18px">'+m.emoji+'</span><span style="font-size:10px;font-weight:600;letter-spacing:.05em;color:'+nc+'">'+m.user+'</span><span style="font-size:12px;font-weight:500;color:'+cl.text+'">'+m.label+'</span><span style="font-size:10px;color:rgb(71,85,105);margin-left:auto">'+formatTime(m.timestamp)+'</span>';c.appendChild(el)})}
-
 function clearMoodLog(){safeSet('moodLog4','[]');try{localStorage.removeItem('mood_ronald')}catch(e){}try{localStorage.removeItem('mood_manda')}catch(e){}document.getElementById('mood-ronald').classList.add('hidden');document.getElementById('mood-manda').classList.add('hidden');document.querySelectorAll('.mood-btn').forEach(function(b){b.classList.remove('selected');b.style.borderColor='';b.style.background=''});renderMoodLog();showToast('Cleared');fbWrite('/current/ronald',null);fbWrite('/current/manda',null);fbWrite('/log',null)}
 
 var syncInterval=null;
 function startSync(){if(syncInterval)return;syncNow();syncInterval=setInterval(syncNow,3000)}
-function syncNow(){if(!isFirebaseReady())return;fbRead('',function(data){if(!data)return;document.getElementById('sync-dot').className='sync-dot on';if(data.current){if(data.current.ronald){var rk=JSON.stringify(data.current.ronald);if(safeGet('mood_ronald')!==rk)safeSet('mood_ronald',rk)}if(data.current.manda){var mk=JSON.stringify(data.current.manda);if(safeGet('mood_manda')!==mk)safeSet('mood_manda',mk)}}if(data.log){var arr=[];for(var key in data.log)if(data.log.hasOwnProperty(key))arr.push(data.log[key]);arr.sort(function(a,b){return b.timestamp-a.timestamp});if(arr.length>50)arr=arr.slice(0,50);var newLog=JSON.stringify(arr);if(safeGet('moodLog4')!==newLog)safeSet('moodLog4',newLog)}if(data.movies){var newMovies=JSON.stringify(data.movies);if(safeGet('fb_movies')!==newMovies){safeSet('fb_movies',newMovies);renderMovies()}}renderCurrentMoods();renderMoodLog()}
+function syncNow(){if(!isFirebaseReady())return;fbRead('',function(data){if(!data)return;document.getElementById('sync-dot').className='sync-dot on';if(data.current){if(data.current.ronald){var rk=JSON.stringify(data.current.ronald);if(safeGet('mood_ronald')!==rk)safeSet('mood_ronald',rk)}if(data.current.manda){var mk=JSON.stringify(data.current.manda);if(safeGet('mood_manda')!==mk)safeSet('mood_manda',mk)}}if(data.log){var arr=[];for(var key in data.log)if(data.log.hasOwnProperty(key))arr.push(data.log[key]);arr.sort(function(a,b){return b.timestamp-a.timestamp});if(arr.length>50)arr=arr.slice(0,50);var newLog=JSON.stringify(arr);if(safeGet('moodLog4')!==newLog)safeSet('moodLog4',newLog)}if(data.movies){var newMovies=JSON.stringify(data.movies);if(safeGet('fb_movies')!==newMovies){safeSet('fb_movies',newMovies);renderMovies()}}renderCurrentMoods();renderMoodLog()})}
+if(!isFirebaseReady()){document.getElementById('sync-dot').className='sync-dot off'}
+renderCurrentMoods();renderMoodLog();
 
-/* ═══ GAME SECTION ═══ */
-var editingGameId=null;
-var selectedGameImage=null;
-
-function openAddGameModal(){
-    editingGameId=null;
-    document.getElementById('game-modal').classList.add('open');
-    document.getElementById('game-modal-title').textContent='Add a Game 🎮';
-    document.getElementById('game-submit-btn').textContent='Add Game 🎮';
-    resetGameForm();
-}
-
-function resetGameForm(){
-    document.getElementById('game-name').value='';
-    document.getElementById('game-score').value='';
-    document.getElementById('game-type').value='';
-    document.getElementById('img-url-input').style.display='none';
-    document.getElementById('img-upload-input').style.display='none';
-    document.getElementById('upload-preview').style.display='none';
-    document.getElementById('upload-preview').innerHTML='';
-    selectedGameImage=null;
-}
-
-function closeGameModal(){
-    document.getElementById('game-modal').classList.remove('open');
-    editingGameId=null;
-}
-
-function submitGame(){
-    var name=document.getElementById('game-name').value.trim();
-    var score=parseInt(document.getElementById('game-score').value)||0;
-    var type=document.getElementById('game-type').value||'Flappy Bird';
-    
-    if(!name){showToast('⚠️ Please enter a name');return}
-    
-    var game={id:'game_'+Date.now(),title:name,emoji:'🎮',score:score,image:selectedGameImage||'default-game-flappy',addedBy:currentUser,ratings:{ronald:score,manda:null},timestamp:Date.now()};
-    
-    fbWrite('/games/'+game.id,game);
-    var fbGames=JSON.parse(safeGet('fb_games')||'{}');
-    fbGames[game.id]=game;
-    safeSet('fb_games',JSON.stringify(fbGames));
-    renderGames();
-    closeGameModal();
-    showToast('🎮 "' + name + '" added!');
-}
-
-/* ═══ RENDER GAMES ═══ */
-var MOVIE MODAL ═══ */
+/* ═══ MOVIE MODAL ═══ */
 var selectedImage=null;var uploadedImage=null;
+function openMovieModal(){document.getElementById('movie-modal').classList.add('open');document.getElementById('mv-title').value='';document.getElementById('mv-year').value='';document.getElementById('mv-genre').value='';document.getElementById('mv-note').value='';document.getElementById('mv-img-url').value='';document.getElementById('img-url-input').style.display='none';document.getElementById('img-upload-input').style.display='none';document.getElementById('upload-preview').style.display='none';document.getElementById('upload-preview').innerHTML='';selectedImage=null;uploadedImage=null;document.getElementById('tab-url').style.background='transparent';document.getElementById('tab-url').style.color='rgb(148,163,184)';document.getElementById('tab-upload').style.background='transparent';document.getElementById('tab-upload').style.color='rgb(148,163,184)';document.getElementById('img-options').innerHTML='<p style="font-size:11px;color:rgb(71,85,105)">Type a title to see options</p>';document.getElementById('mv-title').oninput=function(){generateImageOptions(this.value)}}
+function closeMovieModal(){document.getElementById('movie-modal').classList.remove('open')}
+function toggleImgTab(tab){document.getElementById('img-url-input').style.display=tab==='url'?'block':'none';document.getElementById('img-upload-input').style.display=tab==='upload'?'block':'none';document.getElementById('tab-url').style.background=tab==='url'?'rgba(59,130,246,.15)':'transparent';document.getElementById('tab-url').style.color=tab==='url'?'#93c5fd':'rgb(148,163,184)';document.getElementById('tab-upload').style.background=tab==='upload'?'rgba(59,130,246,.15)':'transparent';document.getElementById('tab-upload').style.color=tab==='upload'?'#93c5fd':'rgb(148,163,184)'}
+function generateImageOptions(title){if(!title||title.length<2){document.getElementById('img-options').innerHTML='<p style="font-size:11px;color:rgb(71,85,105)">Type a title above</p>';return}var seed=title.toLowerCase().replace(/[^a-z0-9]+/g,'-');var seeds=[seed,seed+'-poster',seed+'-cinema',seed+'-film'];var html='';seeds.forEach(function(s,i){html+='<div class="img-option'+(i===0?' selected':'')+'" onclick="selectImage(this,\''+s+'\')"><img src="https://picsum.photos/seed/'+s+'/200/140.jpg" alt="option"></div>'});if(selectedImage===null)selectedImage=seeds[0];document.getElementById('img-options').innerHTML=html}
+function selectImage(el,seed){document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')});el.classList.add('selected');selectedImage=seed;uploadedImage=null;document.getElementById('mv-img-url').value='';document.getElementById('upload-preview').style.display='none';document.getElementById('upload-preview').innerHTML=''}
+function selectCustomImage(){var url=document.getElementById('mv-img-url').value;if(url){selectedImage=null;uploadedImage=url;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')})}}
+function handleImageUpload(event){var file=event.target.files[0];if(!file)return;if(file.size>5*1024*1024){showToast('⚠️ Image too big, max 5MB');return}var reader=new FileReader();reader.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxW=600;var w=img.width,h=img.height;if(w>maxW){h=h*(maxW/w);w=maxW}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);uploadedImage=canvas.toDataURL('image/jpeg',.7);selectedImage=null;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')});document.getElementById('upload-preview').style.display='block';document.getElementById('upload-preview').innerHTML='<img src="'+uploadedImage+'" style="max-width:200px;max-height:120px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><p style="font-size:10px;color:rgb(52,211,153);margin-top:6px">✓ Ready</p>'};img.src=e.target.result};reader.readAsDataURL(file)}
+function submitMovie(){var title=document.getElementById('mv-title').value.trim();var year=document.getElementById('mv-year').value.trim()||'2024';var genre=document.getElementById('mv-genre').value.trim()||'Movie';var note=document.getElementById('mv-note').value.trim()||'No note added yet.';if(!title){showToast('⚠️ Please enter a title');return}if(!selectedImage&&!uploadedImage){showToast('⚠️ Please select an image');return}var image=uploadedImage||selectedImage;var movie={id:'mv_'+Date.now(),title:title,year:year,note:note,genre:genre,emoji:'🎬',image:image,addedBy:currentUser,ratings:{ronald:null,manda:null}};fbWrite('/movies/'+movie.id,movie);var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');fbMovies[movie.id]=movie;safeSet('fb_movies',JSON.stringify(fbMovies));renderMovies();closeMovieModal();showToast('🎬 "'+title+'" added!')}
 
-function openMovieModal(movieId){
-    editingMovieId = movieId || null;
-    document.getElementById('movie-modal').classList.add('open');
-    
-    if (editingMovieId) {
-        document.getElementById('movie-modal-title').textContent = 'Edit Movie ✏️';
-        document.getElementById('movie-submit-btn').textContent = 'Save Changes ✓';
-        var fbMovies = JSON.parse(safeGet('fb_movies') || '{}');
-        var movie = fbMovies[editingMovieId];
-        if (movie) {
-            document.getElementById('mv-title').value = movie.title || '';
-            document.getElementById('mv-year').value = movie.year || '';
-            document.getElementById('mv-genre').value = movie.genre || '';
-            document.getElementById('mv-note').value = movie.note || '';
-            if (movie.image) {
-                if (movie.image.indexOf('data:') === 0) {
-                    uploadedImage = movie.image;
-                    selectedImage = null;
-                    document.getElementById('img-url-input').style.display = 'none';
-                    document.getElementById('img-upload-input').style.display = 'block';
-                    document.getElementById('tab-upload').style.background = 'rgba(59,130,246,.15)';
-                    document.getElementById('tab-upload').style.color = '#93c5fd';
-                    document.getElementById('upload-preview').style.display = 'block';
-                    document.getElementById('upload-preview').innerHTML = '<img src="' + uploadedImage + '" style="max-width:200px;max-height:120px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><p style="font-size:10px;color:rgb(52,211,153);margin-top:6px">✓ Current image</p>';
-                } else {
-                    selectedImage = movie.image;
-                    uploadedImage = null;
-                    generateImageOptions(movie.title || 'game');
-                }
-            }
-        }
-    } else {
-        document.getElementById('movie-modal-title').textContent = 'Add a Movie 🎬';
-        document.getElementById('movie-submit-btn').textContent = 'Add Movie 🍿';
-        resetMovieForm();
-    }
-    
-    document.getElementById('mv-title').oninput = function() { generateImageOptions(this.value); };
-}
-
-function closeMovieModal() {
-    document.getElementById('movie-modal').classList.remove('open');
-    editingMovieId = null;
-}
-
-/* ═══ RENDER GAMES ═══ */
-function getAllGames(){
-    var fbGames = JSON.parse(safeGet('fb_games') || '{}');
-    var arr = [];
-    for (var key in fbGames) if (fbGames.hasOwnProperty(key)) arr.push(fbGames[key]);
-    return arr.sort(function (a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
-}
-
-function renderGames() {
-    var grid = document.getElementById('games-grid');
-    grid.innerHTML = '';
-    var games = getAllGames();
-    var total = games.length;
-    
-    if (total === 0) {
-        grid.innerHTML = '<p class="text-xs text-slate-700 text-center py-12">No games yet. Go add one!</p>';
-        document.getElementById('show-games-container').style.display = 'none';
-        return;
-    }
-    
-    var visibleCount = showAllGames ? total : 3;
-    var visibleGames = showAllGames ? games : games.slice(0, visibleCount);
-    document.getElementById('show-games-container').style.display = total > 3 ? 'block' : 'none';
-    document.getElementById('show-games-btn').textContent = showAllGames ? 'Show Less ↑' : 'Show More ↓';
-    
-    grid.forEach(function (m, i) {
-        var imgSrc;
-        
-        // Check if it's a default movie with custom image URL
-        if (m.image && m.image.indexOf('data:') === 0) {
-            imgSrc = m.image;
-        } else {
-            imgSrc = 'https://picsum.photos/seed/' + (m.image || 'game-default-flappy') + '/500/350.jpg';
-        }
-        
-        var isDefault = m.id && m.id.indexOf('default_') === 0;
-        
-        // Edit button on non-default movies only
-        var editBtnHtml = '';
-        if (!isDefault) {
-            editBtnHtml = '<button class="movie-edit-btn" onclick="event.stopPropagation();editMovie(\'' + m.id + '\')" title="Edit movie">✏️</button>';
-        }
-        
-        var card = document.createElement('div');
-        card.className = 'reveal movie-card card-hover rounded-2xl border border-white/5 bg-white/2';
-        card.style.height = '320px';
-        card.style.background = 'rgba(255,255,255,.02)';
-        
-        card.innerHTML =
-            (isDefault ? '<div class="movie-number">' + (i + 1) + '</div>' : '') +
-            editBtnHtml +
-            '<div style="position:relative;height:100%;overflow:hidden;border-radius:20px">' +
-            '<img src="' + imgSrc + '" style="width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://picsum.photos/seed/fallback/500/350.jpg\'">' +
-            '<div class="movie-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px">' +
-            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:10px;color:rgb(148,163,184);background:rgba(0,0,0,.4);padding:3px 8px;border-radius:6px">' + (m.year || '') + '</span>' +
-            '<span style="font-size:10px;color:rgb(148,163,184);background:rgba(0,0,0,.4);padding:3px 8px;border-radius:6px">' + (m.genre || 'Movie') + '</span>' +
-            '</div>' +
-            renderMovieStars(m) +
-            '</div></div></div>';
-        
-        grid.appendChild(card);
-    });
-    
-    setTimeout(function () {
-        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('reveal-visible'); });
-    }, 100);
-}
+/* ═══ MOVIE RATING ═══ */
+function rateMovie(movieId,rating){if(!currentUser){showToast('Pick your name first!');return}var userKey=currentUser.toLowerCase();var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');if(!fbMovies[movieId])return;if(!fbMovies[movieId].ratings)fbMovies[movieId].ratings={ronald:null,manda:null};fbMovies[movieId].ratings[userKey]=rating;safeSet('fb_movies',JSON.stringify(fbMovies));fbWrite('/movies/'+movieId+'/ratings',fbMovies[movieId].ratings);renderMovies();showToast('⭐ Rated '+rating+'/5')}
 
 /* ═══ RENDER MOVIES ═══ */
-function getAllMovies(){
-    var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');var arr=[];for(var key in fbMovies)if(fbMovies.hasOwnProperty(key))arr.push(fbMovies[key]);arr=arr.concat(defaultMovies);arr.sort(function(a,b){return(b.timestamp||0)-(a.timestamp||0)});return arr}
-}
-function renderMovieStars(movie){
-    var rk=movie.ratings?movie.ratings.ronald:null;var mk=movie.ratings?movie.ratings.manda:null;var isR=currentUser&&currentUser.toLowerCase()==='ronald';var isM=currentUser&&currentUser.toLowerCase()==='manda';
-    var html='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:10px;color:#93c5fd;width:46px">Ronald</span>';if(rk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=rk?'#fbbf24':'rgb(51,65,85)')+'">★</span>'}else if(isR){html+='<span style="display:inline-flex;gap:2px;cursor:pointer">';for(var i=1;i<=5;i++)html+='<span onclick="event.stopPropagation();rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer;font-size:12px;color:rgb(71,85,105)">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">—</span>';html+='</div>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">—</span>';html+='</div></div></div>';return html;
-}
-function renderMovies(){
-    var grid=document.getElementById('movies-grid');grid.innerHTML='';var movies=getAllMovies();var total=movies.length;var visibleCount=showAllMovies?total:total:3:visibleCount:visibleMovies;document.getElementById('show-games-container').style.display=total>3'?'block':'none':document.getElementById('show-games-btn').textContent=showAllMovies?'Show Less ↑':'Show More ↓';
-    movies.forEach(function(m,i){var imgSrc=m.image&&m.image.indexOf('data:')===0)?m.image:'https://picsum.photos/seed/'+(m.image||'game-default-flappy')+'/500/350.jpg';var isDefault=m.id&&m.id.indexOf('default_')===0;var card=document.createElement('div');card.className='reveal movie-card card-hover rounded-2xl border border-white/5 bg-white/2';card.style.height='320px';card.style.background='rgba(255,255,255,.02)';card.innerHTML='<div class="movie-number">'+(i+1)+'</div><div style="position:relative;height:100%;overflow:hidden;border-radius:20px"><img src="'+imgSrc+'" style="width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://picsum.photos/seed/fallback/500/350.jpg\'">'+'<div class="movie-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:10px;color:rgb(148,163,184);background:rgba(0,0,0,.4);padding:3px 8px;border-radius:6px">' + (m.year || '') + '</span><span style="font-size:10px;color:rgb(148,163,184);background:rgba(0,0,0,.4);padding:3px 8px;border-radius:6px">' + (m.genre || 'Movie') + '</span>' + '</div>' + renderMovieStars(m) + '</div></div></div></div>';
-        grid.appendChild(card);
-    });
-}
+function getAllMovies(){var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');var arr=[];for(var key in fbMovies)if(fbMovies.hasOwnProperty(key))arr.push(fbMovies[key]);arr=arr.concat(defaultMovies);arr.sort(function(a,b){return(b.timestamp||0)-(a.timestamp||0)});return arr}
+function renderMovieStars(movie){var rk=movie.ratings?movie.ratings.ronald:null;var mk=movie.ratings?movie.ratings.manda:null;var isR=currentUser&&currentUser.toLowerCase()==='ronald';var isM=currentUser&&currentUser.toLowerCase()==='manda';var html='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)">';html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:10px;color:#93c5fd;width:46px">Ronald</span>';if(rk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=rk?'#fbbf24':'rgb(51,65,85)')+'">★</span>'}else if(isR){html+='<span class="rate-stars" onclick="event.stopPropagation()">';for(var i=1;i<=5;i++)html+='<span onclick="rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">Not rated</span>';html+='</div>';html+='<div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:#67e8f9;width:46px">Manda</span>';if(mk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=mk?'#fbbf24':'rgb(51,65,85)')+'">★</span>'}else if(isM){html+='<span class="rate-stars" onclick="event.stopPropagation()">';for(var i=1;i<=5;i++)html+='<span onclick="rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">Not rated</span>';html+='</div></div>';return html}
+function renderMovies(){var grid=document.getElementById('movies-grid');grid.innerHTML='';var movies=getAllMovies();movies.forEach(function(m,i){var avgRating=0;var rc=0;if(m.ratings){if(m.ratings.ronald){avgRating+=m.ratings.ronald;rc++}if(m.ratings.manda){avgRating+=m.ratings.manda;rc++}if(rc)avgRating=Math.round(avgRating/rc)}var displayStars='';for(var s=0;s<avgRating;s++)displayStars+='★';for(var s2=0;s2<5-avgRating;s2++)displayStars+='☆';var imgSrc=m.image.indexOf('data:')===0?m.image:'https://picsum.photos/seed/'+m.image+'/500/350.jpg';var card=document.createElement('div');card.className='reveal movie-card card-hover rounded-2xl border border-white/5 overflow-hidden group';card.style.background='rgba(255,255,255,.02)';card.style.transitionDelay=(i*100)+'ms';card.innerHTML='<div class="img-hover overflow-hidden" style="height:192px;position:relative"><img src="'+imgSrc+'" alt="'+m.title+'" style="width:100%;height:100%;object-fit:cover"><div class="movie-overlay"></div><div class="movie-number">'+(i+1)+'</div><div style="position:absolute;bottom:12px;left:16px;right:16px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="padding:2px 8px;font-size:10px;font-weight:500;color:#fcd34d;background:rgba(245,158,11,.15);border-radius:9999px">'+m.genre+'</span><span style="font-size:10px;color:rgb(100,116,139)">'+m.year+'</span></div><h3 style="font-size:18px;font-weight:500">'+m.title+'</h3></div></div><div style="padding:16px"><p style="font-size:13px;font-weight:300;color:rgb(148,163,184);line-height:1.6;margin-bottom:8px">"'+m.note+'"</p><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:14px;color:#fbbf24;letter-spacing:.05em">'+(displayStars||'☆☆☆☆☆')+'</span><span style="font-size:10px;color:rgb(100,116,139)">by '+(m.addedBy||'?')+'</span></div>'+renderMovieStars(m)+'</div>';grid.appendChild(card)});document.querySelectorAll('#movies-grid .reveal').forEach(function(el){observer.observe(el)})}
 
-function rateMovie(movieId,rating){if(!currentUser){showToast('Pick your name first!');return}var userKey=currentUser.toLowerCase();var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');if(!fbMovies[movieId])return;fbMovies[movieId].ratings={ronald:null,manda:null};fbMovies[movieId].ratings[userKey]=rating;safeSet('fb_movies',JSON.stringify(fbMovies));fbWrite('/movies/'+movieId+'/ratings',fbMovies[movieId].ratings);renderMovies();showToast('⭐ Rated '+rating+'/5')}
-function openMovieModal(movieId){editingMovieId=movieId||null;document.getElementById('movie-modal').classList.add('open');if(editingMovieId){document.getElementById('movie-modal-title').textContent='Edit Movie ✏️';document.getElementById('movie-submit-btn').textContent='Save Changes ✓';var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');var movie=fbMovies[editingMovieId];if(movie){document.getElementById('mv-title').value=movie.title||'';document.getElementById('mv-year').value=movie.year||'';document.getElementById('mv-genre').value=movie.genre||'';document.getElementById('mv-note').value=movie.note||'';if(movie.image){if(movie.image.indexOf('data:')===0){uploadedImage=movie.image;selectedImage=null;document.getElementById('img-url-input').style.display='none';document.getElementById('img-upload-input').style.display='block';document.getElementById('tab-upload').style.background='rgba(59,130,246,.15)';document.getElementById('tab-upload').style.color='#93c5fd';document.getElementById('upload-preview').style.display='block';document.getElementById('upload-preview').innerHTML='<img src="'+uploadedImage+'" style="max-width:200px;max-height:120px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><p style="font-size:10px;color:rgb(52,211,153);margin-top:6px">✓ Ready</p>'}'};}}else{selectedImage=movie.image;uploadedImage=null;document.querySelectorAll('.img-option').forEach(function(o){o.classList.remove('selected')});}document.getElementById('mv-img-url').value='';document.getElementById('upload-preview').style.display='none';document.getElementById('upload-preview').innerHTML='';}}else{selectedImage=movie.image;document.getElementById('mv-img-url').value='';document.getElementById('upload-preview').innerHTML='';}}}
-function handleImageUpload(event){var file=event.target.files[0];if(!file)return;if(file.size>5*1024*1024){showToast('⚠️ Image too big, max 5MB');return}var reader=new FileReader();reader.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxW=600;var w=img.width,h=img.height;if(w>maxW){h=h*(maxW/w);w=maxW}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);uploadedImage=canvas.toDataURL('image/jpeg',.7);selectedImage=null;document.querySelectorAll('.img-option');forEach(function(o){o.classList.remove('selected')});}document.getElementById('upload-preview').style.display='block';document.getElementById('upload-preview').innerHTML='<img src="'+uploadedImage+'" style="max-width:200px;max-height:120px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><p style="font-size:10px;color:rgb(52,211,153);margin-top:6px">✓ Ready</p>'}';}};img.src=e.target.result;reader.readAsDataURL(file);};reader.readAsDataURL(file)}function submitMovie(){var title=document.getElementById('mv-title').value.trim();var year=document.getElementById('mv-year').value.trim()||'2024';var genre=document.getElementById('mv-genre').value.trim()||'Movie';var note=document.getElementById('mv-note').value.trim()||'No note added yet.';if(!title){showToast('⚠️ Please enter a title');return}if(!editingMovieId&&(!selectedImage&&!uploadedImage){showToast('⚠️ Please select an image');return}var image=uploadedImage||selectedImage||'';var movie={id:'mv_'+Date.now(),title:title:title,year:year:year,note:note:note,genre:genre:genre,emoji:'🎮',image:image,addedBy:currentUser,ratings:{ronald:null,manda:null},timestamp:Date.now()};fbWrite('/games/'+game.id,game);var fbGames=JSON.parse(safeGet('fb_games')||'{}');fbGames[game.id]=game;safeSet('fb_games',JSON.stringify(fbGames));renderGames();closeGameModal();showToast('🎮 "'+title+'" added!')}
-}
-function closeGameModal(){document.getElementById('game-modal').classList.remove('open');editingGameId=null}
+/* ═══ STARS BG ═══ */
+var sc=document.getElementById('stars-container');for(var i=0;i<50;i++){var s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';var sz=(1+Math.random()*2)+'px';s.style.width=sz;s.style.height=sz;s.style.animation='twinkle '+(2+Math.random()*4)+'s ease-in-out '+(Math.random()*4)+'s infinite';sc.appendChild(s)}
 
-function rateMovie(movieId,rating){if(!currentUser){showToast('Pick your name first!');return}var userKey=currentUser.toLowerCase();var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');if(!fbMovies[movieId])return;fbMovies[movieId].ratings={ronald:null,manda:null};fbMovies[movieId].ratings[userKey]=rating;safeSet('fb_movies',JSON.stringify(fbMovies));fbWrite('/movies/'+movieId+'/ratings',fbMovies[movieId].ratings);renderMovies();showToast('⭐ Rated '+rating+'/5')}
+/* ═══ TYPEWRITER ═══ */
+var te=document.getElementById('typewriter');var phrases=["made this for us...","nothing weird about it...","just a normal website...","definitely not hiding anything..."];var pI=0,cI=0,del=false,spd=60;function tw(){var p=phrases[pI];if(!del){te.textContent=p.substring(0,cI+1);cI++;if(cI===p.length){del=true;spd=2000}else spd=45+Math.random()*40}else{te.textContent=p.substring(0,cI-1);cI--;spd=25;if(cI===0){del=false;pI=(pI+1)%phrases.length;spd=500}}setTimeout(tw,spd)}tw();
 
-/* ═══ RENDER GAMES ═══ */
-function getAllGames(){
-    var fbGames=JSON.parse(safeGet('fb_games')||'{}');var arr=[];for(var key in fbGames)if(fbGames.hasOwnProperty(key))arr.push(fbGames[key]);arr.sort(function(a,b){return(b.timestamp||0)-(a.timestamp||0)});return arr}
+/* ═══ SCROLL REVEAL ═══ */
+var observer=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('reveal-visible');observer.unobserve(en.target)}})},{threshold:0.1,rootMargin:'0px 0px -30px 0px'});document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el)});
 
-function renderGames(){
-    var grid=document.getElementById('games-grid');
-    grid.innerHTML = '';
-    var games = getAllGames();
-    var total = games.length;
-    var visibleCount = showAllGames ? total : 3;
-    document.getElementById('show-games-container').style.display = total > 3 ? 'block' : 'none';
-    document.getElementById('show-games-btn').textContent = showAllGames ? 'Show Less ↑' : 'Show More ↓';
-    
-    games.forEach(function (m, i) {
-        var imgSrc;
-        
-        // Check if default game with custom image URL
-        if (m.image && m.image.indexOf('data:') === 0) {
-            imgSrc = m.image;
-        } else {
-            imgSrc = 'https://picsum.photos/seed/' + (m.image || 'game-default-flappy') + '/500/350.jpg';
-        }
-        
-        var isDefault = m.id && m.id.indexOf('default_') === 0;
-        
-        // Edit button on non-default games only
-        var editBtnHtml = '';
-        if (!isDefault) {
-            editBtnHtml = '<button class="movie-edit-btn" onclick="event.stopPropagation();editGame(\'' + m.id + '\')" title="Edit game">✏️</button>';
-        }
-        
-        var card = document.createElement('div');
-        card.className = 'reveal movie-card card-hover rounded-2xl border border-white/5 bg-white/2';
-        card.style.height = '320px';
-        card.style.background = 'rgba(255,255,255,.02)';
-        
-        card.innerHTML =
-            (isDefault ? '<div class="movie-number">' + (i + 1) + '</div>' : '') +
-            editBtnHtml +
-            '<div style="position:relative;height:100%;overflow:hidden;border-radius:20px">' +
-            '<img src="' + imgSrc + '" style="width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://picsum.photos/seed/fallback/500/350.jpg\'">' +
-            '<div class="movie-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px">' +
-            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:10px;color:rgb(148,163,184);background:rgba(0,0,0,.4);padding:3px 8px;border-radius:6px">' + (m.year || '') + '</span>' +
-            '<span style="font-size:10px;color:rgb(148,163,184);background:rgba(0,0,0,.4);padding:3px 8px;border-radius:6px">' + (m.genre || 'Movie') + '</span>' +
-            renderMovieStars(m) +
-            '</div></div></div>';
-        
-        grid.appendChild(card);
-    });
-    
-    setTimeout(function () {
-        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('reveal-visible'); });
-    }, 100);
-}
+/* ═══ HEARTS ═══ */
+var heartEmojis=['💕','💗','💖','💝','🩷','♥️','🌸','✨'];var heartInterval=null;
+function spawnHeart(){var h=document.createElement('div');h.className='floating-heart';h.textContent=heartEmojis[Math.floor(Math.random()*heartEmojis.length)];h.style.left=Math.random()*100+'%';h.style.fontSize=(14+Math.random()*16)+'px';h.style.animationDuration=(8+Math.random()*8)+'s';document.body.appendChild(h);setTimeout(function(){h.remove()},16000)}
+function startHearts(){if(!heartInterval)heartInterval=setInterval(spawnHeart,2500);for(var i=0;i<6;i++)setTimeout(spawnHeart,i*300)}
+var clickHeartsEnabled=false;document.addEventListener('click',function(e){if(!clickHeartsEnabled)return;for(var i=0;i<4;i++){var h=document.createElement('div');h.className='burst-heart';h.textContent=heartEmojis[Math.floor(Math.random()*heartEmojis.length)];h.style.left=e.clientX+'px';h.style.top=e.clientY+'px';var a=(Math.PI*2/4)*i+Math.random()*.5,d=40+Math.random()*50;document.body.appendChild(h);(function(hh,aa,dd){requestAnimationFrame(function(){hh.style.transition='all .7s ease-out';hh.style.transform='translate('+Math.cos(aa)*dd+'px,'+(Math.sin(aa)*dd-30)+'px) scale(.2)';hh.style.opacity='0'});setTimeout(function(){hh.remove()},800)})(h,a,d)}});
 
-/* ═══ TOAST ═══ */
-function showToast(msg){var c=document.getElementById('toast-container');var t=document.createElement('div');t.className='toast-in';t.style.cssText='padding:10px 20px;border-radius:12px;background:rgba(15,23,42,.95);border:1px solid rgba(255,255,255,.1);color:white;font-size:13px;font-weight:400;font-family:Inter,sans-serif;backdrop-filter:blur(12px);white-space:nowrap';t.textContent=msg;c.appendChild(t);setTimeout(function(){t.className='toast-out';setTimeout(function(){t.remove()},400)},3000)}
-}
+/* ═══ REVEAL ═══ */
+var revealed=false;function triggerReveal(){if(revealed)return;revealed=true;document.body.classList.add('romance-mode');document.getElementById('hero-icon').textContent='💗';document.getElementById('hero-icon').classList.add('heartbeat');document.getElementById('hero-name').textContent='Manda';document.getElementById('hero-subtitle').textContent="Okay fine... I couldn't keep pretending. This was never 'just a friendly site.'";document.getElementById('date-highlight').className='text-rose-300';document.getElementById('footer-text').textContent='Made with 💗 and a lot of courage';var btn=document.getElementById('trigger-yes-btn');btn.textContent='I knew it 😏💕';btn.disabled=true;btn.style.opacity='.5';document.getElementById('trigger-no-btn').style.display='none';startHearts();clickHeartsEnabled=true;setTimeout(function(){var l=document.getElementById('letter-section');l.classList.add('revealed','section-reveal-anim');l.scrollIntoView({behavior:'smooth',block:'start'});showToast('💕 ...okay you caught me')},1200);for(var i=0;i<15;i++)setTimeout(spawnHeart,i*150)}
 
-/* ═══ RENDER MOVIES ═══ */
-function getAllMovies(){
-    var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');var arr=[];for(var key in fbMovies)if(fbMovies.hasOwnProperty(key))arr.push(fbMovies[key]);arr=arr.concat(defaultMovies);arr.sort(function(a,b){return(b.timestamp||0)-(a.timestamp||0)});return arr}
-}
-function renderMovieStars(movie){
-    var rk=movie.ratings?movie.ratings.ronald:null;var mk=movie.ratings?movie.ratings.manda:null;var isR=currentUser&&currentUser.toLowerCase()==='ronald';var isM=currentUser&&currentUser.toLowerCase()==='manda';
-    var html='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:10px;color:#93c5fd;width:46px">Ronald</span>';if(rk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=rk?'#fbbf24':'rgb(51,65,85)'}">★</span>'}else if(isR){html+='<span style="display:inline-flex;gap:2px;cursor:pointer">';for(var i=1;i<=5;i++)html+='<span onclick="event.stopPropagation();rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer;font-size:12px;color:rgb(71,85,105)">★</span>';html+='</span>'}else html+='<span style="font-size:10px;color:rgb(71,85,105)">—</span>';html+='</div></div></div></div></div></div>';
-    return html;
-}
+var letterOpen=false;function openLetter(){if(letterOpen)return;letterOpen=true;document.getElementById('letter-closed').style.display='none';var o=document.getElementById('letter-open');o.classList.remove('hidden');o.classList.add('letter-unfold');for(var i=0;i<10;i++)setTimeout(spawnHeart,i*150);showToast('💌 You opened it...');setTimeout(function(){var f=document.getElementById('final-section');f.classList.add('revealed','section-reveal-anim');setTimeout(function(){f.scrollIntoView({behavior:'smooth',block:'center'})},300)},2000)}
 
-function renderMovies(){
-    var grid=document.getElementById('movies-grid');grid.innerHTML='';
-    var movies=getAllMovies();
-    var total=movies.length;
-    var visibleCount=showAll?total:3:visibleCount:visibleMovies;
-    document.getElementById('show-games-container').style.display=total>3'?'block':'none';
-    document.getElementById('show-games-btn').textContent=showAll?'Show Less ↑':'Show More ↓';
-    movies.forEach(function(m,i){
-        var imgSrc;
-        if(m.image&&m.image.indexOf('data:')===0){imgSrc=m.image}else{imgSrc='https://picsum.photos/seed/'+(m.image||'game-default-flappy')+'/500/350.jpg'}
-        var isDefault=m.id&&m.id.indexOf('default_')===0;
-        var card=document.createElement('div');card.className='reveal movie-card card-hover rounded-2xl border-white/5 bg-white/2';
-        card.style.height='320px';card.style.background='rgba(255,255,255,.02)';
-        card.innerHTML='<div class="movie-number">'+(i+1)+'</div>'+(isDefault?'':'':'')+edit-btn style="position:absolute;top:12px;right:12px;display:flex;gap:6px;z-index:10" onclick="event.stopPropagation();editMovie(\''+m.id+'\')" title="Edit movie">✏️</button>'+'</div>'+'<div style="position:relative;height:100%;overflow:hidden;border-radius:20px">'+'<img src="'+imgSrc+'" style="width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://picsum.photos/seed/fallback/500/350.jpg\'">'+'<div class="movie-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px">'+'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:10px;color:rgb(148,163,184);background:rgba(0,0,0,.4);padding:3px 8px;border-radius:6px">' + (m.year || '') + '</span>' + '</div>' + renderMovieStars(m) + '</div></div></div></div>';
-        
-        grid.appendChild(card);
-    });
-    
-    setTimeout(function () {
-        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('reveal-visible'); });
-    }, 100);
-}
+function handleYes(){var r=document.getElementById('yes-response');r.classList.remove('hidden');r.style.opacity='0';r.style.transform='translateY(20px)';requestAnimationFrame(function(){r.style.transition='all .8s cubic-bezier(.25,.46,.45,.94)';r.style.opacity='1';r.style.transform='translateY(0)'});document.getElementById('no-btn').style.display='none';for(var i=0;i<25;i++)setTimeout(spawnHeart,i*100);showToast('💖 She said yes!! 🥺💕')}
+var noCount=0;var noMsgs=["Are you sure? 🥺","Really? 😢","Think again... 💔","Please? 🙏","I'll be sad 😞","You can't click this 😏","Give me a chance 🌹","Pretty please? 🥹","Okay wow 😤","I believe in us 💪"];function moveNoButton(){var b=document.getElementById('no-btn');noCount++;var mx=window.innerWidth-b.offsetWidth-40,my=180;b.style.transform='translate('+(Math.random()*mx-mx/2)+'px,'+(Math.random()*my-my/2)+'px)';b.style.transition='transform .25s ease-out';b.textContent=noMsgs[noCount%noMsgs.length]}
+var triggerNoCount=0;var triggerNoMsgs=["Liar 😂","Are you sure?","Pick the other one","You're breaking my heart lol","Fine be like that","Okay rude","I see how it is 😤"];function moveTriggerNo(){var b=document.getElementById('trigger-no-btn');triggerNoCount++;var mx=window.innerWidth-b.offsetWidth-40,my=150;b.style.transform='translate('+(Math.random()*mx-mx/2)+'px,'+(Math.random()*my-my/2)+'px)';b.style.transition='transform .25s ease-out';b.textContent=triggerNoMsgs[triggerNoCount%triggerNoMsgs.length]}
 
-function rateMovie(movieId, rating) {
-    if (!currentUser) { showToast('Pick your name first!'); return; }
-    var userKey = currentUser.toLowerCase();
-    var fbMovies = JSON.parse(safeGet('fb_movies') || '{}');
-    if (!fbMovies[movieId]) return;
-    if (!fbMovies[movieId].ratings) fbMovies[movieId].ratings = { ronald: null, manda: null };
-    fbMovies[movieId].ratings[userKey] = rating;
-    safeSet('fb_movies', JSON.stringify(fbMovies));
-    fbWrite('/movies/' + movieId + '/ratings', fbMovies[movieId].ratings);
-    renderMovies();
-    showToast('⭐ Rated ' + rating + '/5');
-}
+function showToast(msg){var c=document.getElementById('toast-container'),t=document.createElement('div');t.className='toast-in';t.style.cssText='padding:12px 20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);border-radius:12px;backdrop-filter:blur(12px);font-size:14px;font-weight:300;color:white;box-shadow:0 4px 20px rgba(0,0,0,.3);max-width:320px;text-align:center';t.textContent=msg;c.appendChild(t);setTimeout(function(){t.classList.replace('toast-in','toast-out');setTimeout(function(){t.remove()},400)},3500)}
 
-function showToast(msg){var c=document.getElementById('toast-container');var t=document.createElement('div');t.className='toast-in';t.style.cssText='padding:10px 20px;border-radius:12px;background:rgba(15,23,42,.95);border:1px solid rgba(255,255,255,.1);color:white;font-size:13px;font-weight:400;font-family:Inter,sans-serif;backdrop-filter:blur(12px);white-space:nowrap';t.textContent=msg;c.appendChild(t);setTimeout(function(){t.className='toast-out';setTimeout(function(){t.remove()},400)},3000)}
-}
-
-function openLetter(){document.getElementById('letter-closed').classList.add('hidden');document.getElementById('letter-open').classList.remove('hidden');document.getElementById('letter-open').querySelector('div').classList.add('letter-unfold');document.getElementById('final-section').classList.add('revealed','section-reveal-anim');setTimeout(function(){document.getElementById('final-section').scrollIntoView({behavior:'smooth'})},500)}
-function handleYes(){document.body.classList.add('romance-mode');document.getElementById('yes-response').classList.remove('hidden');document.getElementById('no-btn').style.display='none';for(var i=0;i<30;i++){setTimeout(function(){var h=document.createElement('div');h.className='burst-heart';h.textContent=['💕','💖','💗','💖','💝','🥺💖','🥺💖'].join('').bind(null,h);h.style.left=Math.random()*100+'vw';h.style.top=Math.random()*100+'vh';h.style.fontSize=(16+Math.random()*24)+'px';document.body.appendChild(h);setTimeout(function(el){el.remove()},bind(null,h),2000)}})}
-    showToast('💕 She said yes!!')}
-function moveNoButton(){var b=document.getElementById('no-btn');var x=(Math.random()-.5)*200;var y=(Math.random()-.5)*100;b.style.transform='translate('+x+'+y+'px)'}
-function moveTriggerNo(){var b=document.getElementById('trigger-no-btn');var x=(Math.random()-.5)*200;var y=(Math.random()-.5)*100;b.style.transform='translate('+x+'+y+'px)'}
-function renderMovies(){var grid=document.getElementById('movies-grid');grid.innerHTML='';var movies=getAllMovies();var total=movies.length;var visibleCount=showAll?total:3:visibleCount:visibleMovies;document.getElementById('show-games-container').style.display=total>3'?'block':'none';document.getElementById('show-games-btn').textContent=showAll?'Show Less ↑':'Show More ↓'}
-
-function openMovieModal(movieId){editingMovieId=movieId||null;document.getElementById('movie-modal').classList.add('open');if(editingMovieId){document.getElementById('movie-modal-title').textContent='Edit Movie ✏️';document.getElementById('movie-submit-btn').textContent='Save Changes ✓';var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');var movie=fbMovies[editingMovieId];if(movie){document.getElementById('mv-title').value=movie.title||'';document.getElementById('mv-year').value=movie.year||'';document.getElementById('mv-genre').value=movie.genre||'';document.getElementById('mv-note').value=movie.note||'';if(movie.image){if(movie.image.indexOf('data:')===0){uploadedImage=movie.image;selectedImage=null;document.getElementById('img-url-input').style.display='none';document.getElementById('img-upload-input').style.display='block';document.getElementById('tab-upload').style.background='rgba(59,130,246,.15)';document.getElementById('tab-upload').style.color='#93c5fd';document.getElementById('upload-preview').style.display='block';document.getElementById('upload-preview').innerHTML='<img src="'+uploadedImage+'" style="max-width:200px;max-height:120px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><p style="font-size:10px;color:rgb(52,211,153);margin-top:6px">✓ Ready</p>'}'};img.src=e.target.result;reader.readAsDataURL(file)};function submitMovie(){var title=document.getElementById('mv-title').value.trim();var year=document.getElementById('mv-year').value.trim()||'2024';var genre=document.getElementById('mv-genre').value.trim()||'Movie';var note=document.getElementById('mv-note').value.trim()||'No note added yet.';if(!title){showToast('⚠️ Please enter a title');return}if(!editingMovieId&&(!selectedImage&&!uploadedImage){showToast('⚠️ Please select an image');return}var image=uploadedImage||selectedImage||'';var movie={id:'game_'+Date.now(),title:title,year:year:year,note:note:note,genre:genre:genre,emoji:'🎮',image:image:image,addedBy:currentUser,ratings:{ronald:null,manda:null},timestamp:Date.now()};fbWrite('/games/'+game.id,game);var fbGames=JSON.parse(safeGet('fb_games')||'{}');fbGames[game.id]=game;safeSet('fb_games',JSON.stringify(fbGames));renderGames();closeGameModal();showToast('🎮 "'+title+'" added!')}
-
-function rateMovie(movieId,rating){if(!currentUser){showToast('Pick your name first!');return}var userKey=currentUser.toLowerCase();var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');if(!fbMovies[movieId])return;fbMovies[movieId].ratings={ronald:null,manda:null};fbMovies[movieId].ratings[userKey]=rating;safeSet('fb_movies',JSON.stringify(fbMovies));fbWrite('/movies/'+movieId+'/ratings',fbMovies[movieId].ratings);renderMovies();showToast('⭐ Rated '+rating+'/5')}
-
-function getAllMovies(){var fbMovies=JSON.parse(safeGet('fb_movies')||'{}');var arr=[];for(var key in fbGames)if(fbGames.hasOwnProperty(key))arr.push(fbGames[key]);arr.sort(function(a,b){return(b.timestamp||0)-(a.timestamp||0)});return arr}
-function renderMovieStars(movie){var rk=movie.ratings?movie.ratings.ronald:null;var mk=movie.ratings?movie.ratings.manda:null;var isR=currentUser&&currentUser.toLowerCase()==='ronald';var isM=currentUser&&currentUser.toLowerCase()==='manda';var html='<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:10px;color:#93c5fd;width:46px">Ronald</span>';if(rk){for(var i=1;i<=5;i++)html+='<span style="font-size:12px;color:'+(i<=rk?'#fbbf24':'rgb(51,65,85)'}'>★</span>'}else if(isR){html+='<span style="display:inline-flex;gap:2px;cursor:pointer">';for(var i=1;i<=5;i++)html+='<span onclick="event.stopPropagation();rateMovie(\''+movie.id+'\','+i+')" style="cursor:pointer;font-size:12px;color:rgb(71,85,105)">★</span>';html+='</span>';}else html+='<span style="font-size:10px;color:rgb(71,85,105)">—</span>';html+='</div></div></div></div></div>';return html}
-function renderMovies(){var grid=document.getElementById('movies-grid');grid.innerHTML='';var movies=getAllMovies();var total=movies.length;var visibleCount=showAll?total:3:visibleCount:visibleMovies;document.getElementById('show-games-container').style.display=total>3'?'block':'none';document.getElementById('show-games-btn').textContent=showAll?'Show Less ↑':'Show More ↓'}
-    movies.forEach(function(m,i){var imgSrc;if(m.image&&m.image.indexOf('data:')===0){imgSrc=m.image}else{imgSrc='https://picsum.photos/seed/'+(m.image||'game-default-flappy')+'/500/350.jpg'}var isDefault=m.id&&m.id.indexOf('default_')===0;var card=document.createElement('div');card.className='reveal movie-card card-hover rounded-2xl border-white/5 bg-white/2';card.style.height='320px';card.style.background='rgba(255,255,255,.02)';card.innerHTML='<div class="movie-number">'+(i+1)+'</div>'+editBtn+'</div>'+('<div style="position:relative;height:100%;overflow:hidden;border-radius:20px">'+'<img src="'+imgSrc+'" style="width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://picsum.photos/seed/fallback/500/350.jpg\'">'+'<div class="movie-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px">'+'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:10px;color:rgb(148,163,184);background:rgba(0,0,0,.4);padding:3px 8px;border-radius:6px">' + (m.year || '') + '</span>' + '</span>' + '</div></div></div></div></div>';
-        grid.appendChild(card);
-    }, 100);
-}
-
-function showToast(msg){var c=document.getElementById('toast-container');var t=document.createElement('div');t.className='toast-in';t.style.cssText='padding:10px 20px;border-radius:12px;background:rgba(15,23,42,.95);border:1px solid rgba(255,255,255,.1);color:white;font-size:13px;font-weight:400;font-family:Inter,sans-serif;backdrop-filter:blur(12px);white-space:nowrap';t.textContent=msg;c.appendChild(t);setTimeout(function(){t.className='toast-out';setTimeout(function(){t.remove()},400)},3000)}
-</script>
+try{lucide.createIcons()}catch(e){}
+renderMovies();
 </script>
 </body>
 </html>
